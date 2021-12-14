@@ -2,10 +2,28 @@
 
 .container {
   display: flex;
-  flex-direction: column;
   height: 100vh;
   overflow: auto;
-  background: @layout-body-background;
+  .bg{
+    width: 70%;
+    background-image: url('../../../../public/images/banner.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 100%;
+  }
+  .formCont{
+   .title{
+     color: #083C79;
+     font-size: 32px;
+     font-weight: bolder;
+     margin-bottom: 0.1em;
+   }
+   .desc{
+     color: #666;
+     font-size: 15px;
+     margin-bottom: 2em;
+   }
+}
 }
 
 .lang {
@@ -20,12 +38,55 @@
 
 .content {
   flex: 1;
-  padding: 32px 0;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  :global{
+    .ant-pro-form-login-container{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .ant-input-affix-wrapper{
+      border: none;
+      border-bottom: 1px solid #D8D8D8;
+    }
+    .ant-input-affix-wrapper{
+      padding-left: 0;
+    }
+    .ant-input-affix-wrapper:focus, .ant-input-affix-wrapper-focused {
+      border-color: #40a9ff;
+      border-right-width: 1px !important;
+      outline: 0;
+      box-shadow: none;
+    }
+//     .ant-form-item-has-error :not(.ant-input-disabled):not(.ant-input-borderless).ant-input:focus, .ant-form-item-has-error :not(.ant-input-affix-wrapper-disabled):not(.ant-input-affix-wrapper-borderless).ant-input-affix-wrapper:focus, .ant-form-item-has-error :not(.ant-input-disabled):not(.ant-input-borderless).ant-input-focused, .ant-form-item-has-error :not(.ant-input-affix-wrapper-disabled):not(.ant-input-affix-wrapper-borderless).ant-input-affix-wrapper-focused {
+//       border-bottom:1px solid #ff7875;
+
+//       box-shadow: none;
+//   }
+//   .ant-form-item-has-error :not(.ant-input-disabled):not(.ant-input-borderless).ant-input, .ant-form-item-has-error :not(.ant-input-affix-wrapper-disabled):not(.ant-input-affix-wrapper-borderless).ant-input-affix-wrapper, .ant-form-item-has-error :not(.ant-input-disabled):not(.ant-input-borderless).ant-input:hover, .ant-form-item-has-error :not(.ant-input-affix-wrapper-disabled):not(.ant-input-affix-wrapper-borderless).ant-input-affix-wrapper:hover {
+//     background-color: #fff;
+//     border:none;
+// }
+    .ant-input-prefix{
+      margin-right: 8px;
+    }
+    .ant-btn{
+      width: 88px !important;
+height: 32px;
+line-height: 0.5715;
+    }
+  //   .ant-input-affix-wrapper:not(.ant-input-affix-wrapper-disabled):hover {
+  //     border: none;
+  //     border-bottom: #40a9ff;
+  // }
+  }
 }
 
 @media (min-width: @screen-md-min) {
   .container {
-    background-image: url('https://gw.alipayobjects.com/zos/rmsportal/TVYTbAXWheQpRcWDaDMu.svg');
     background-repeat: no-repeat;
     background-position: center 110px;
     background-size: 100%;
