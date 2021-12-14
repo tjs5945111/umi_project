@@ -25,6 +25,10 @@
     component: './Zjlb',
   },
   {
+    path: '/zjlb/detail',
+    component: './Zjlb/zjDeatil',
+  },
+  {
     path: '/yylb',
     name: '预约列表',
     icon: 'smile',

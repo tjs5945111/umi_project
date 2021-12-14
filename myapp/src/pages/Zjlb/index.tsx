@@ -57,7 +57,7 @@ export default () => {
             key: 'actionList',
             // fixed: 'right',
             width: 230,
-            render: (data: any) => (
+            render: ({id}) => (
                 <div
                     style={{
                         display: 'flex',
@@ -70,7 +70,7 @@ export default () => {
                     <a
                         style={{ marginRight: 30 }}
                         onClick={() => {
-                            // window.open(`./create?primaryId=${primaryId}&action=VIEW`);
+                            window.open(`./zjlb/detail?id=${id}&type=voice`);
                         }}
                     >
                         详情
@@ -146,9 +146,9 @@ export default () => {
         </Radio.Group>,
     ];
     const searchArray = [
-        { name: '租户id', value: 'tenantId' },
-        { name: '租户code', value: 'tenantCode' },
-        { name: '租户name', value: 'tenantName' },
+        { name: '编号', value: 'num' },
+        { name: '证据类型', value: 'qzType',type:'select',data:[{name:'图片取证',value:'photo'},{name:'视频取证',value:'video'},{name:'录音取证',value:'voice'}] },
+        { name: '状态', value: 'statue',type:'select',data:[{name:'出证中',value:'photo'},{name:'存证中',value:'video'},{name:'已存证',value:'voice'},{name:'出证失败',value:'voice'}] },
     ];
     return (
         <>
