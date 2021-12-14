@@ -181,16 +181,12 @@ export default function BaseTable({
         return children;
     };
 
-    const handleSearchs = (e, form) => {
-        e.preventDefault();
-        form.validateFields((err, values) => {
-            if (formatSearchStatus?.length) {
-                values.statusList = formatSearchStatus;
-            }
-            // console.log('Received values of form: ', values);
-            typeof handleSearch !== 'undefined' && handleSearch(values);
-            SetSearchParams(values);
-        });
+    const handleSearchs = (values) => {
+        if (formatSearchStatus?.length) {
+            values.statusList = formatSearchStatus;
+        }
+        typeof handleSearch !== 'undefined' && handleSearch(values);
+        SetSearchParams(values);
     };
 
     const handleReset = (form: any) => {
@@ -211,16 +207,19 @@ export default function BaseTable({
     const SearchForm = ((props: any) => {
         const { form, hideSearchType } = props;
         return !hideSearchType && searchArray ? (
-            <Form layout={'inline'}>
+            <Form layout={'inline'} onFinish={handleSearchs}>
                 <Row gutter={24}>{getFields(form)}</Row>
                 <Row>
                     <Col span={24} style={{ textAlign: 'right' }}>
-                        <Button type="primary" onClick={(e: any) => handleSearchs(e, form)}>
-                            搜索
-                        </Button>
-                        <Button style={{ marginLeft: 8 }} onClick={() => handleReset(form)}>
-                            重置
-                        </Button>
+                        <Form.Item>
+                            <Button type="primary" htmlType="submit">
+                                搜索
+                            </Button>
+                            <Button style={{ marginLeft: 8 }} onClick={() => handleReset(form)}>
+                                重置
+                            </Button>
+                        </Form.Item>
+
                         {searchArray?.length > 6 ? (
                             expand ? (
                                 <a style={{ marginLeft: 8, fontSize: 12 }} onClick={() => toggle()}>
@@ -242,8 +241,8 @@ export default function BaseTable({
             <Card bordered={false}>
                 <h3>{tableName}</h3>
                 {radioList?.map((item: any, index) => (
-                            <div key={index}>{item}</div>
-                        ))}
+                    <div key={index}>{item}</div>
+                ))}
                 {!hideSearch && searchArray ? (
                     <div style={{ margin: '20px 0px' }}>
                         <SearchForm hideSearchType={hideSearch} ref={formEl} />

@@ -1,7 +1,9 @@
 // 证据列表
 import React, { useState, useEffect } from 'react';
-import BaseTable from '@/components/BaseTable'
-import{Button} from 'antd'
+import BaseTable from '@/components/BaseTable';
+import { Button, Radio } from 'antd';
+import moment from 'moment';
+
 
 import styles from './index.less';
 
@@ -18,47 +20,35 @@ export default () => {
     const columns = [
         {
             width: 100,
-            title: '租户Id',
-            dataIndex: 'tenantId',
+            title: '编号',
+            dataIndex: 'num',
         },
 
         {
-            title: '租户code',
-            dataIndex: 'tenantCode',
+            title: '类型',
+            dataIndex: 'type',
         },
         {
-            title: '租户名称',
-            dataIndex: 'tenantName',
+            title: '操作人手机号',
+            dataIndex: 'phone',
         },
         {
-            title: '管理员',
-
-            key: 'owner',
-            dataIndex: 'owner',
-            render: owner => (
+            title: '大小',
+            dataIndex: 'szie',
+        },
+        {
+            title: '取证时间',
+            render: ({ gmtCreate }) => (
                 <div style={{ maxWidth: 200 }}>
-                    123
+                    {gmtCreate && moment(gmtCreate).format('YYYY-MM-DD HH:mm:ss')}
                 </div>
             ),
         },
         {
-            title: '修改信息',
-
-            render: ({ gmtModified, modifier }) => (
+            title: '状态',
+            render: ({ statue }) => (
                 <div style={{ maxWidth: 200 }}>
                     123
-                </div>
-            ),
-        },
-        {
-            title: '创建信息',
-
-            render: ({ gmtCreate, creator }) => (
-                <div style={{ maxWidth: 200 }}>
-                    <div style={{ marginBottom: '10px' }}>{formatUserInfo(creator)}</div>
-                    <div style={{ fontSize: '12px', color: '#999' }}>
-                        {gmtCreate && moment(gmtCreate).format('YYYY-MM-DD HH:mm:ss')}
-                    </div>
                 </div>
             ),
         },
@@ -67,7 +57,7 @@ export default () => {
             key: 'actionList',
             // fixed: 'right',
             width: 230,
-            render: (data: any, { primaryId }) => (
+            render: (data: any) => (
                 <div
                     style={{
                         display: 'flex',
@@ -80,44 +70,16 @@ export default () => {
                     <a
                         style={{ marginRight: 30 }}
                         onClick={() => {
-                            window.open(`./create?primaryId=${primaryId}&action=VIEW`);
+                            // window.open(`./create?primaryId=${primaryId}&action=VIEW`);
                         }}
                     >
-                        查看
+                        详情
                     </a>
                     <a
                         style={{ marginRight: 30 }}
-                        onClick={() => {
-                            window.open(`./create?primaryId=${primaryId}&action=UPDATED`);
-                        }}
                     >
-                        编辑
+                        下载
                     </a>
-
-                    {/* <a
-              style={{ marginRight: 30 }}
-              onClick={() => {
-                confirm({
-                  title: '你确定要删除该租户吗?',
-                  cancelText: '取消',
-                  okText: '确定',
-                  onOk: async () => {
-                    const res = await fetch({
-                      url: '/api/sophon/tenantDelete',
-                      param: {
-                        primaryId,
-                      },
-                    });
-                    if (res.success) {
-                      message.success('删除成功');
-                      getList(1, searchWord, pageSize);
-                    }
-                  },
-                });
-              }}
-            >
-              删除
-            </a> */}
                 </div>
             ),
         },
@@ -143,6 +105,7 @@ export default () => {
         //   } else {
         //     message.error(`${res?.data}`);
         //   }
+        setTenantList([{ num: '2334234' }]);
         setLoading(false);
     };
 
@@ -161,16 +124,27 @@ export default () => {
         setpageSize(size);
         getList(1, searchWord, size);
     };
+
+    const onChange = (e: any) => {
+
+    };
     const actionList = [
         <Button
-          type="primary"
-          onClick={() => {
-            window.open('./create');
-          }}
+            type="primary"
+            onClick={() => {
+                window.open('./create');
+            }}
         >
-          新建
+            新建
         </Button>,
-      ];
+    ];
+    const radioList = [
+        <Radio.Group onChange={(e) => onChange(e)} defaultValue="all" buttonStyle="solid">
+            <Radio.Button value="all">全部</Radio.Button>
+            <Radio.Button value="cz">存证</Radio.Button>
+            <Radio.Button value="chuz">出证</Radio.Button>
+        </Radio.Group>,
+    ];
     const searchArray = [
         { name: '租户id', value: 'tenantId' },
         { name: '租户code', value: 'tenantCode' },
@@ -181,7 +155,7 @@ export default () => {
             <BaseTable
                 dataSource={tenantList || []}
                 actionList={actionList}
-                radioList={actionList}
+                radioList={radioList}
                 searchArray={searchArray}
                 hideState={true}
                 loading={loading}
