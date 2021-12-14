@@ -19,28 +19,22 @@
     ],
   },
   {
-    path: '/welcome',
-    name: 'welcome',
+    path: '/zjlb',
+    name: '证据列表',
+    icon: 'smile',
+    component: './Zjlb',
+  },
+  {
+    path: '/yylb',
+    name: '预约列表',
     icon: 'smile',
     component: './Welcome',
   },
   {
-    path: '/admin',
-    name: 'admin',
-    icon: 'crown',
-    access: 'canAdmin',
-    component: './Admin',
-    routes: [
-      {
-        path: '/admin/sub-page',
-        name: 'sub-page',
-        icon: 'smile',
-        component: './Welcome',
-      },
-      {
-        component: './404',
-      },
-    ],
+    path: '/rygl',
+    name: '人员管理',
+    icon: 'smile',
+    component: './Welcome',
   },
   {
     name: 'list.table-list',
@@ -50,7 +44,7 @@
   },
   {
     path: '/',
-    redirect: '/welcome',
+    redirect: '/zjlb',
   },
   {
     component: './404',
