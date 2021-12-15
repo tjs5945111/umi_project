@@ -49,6 +49,13 @@
     component: './Rygl/ryDeatil',
   },
   {
+    path: '/xtsz',
+    name: '系统设置',
+    icon: 'smile',
+    // component: './Rygl/ryDeatil',
+    component: './Xtsz',
+  },
+  {
     name: 'list.table-list',
     icon: 'table',
     path: '/list',
