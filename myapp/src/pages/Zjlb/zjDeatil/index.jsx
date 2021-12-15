@@ -12,8 +12,9 @@ import {
     PlaybackRateMenuButton, // 倍速播放选项
     VolumeMenuButton,
 } from 'video-react';
-// import 'video-react/dist/video-react.css';
+import 'video-react/dist/video-react.css';
 import { Card } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons';
 import { get } from 'lodash';
 import styles from './index.less'
 
@@ -43,7 +44,7 @@ export default (props) => {
             <BreadcrumbList urls={urlArray} />
             <Card bordered={false} className={styles.contain}>
                 <div className={styles.title}>
-                    <img src={imgs} alt="123" />
+                    <img src={imgs} alt="" />
                     <p><span>证件编号：</span>213112312312</p>
                 </div>
                 <div className={styles.con}>
@@ -57,21 +58,40 @@ export default (props) => {
                     <div><span>备注：</span>13123</div>
                 </div>
                 <div className={styles.view}>
-                    <Carousel dots="false" >
-                        <Player poster={''}>
-                            <source src={''} type="video/mp4" />
-                            <ControlBar autoHide={false} disableDefaultControls={false}>
-                                <ReplayControl seconds={10} order={1.1} />
-                                <ForwardControl seconds={30} order={1.2} />
-                                <PlayToggle />
-                                <CurrentTimeDisplay order={4.1} />
-                                <TimeDivider order={4.2} />
-                                <PlaybackRateMenuButton rates={[5, 2, 1.5, 1, 0.5]} order={7.1} />
-                                <VolumeMenuButton />
-                            </ControlBar>
-                        </Player>
-                    </Carousel>
+                    {
+                        (()=>{
+                            switch (type) {
+                                case 'photo':
+                                    return <img src={imgs} alt="" />
+                                    
+                                case 'video':
+                                    return <Player poster={''}>
+                                    <source src={''} type="video/mp4" />
+                                    <ControlBar autoHide={false} disableDefaultControls={false}>
+                                        <ReplayControl seconds={10} order={1.1} />
+                                        <ForwardControl seconds={30} order={1.2} />
+                                        <PlayToggle />
+                                        <CurrentTimeDisplay order={4.1} />
+                                        <TimeDivider order={4.2} />
+                                        <PlaybackRateMenuButton rates={[5, 2, 1.5, 1, 0.5]} order={7.1} />
+                                        <VolumeMenuButton />
+                                    </ControlBar>
+                                </Player> 
+                                    
+                                case 'voice':
+                                    return 
+                                    
+                            
+                                default:
+                                    return null;
+                            }
+                        })()
+                    }
                 </div>
+                <div style={{marginTop:'10px'}}>
+                <DownloadOutlined style={{color:'#1890ff',marginRight:'8px'}}/><a href="">点击下载资料</a>
+                </div>
+               
             </Card>
         </>
     )
