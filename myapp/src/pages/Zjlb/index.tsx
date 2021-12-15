@@ -129,14 +129,14 @@ export default () => {
 
     };
     const actionList = [
-        <Button
-            type="primary"
-            onClick={() => {
-                window.open('./create');
-            }}
-        >
-            新建
-        </Button>,
+        // <Button
+        //     type="primary"
+        //     onClick={() => {
+        //         window.open('./create');
+        //     }}
+        // >
+        //     新建
+        // </Button>,
     ];
     const radioList = [
         <Radio.Group onChange={(e) => onChange(e)} defaultValue="all" buttonStyle="solid">
@@ -160,7 +160,7 @@ export default () => {
                 hideState={true}
                 loading={loading}
                 columns={columns as any}
-                tableName="租户列表"
+                tableName="证据列表"
                 handleSearch={(e: any) => handleSearch(e)}
                 handlePaging={(e: any) => handlePaging(e)}
                 pagingSizeChange={(e: any) => pagingSizeChange(e)}

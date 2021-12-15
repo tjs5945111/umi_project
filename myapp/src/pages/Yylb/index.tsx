@@ -70,7 +70,7 @@ export default () => {
                     <a
                         style={{ marginRight: 30 }}
                         onClick={() => {
-                            window.open(`./zjlb/detail?id=${id}&type=voice`);
+                            window.open(`./yylb/detail?id=${id}&type=VIEW`);
                         }}
                     >
                         详情
@@ -129,26 +129,25 @@ export default () => {
 
     };
     const actionList = [
-        <Button
-            type="primary"
-            onClick={() => {
-                window.open('./create');
-            }}
-        >
-            新建
-        </Button>,
+        // <Button
+        //     type="primary"
+        //     onClick={() => {
+        //         window.open('./create');
+        //     }}
+        // >
+        //     新建
+        // </Button>,
     ];
     const radioList = [
-        <Radio.Group onChange={(e) => onChange(e)} defaultValue="all" buttonStyle="solid">
-            <Radio.Button value="all">全部</Radio.Button>
-            <Radio.Button value="cz">存证</Radio.Button>
-            <Radio.Button value="chuz">出证</Radio.Button>
-        </Radio.Group>,
+        // <Radio.Group onChange={(e) => onChange(e)} defaultValue="all" buttonStyle="solid">
+        //     <Radio.Button value="all">全部</Radio.Button>
+        //     <Radio.Button value="cz">存证</Radio.Button>
+        //     <Radio.Button value="chuz">出证</Radio.Button>
+        // </Radio.Group>,
     ];
     const searchArray = [
-        { name: '编号', value: 'num' },
-        { name: '证据类型', value: 'qzType',type:'select',data:[{name:'图片取证',value:'photo'},{name:'视频取证',value:'video'},{name:'录音取证',value:'voice'}] },
-        { name: '状态', value: 'statue',type:'select',data:[{name:'出证中',value:'photo'},{name:'存证中',value:'video'},{name:'已存证',value:'voice'},{name:'出证失败',value:'voice'}] },
+        { name: '预约事项', value: 'qzType',type:'select',data:[{name:'图片取证',value:'photo'},{name:'视频取证',value:'video'},{name:'录音取证',value:'voice'}] },
+        { name: '预约时间', value: 'statue',type:'select',data:[{name:'出证中',value:'photo'},{name:'存证中',value:'video'},{name:'已存证',value:'voice'},{name:'出证失败',value:'voice'}] },
     ];
     return (
         <>
@@ -160,7 +159,7 @@ export default () => {
                 hideState={true}
                 loading={loading}
                 columns={columns as any}
-                tableName="租户列表"
+                tableName="预约列表"
                 handleSearch={(e: any) => handleSearch(e)}
                 handlePaging={(e: any) => handlePaging(e)}
                 pagingSizeChange={(e: any) => pagingSizeChange(e)}

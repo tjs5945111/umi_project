@@ -36,8 +36,6 @@
   },
   {
     path: '/yylb/detail',
-    name: '预约列表',
-    icon: 'smile',
     component: './Yylb/yyDeatil',
   },
   {

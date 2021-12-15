@@ -115,7 +115,7 @@ export default function BaseTable({
         const children: any = [];
         searchArray?.forEach((ele, index) => {
             children.push(
-                <Col span={8} key={index} style={{ display: index < count ? 'block' : 'none' }}>
+                <>
                     {(() => {
                         switch (ele.type) {
                             case 'select':
@@ -155,7 +155,7 @@ export default function BaseTable({
                                 );
                         }
                     })()}
-                </Col>,
+                </>,
             );
         });
         const checkEle = (
@@ -244,7 +244,7 @@ export default function BaseTable({
                     <div key={index}>{item}</div>
                 ))}
                 {!hideSearch && searchArray ? (
-                    <div style={{ margin: '20px 0px' }}>
+                    <div style={{ margin: '20px 12px' }}>
                         <SearchForm hideSearchType={hideSearch} ref={formEl} />
                     </div>
                 ) : null}
