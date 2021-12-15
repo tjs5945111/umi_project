@@ -32,7 +32,13 @@
     path: '/yylb',
     name: '预约列表',
     icon: 'smile',
-    component: './Welcome',
+    component: './Yylb',
+  },
+  {
+    path: '/yylb/detail',
+    name: '预约列表',
+    icon: 'smile',
+    component: './Yylb/yyDeatil',
   },
   {
     path: '/rygl',
