@@ -42,7 +42,11 @@
     path: '/rygl',
     name: '人员管理',
     icon: 'smile',
-    component: './Welcome',
+    component: './Rygl',
+  },
+  {
+    path: '/rygl/detail',
+    component: './Rygl/ryDeatil',
   },
   {
     name: 'list.table-list',

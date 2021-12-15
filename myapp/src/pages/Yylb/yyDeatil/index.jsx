@@ -20,7 +20,7 @@ export default (props) => {
     const urlArray = [
         {
             name: '预约列表',
-            url: '/zjlb',
+            url: '/yylb',
         },
         {
             name: '预约详情',

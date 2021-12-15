@@ -1,7 +1,7 @@
-// 证据列表
+// 人员列表
 import React, { useState, useEffect } from 'react';
 import BaseTable from '@/components/BaseTable';
-import { message, Divider } from 'antd';
+import { Button, Popconfirm, message, Divider } from 'antd';
 import moment from 'moment';
 
 
@@ -17,47 +17,36 @@ export default () => {
         tenantCode: '',
         tenantName: '',
     });
+    function confirm(e) {
+        console.log(e);
+        message.success('Click on Yes');
+    }
+
+    function cancel(e) {
+        console.log(e);
+        message.error('Click on No');
+    }
     const columns = [
         {
             width: 100,
-            title: '编号',
+            title: '角色',
             dataIndex: 'num',
         },
 
         {
-            title: '类型',
+            title: '账号',
             dataIndex: 'type',
         },
         {
-            title: '操作人手机号',
+            title: '密码',
             dataIndex: 'phone',
-        },
-        {
-            title: '大小',
-            dataIndex: 'szie',
-        },
-        {
-            title: '取证时间',
-            render: ({ gmtCreate }) => (
-                <div style={{ maxWidth: 200 }}>
-                    {gmtCreate && moment(gmtCreate).format('YYYY-MM-DD HH:mm:ss')}
-                </div>
-            ),
-        },
-        {
-            title: '状态',
-            render: ({ statue }) => (
-                <div style={{ maxWidth: 200 }}>
-                    123
-                </div>
-            ),
         },
         {
             title: '操作',
             key: 'actionList',
             // fixed: 'right',
             width: 230,
-            render: ({id}) => (
+            render: ({ id }) => (
                 <div
                     style={{
                         display: 'flex',
@@ -70,17 +59,21 @@ export default () => {
                     <a
                         style={{ marginRight: 30 }}
                         onClick={() => {
-                            window.open(`./yylb/detail?id=${id}&type=VIEW`);
+                            window.open(`./rygl/detail?id=${id}&type=VIEW`);
                         }}
                     >
-                        详情
+                        编辑
                     </a>
                     <Divider />
-                    <a
-                        style={{ marginRight: 30 }}
+                    <Popconfirm
+                        title="你确定要删除该人员吗?"
+                        onConfirm={confirm}
+                        onCancel={cancel}
+                        okText="确认"
+                        cancelText="取消"
                     >
-                        下载
-                    </a>
+                        <a href="#">删除</a>
+                    </Popconfirm>
                 </div>
             ),
         },
@@ -130,25 +123,19 @@ export default () => {
 
     };
     const actionList = [
-        // <Button
-        //     type="primary"
-        //     onClick={() => {
-        //         window.open('./create');
-        //     }}
-        // >
-        //     新建
-        // </Button>,
+        <Button
+            type="primary"
+            onClick={() => {
+                window.open('./deatil');
+            }}
+        >
+            添加人员
+        </Button>,
     ];
-    const radioList = [
-        // <Radio.Group onChange={(e) => onChange(e)} defaultValue="all" buttonStyle="solid">
-        //     <Radio.Button value="all">全部</Radio.Button>
-        //     <Radio.Button value="cz">存证</Radio.Button>
-        //     <Radio.Button value="chuz">出证</Radio.Button>
-        // </Radio.Group>,
-    ];
+    const radioList = [];
     const searchArray = [
-        { name: '预约事项', value: 'qzType',type:'select',data:[{name:'图片取证',value:'photo'},{name:'视频取证',value:'video'},{name:'录音取证',value:'voice'}] },
-        { name: '预约时间', value: 'statue',type:'select',data:[{name:'出证中',value:'photo'},{name:'存证中',value:'video'},{name:'已存证',value:'voice'},{name:'出证失败',value:'voice'}] },
+        { name: '账号', value: 'num' },
+        { name: '角色', value: 'qzType', type: 'select', data: [{ name: '图片取证', value: 'photo' }, { name: '视频取证', value: 'video' }, { name: '录音取证', value: 'voice' }] },
     ];
     return (
         <>
@@ -160,7 +147,7 @@ export default () => {
                 hideState={true}
                 loading={loading}
                 columns={columns as any}
-                tableName="预约列表"
+                tableName="人员列表"
                 handleSearch={(e: any) => handleSearch(e)}
                 handlePaging={(e: any) => handlePaging(e)}
                 pagingSizeChange={(e: any) => pagingSizeChange(e)}

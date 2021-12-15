@@ -1,7 +1,7 @@
 // 证据列表
 import React, { useState, useEffect } from 'react';
 import BaseTable from '@/components/BaseTable';
-import { Button, Radio } from 'antd';
+import {message, Divider, Radio } from 'antd';
 import moment from 'moment';
 
 
@@ -75,6 +75,7 @@ export default () => {
                     >
                         详情
                     </a>
+                    <Divider />
                     <a
                         style={{ marginRight: 30 }}
                     >
