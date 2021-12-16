@@ -52,8 +52,17 @@
     path: '/xtsz',
     name: '系统设置',
     icon: 'smile',
-    // component: './Rygl/ryDeatil',
     component: './Xtsz',
+  },
+  {
+    path: '/dzmq',
+    name: '电子面签',
+    icon: 'smile',
+    component: './Dzmq',
+  },
+  {
+    path: '/dzmq/detail',
+    component: './Dzmq/dzDeatil',
   },
   {
     path: '/',
