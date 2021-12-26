@@ -49,7 +49,7 @@ const Login: React.FC = () => {
   const handleSubmit = async (values: API.LoginParams) => {
     try {
       // 登录
-      const msg = await login({ ...values, type });
+      const msg = await login({ ...values });
       if (msg.status === 'ok') {
         const defaultLoginSuccessMessage = intl.formatMessage({
           id: 'pages.login.success',
@@ -84,7 +84,7 @@ const Login: React.FC = () => {
         <LoginForm
           // title="张江公证平台"
           initialValues={{
-            autoLogin: true,
+            // autoLogin: true, 默认添加内容
           }}
           // subTitle=""
           onFinish={async (values) => {
@@ -106,7 +106,7 @@ const Login: React.FC = () => {
                 <p className={styles.desc}>请输入账号密码</p>
               </div>
               <ProFormText
-                name="username"
+                name="access"
                 fieldProps={{
                   size: 'large',
                   prefix: <UserOutlined className={styles.prefixIcon} />,
@@ -128,7 +128,7 @@ const Login: React.FC = () => {
                 ]}
               />
               <ProFormText.Password
-                name="password"
+                name="secret"
                 fieldProps={{
                   size: 'large',
                   prefix: <LockOutlined className={styles.prefixIcon} />,
@@ -150,7 +150,7 @@ const Login: React.FC = () => {
                 ]}
               />
             </div>
-          <div
+          {/* <div
             style={{
               marginBottom: 24,
             }}
@@ -159,7 +159,7 @@ const Login: React.FC = () => {
               <FormattedMessage id="pages.login.rememberMe" defaultMessage="自动登录" />
             </ProFormCheckbox>
            
-          </div>
+          </div> */}
         </LoginForm>
       </div>
 

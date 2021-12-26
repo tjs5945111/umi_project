@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import BaseTable from '@/components/BaseTable';
 import {message, Divider, Radio } from 'antd';
+import { request } from 'umi';
 import moment from 'moment';
 
 
@@ -96,6 +97,13 @@ export default () => {
         pageSize = 10,
     ) => {
         setLoading(true);
+        const res =await request('/api/list', {
+            params: {
+              name: 1,
+            },
+          })
+          console.log(res);
+          
         //   const res = await fetch({
         //     url: '/api/sophon/tenantList',
         //     param: { pageNum, pageSize, param },
