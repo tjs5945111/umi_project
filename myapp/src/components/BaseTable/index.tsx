@@ -35,6 +35,7 @@ export interface BaseTablehProps {
     handleSearch?: on; // 搜索处理事件
     pagingSizeChange?: on; // 每页条数变化事件
     totalSize?: number; // 总数
+    searchWord?:{}, // 搜索的值
 }
 
 const checkBoxOptions = [
@@ -77,16 +78,18 @@ export default function BaseTable({
     handleSearch,
     pagingSizeChange,
     totalSize,
+    searchWord,
     hideState = false,
 }: BaseTablehProps) {
     const [selectedRowKeys, SetSelectedRowKeys] = useState([]);
     const [expand, SetExpand] = useState(false);
     const [formatSearchStatus, SetFormatSearchStatus] = useState<any>([]);
     const [checkAll, SetcheckAll] = useState<any>(false);
-    const [searchParams, SetSearchParams] = useState({});
+    const [searchParams, SetSearchParams] = useState(searchWord);
     const formEl = useRef(null);
     useEffect(() => {
         setTimeout(() => {
+            debugger
             if (!formEl || !formEl?.current) return;
             const { setFieldsValue } = formEl.current;
             Object.keys(searchParams || {}).length && setFieldsValue(searchParams);
@@ -131,7 +134,7 @@ export default function BaseTable({
                                         <Select placeholder={`请选择${ele.name}`}>
                                             {ele.data?.map((item: any) => {
                                                 return (
-                                                    <Option value={`${ele.value}`} key={item.value}>
+                                                    <Option value={`${item.value}`} key={item.value}>
                                                         {item.name}
                                                     </Option>
                                                 );
@@ -185,7 +188,7 @@ export default function BaseTable({
         if (formatSearchStatus?.length) {
             values.statusList = formatSearchStatus;
         }
-        typeof handleSearch !== 'undefined' && handleSearch(values);
+        typeof handleSearch !== 'undefined' && handleSearch(values,searchParams);
         SetSearchParams(values);
     };
 
@@ -197,7 +200,7 @@ export default function BaseTable({
     };
 
     const pagingSizeChanges = (size: any) => {
-        typeof pagingSizeChange !== 'undefined' && pagingSizeChange(size);
+        typeof pagingSizeChange !== 'undefined' && pagingSizeChange(size,searchParams);
     };
 
     const toggle = () => {
@@ -207,7 +210,7 @@ export default function BaseTable({
     const SearchForm = ((props: any) => {
         const { form, hideSearchType } = props;
         return !hideSearchType && searchArray ? (
-            <Form layout={'inline'} onFinish={handleSearchs}>
+            <Form layout={'inline'} onFinish={handleSearchs} ref={formEl}>
                 <Row gutter={24}>{getFields(form)}</Row>
                 <Row>
                     <Col span={24} style={{ textAlign: 'right' }}>
@@ -245,7 +248,7 @@ export default function BaseTable({
                 ))}
                 {!hideSearch && searchArray ? (
                     <div style={{ margin: '20px 12px' }}>
-                        <SearchForm hideSearchType={hideSearch} ref={formEl} />
+                        <SearchForm hideSearchType={hideSearch}  />
                     </div>
                 ) : null}
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
