@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import BreadcrumbList from '@/components/BreadcrumbList';
 import imgs from '@/image/banner.png'
+import { getZjlb,getLx,getYysx } from '@/services/ant-design-pro/api';
 import {
     Player,
     ControlBar,
@@ -21,6 +22,8 @@ import styles from './index.less'
 export default (props) => {
     const type = props.location?.query?.type || '';
     const [detailData, setDetailData] = useState({});
+    const [money, setMoney] = useState('');
+    // const [money, setMoney] = useState(detailData.);
     useEffect(() => {
         console.log(props);
     })
@@ -45,24 +48,26 @@ export default (props) => {
             <Card bordered={false} className={styles.contain}>
                 <div className={styles.title}>
                     <img src={imgs} alt="" />
-                    <p><span>证件编号：</span>213112312312</p>
+                    <p><span>证件编号：</span>{detailData.id}</p>
                 </div>
                 <div className={styles.con}>
-                    <div><span>证据状态：</span>已出证</div>
+                    <div><span>证据状态：</span>{detailData.status}</div>
                     <div className={styles.textCo}>
-                        <div><span>取证时间：</span>213123123</div>
-                        <div><span>大小：</span>1m</div>
-                        <div><span>取证时间：</span>213123123</div>
-                        <div><span> 证据期限：</span>13123</div>
+                        <div><span>取证类型：</span>{detailData.notarizationWay}</div>
+                        <div><span>分组</span>{detailData.notarizationGroup}</div>
+                        <div><span>取证时间：</span>{detailData.id}</div>
+                        <div><span>大小：</span>{detailData.notarizationSize} kb</div>
+                        <div><span>取证时间：</span>{detailData.id}</div>
+                        <div><span> 证据期限：</span>{detailData.id}</div>
                     </div>
-                    <div><span>备注：</span>13123</div>
+                    <div><span>备注：</span>{detailData.id}</div>
                 </div>
                 <div className={styles.view}>
                     {
                         (()=>{
                             switch (type) {
                                 case 'photo':
-                                    return <img src={imgs} alt="" />
+                                    return <img src={detailData.fileUrl} alt="" />
                                     
                                 case 'video':
                                     return <Player poster={''}>
@@ -91,6 +96,11 @@ export default (props) => {
                 <div style={{marginTop:'10px'}}>
                 <DownloadOutlined style={{color:'#1890ff',marginRight:'8px'}}/><a href="">点击下载资料</a>
                 </div>
+               <h3>修改信息</h3>
+               <div>
+                   <div>出证金额：</div>
+                   <Input value={money} onchange={e=>setMoney(e.targer.value)}></Input>
+               </div>
                
             </Card>
         </>

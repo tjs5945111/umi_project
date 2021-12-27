@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import BaseTable from '@/components/BaseTable';
 import { message, Divider } from 'antd';
+import { getYysx } from '@/services/ant-design-pro/api';
 import moment from 'moment';
 
 
@@ -96,16 +97,13 @@ export default () => {
         pageSize = 10,
     ) => {
         setLoading(true);
-        //   const res = await fetch({
-        //     url: '/api/sophon/tenantList',
-        //     param: { pageNum, pageSize, param },
-        //   });
-        //   if (res.success) {
-        //     setTenantList(res?.data?.tenantDTOS || []);
-        //     setTotalSize(res?.data?.count || 0);
-        //   } else {
-        //     message.error(`${res?.data}`);
-        //   }
+          const res = await getYysx({})
+          if (res.success) {
+            setTenantList(res?.data || []);
+            setTotalSize(res?.data || 0);
+          } else {
+            message.error(`${res?.data}`);
+          }
         setTenantList([{ num: '2334234' }]);
         setLoading(false);
     };

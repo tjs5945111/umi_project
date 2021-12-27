@@ -31,6 +31,183 @@ export async function login(params: any) {
   });
 }
 
+/** 证据列表 */
+export async function getZjlb(params: any) {
+  let tempData = {
+    api: "forensics",
+    request: JSON.stringify(params),
+    method: "getNotaries"
+  }
+  return request<API.LoginResult>('/manager/getNotaries.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(tempData)
+  });
+}
+/** 预约事项列表 */
+export async function getYysx(params: any) {
+  let tempData = {
+    api: "forensics",
+    request: JSON.stringify(params),
+    method: "getReserveMatters"
+  }
+  return request<API.LoginResult>('/manager/getReserveMatters.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(tempData)
+  });
+}
+/** 系统配置 */
+export async function getXtpz(params: any) {
+  let tempData = {
+    api: "system",
+      request: JSON.stringify(params),
+      method: "saveSystem"
+  }
+  return request<API.LoginResult>('/manager/getReserveMatters.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(tempData)
+  });
+}
+/** 系统修改 */
+export async function getXtxg(params: any) {
+  let tempData = {
+    api: "system",
+      request: JSON.stringify(params),
+      method: "saveSystem"
+  }
+  return request<API.LoginResult>('/manager/updateSystem.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      api: "system",
+      request: "",
+      method: "updateSystem"
+    })
+  });
+}
+/** 系统列表 */
+export async function getXtlb(params: any) {
+  let tempData = {
+    api: "system",
+      request: JSON.stringify(params),
+      method: "saveSystem"
+  }
+  return request<API.LoginResult>('/manager/selectSystemConfigPage.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      api: "system",
+      request: "",
+      method: "selectSystemConfigPage"
+    })
+  });
+}
+/** 角色列表 */
+export async function getJslb(params: any) {
+  return request<API.LoginResult>('/manager/getRoleEnums.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    // body: JSON.stringify({
+    //   api: "",
+    //   request:"",
+    //   method: ""
+    // })
+  });
+}
+/** 角色保存 */
+export async function getJsbc(params: any) {
+  return request<API.LoginResult>('/manager/saveUserAuth.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    // body: JSON.stringify({
+    //   api: "",
+    //   request:"",
+    //   method: "saveUserAuth"
+    // })
+  });
+}
+/** 角色修改 */
+export async function getJsxg(params: any) {
+  return request<API.LoginResult>('/manager/updateUserAuth.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      access: "Admin",
+      secret: "Admin",
+      role: "超级管理员",
+      id: 1
+    })
+  });
+}
+/** 人员列表 */
+export async function getRylb(params: any) {
+  return request<API.LoginResult>('/manager/selectUserAuthPage.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      api: "userAuth",
+      request: "",
+      method: "selectUserAuthPage"
+    })
+  });
+}
+/** 预约列表 */
+export async function getYylb(params: any) {
+  return request<API.LoginResult>('/manager/selectReservePage.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      api: "reserve",
+      request: "",
+      method: "selectReservePage"
+    })
+  });
+}
+/** 状态枚举类型 */
+export async function getLx(params?: { [key: string]: any },) {
+  return request<API.LoginResult>('/manager/getNotarizationEnums.json', {
+    method: 'GET',
+    // data: {
+    //   api: "forensics",
+    //   // request: JSON.stringify(rqParams),						// 领域模型json字符串
+    //   method: "saveForensics"
+    // },
+  });
+}
+/** 状态枚举类型 */
+export async function getZjlx(params?: { [key: string]: any },) {
+  return request<API.LoginResult>('/manager/getEvidenceEnums.json', {
+    method: 'GET',
+    // data: {
+    //   api: "forensics",
+    //   // request: JSON.stringify(rqParams),						// 领域模型json字符串
+    //   method: "saveForensics"
+    // },
+  });
+}
+
 /** 此处后端没有提供注释 GET /api/notices */
 export async function getNotices(options?: { [key: string]: any }) {
   return request<API.NoticeIconList>('/api/notices', {

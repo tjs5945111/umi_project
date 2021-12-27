@@ -66,7 +66,7 @@
   },
   {
     path: '/',
-    redirect: '/zjlb',
+    redirect: '/manager/zjlb',
   },
   {
     component: './404',

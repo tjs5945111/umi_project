@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import BaseTable from '@/components/BaseTable';
 import {message, Divider, Radio } from 'antd';
+import { getZjlb,getLx,getYysx } from '@/services/ant-design-pro/api';
 import { request } from 'umi';
 import moment from 'moment';
 
@@ -10,7 +11,7 @@ import styles from './index.less';
 
 export default () => {
     const [tenantList, setTenantList] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [totalSize, setTotalSize] = useState(0);
     const [pageSize, setpageSize] = useState(10);
     const [searchWord, setSearchWord] = useState<any>({
@@ -21,21 +22,29 @@ export default () => {
     const columns = [
         {
             width: 100,
+            title: '名称',
+            dataIndex: 'fileName',
+        },
+        {
             title: '编号',
-            dataIndex: 'num',
+            dataIndex: 'id',
         },
 
         {
             title: '类型',
-            dataIndex: 'type',
+            dataIndex: 'notarizationWay',
         },
         {
-            title: '操作人手机号',
-            dataIndex: 'phone',
+            title: '分组',
+            dataIndex: 'notarizationGroup',
+        },
+        {
+            title: '地址',
+            dataIndex: 'notarizationAddress',
         },
         {
             title: '大小',
-            dataIndex: 'szie',
+            dataIndex: 'notarizationSize',
         },
         {
             title: '取证时间',
@@ -47,9 +56,9 @@ export default () => {
         },
         {
             title: '状态',
-            render: ({ statue }) => (
+            render: ({ status }) => (
                 <div style={{ maxWidth: 200 }}>
-                    123
+                    {status}
                 </div>
             ),
         },
@@ -76,7 +85,7 @@ export default () => {
                     >
                         详情
                     </a>
-                    <Divider />
+                    {/* <Divider /> */}
                     <a
                         style={{ marginRight: 30 }}
                     >
@@ -96,25 +105,18 @@ export default () => {
         param = { tenantId: '', tenantCode: '', tenantName: '' },
         pageSize = 10,
     ) => {
-        setLoading(true);
-        const res =await request('/api/list', {
-            params: {
-              name: 1,
-            },
-          })
+        // setLoading(true);
+        const params={
+            pageSize:10,
+            pageNumber:1,
+        }
+        const res =await getZjlb(params)
           console.log(res);
-          
-        //   const res = await fetch({
-        //     url: '/api/sophon/tenantList',
-        //     param: { pageNum, pageSize, param },
-        //   });
-        //   if (res.success) {
-        //     setTenantList(res?.data?.tenantDTOS || []);
-        //     setTotalSize(res?.data?.count || 0);
-        //   } else {
-        //     message.error(`${res?.data}`);
+        //   if(res.data.code === 'OK'){
+
         //   }
-        setTenantList([{ num: '2334234' }]);
+        
+        setTenantList([{ fileName: '2334234' }]);
         setLoading(false);
     };
 
@@ -155,9 +157,9 @@ export default () => {
         </Radio.Group>,
     ];
     const searchArray = [
-        { name: '编号', value: 'num' },
-        { name: '证据类型', value: 'qzType',type:'select',data:[{name:'图片取证',value:'photo'},{name:'视频取证',value:'video'},{name:'录音取证',value:'voice'}] },
-        { name: '状态', value: 'statue',type:'select',data:[{name:'出证中',value:'photo'},{name:'存证中',value:'video'},{name:'已存证',value:'voice'},{name:'出证失败',value:'voice'}] },
+        { name: '编号', value: 'id' },
+        { name: '证据类型', value: 'notarizationWays',type:'select',data:[{name:'图片取证',value:'图片取证'},{name:'视频取证',value:'视频取证'},{name:'录音取证',value:'录音取证'}] },
+        { name: 'status', value: 'statues',type:'select',data:[{name:'出证中',value:'出证中'},{name:'存证中',value:'存证中'},{name:'已存证',value:'已存证'},{name:'出证失败',value:'出证失败'}] },
     ];
     return (
         <>
