@@ -46,12 +46,26 @@ export async function getZjlb(params: any) {
     body: JSON.stringify(tempData)
   });
 }
+export async function getZjxq(params: any) {
+  let tempData = {
+    api: "forensics",
+    request: params,
+    method: "getForensics"
+  }
+  return request<API.LoginResult>('/manager/getNotaries.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(tempData)
+  });
+}
 /** 预约事项列表 */
 export async function getYysx(params?: any) {
   let tempData = {
     api: "system",
     // request: JSON.stringify(params),
-    request:"{\"pageSize\":100,\"pageNumber\":1}",
+    request: "{\"pageSize\":100,\"pageNumber\":1}",
     method: "selectPage"
   }
   return request<API.LoginResult>('/manager/getReserveMatters.json', {
@@ -69,7 +83,7 @@ export async function getXtpz(params: any) {
     request: JSON.stringify(params),
     method: "saveSystem"
   }
-  return request<API.LoginResult>('/manager/application/json', {
+  return request<API.LoginResult>('/manager/saveSystem.json', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -96,7 +110,11 @@ export async function getXtxg(params: any) {
 export async function getXtlb(params: any) {
   let tempData = {
     api: "system",
-    request: JSON.stringify(params),
+    request: JSON.stringify({
+      pageSize: 1,
+      pageNumber: 100,
+      configType: params,
+    }),
     method: "selectSystemConfigPage"
   }
   return request<API.LoginResult>('/manager/selectSystemConfigPage.json', {
@@ -170,6 +188,21 @@ export async function getYylb(params: any) {
     api: "reserve",
     request: JSON.stringify(params),
     method: "selectReservePage"
+  }
+  return request<API.LoginResult>('/manager/selectReservePage.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(tempData)
+  });
+}
+/** 预约详情 */
+export async function getYyxq(params: any) {
+  let tempData = {
+    api: "reserve",
+    request: params,
+    method: "getReserve"
   }
   return request<API.LoginResult>('/manager/selectReservePage.json', {
     method: 'POST',

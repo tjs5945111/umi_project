@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import type { ProColumns } from '@ant-design/pro-table';
 import { EditableProTable } from '@ant-design/pro-table';
 import { ProFormRadio, ProFormField } from '@ant-design/pro-form';
+import { getXtlb, getXtpz } from '@/services/ant-design-pro/api';
 import ProCard from '@ant-design/pro-card';
 
 const waitTime = (time: number = 100) => {
@@ -23,22 +24,22 @@ type DataSourceType = {
 };
 
 const defaultData: DataSourceType[] = [
-  {
-    id: 624748504,
-    state: '1',
-    created_at: '2',
-  },
-  {
-    id: 624691229,
-    state: 'w',
-    created_at: '',
-  },
-];
+ ];
 
 export default () => {
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const [dataSource, setDataSource] = useState<DataSourceType[]>([]);
   const [position, setPosition] = useState<'top' | 'bottom' | 'hidden'>('bottom');
+
+  useEffect(() => {
+    getList()
+  }, []);
+
+  const getList = async () => {
+    const res = await getXtlb(2);
+    // const tempData =res.map()
+    setDataSource(res.records)
+  }
 
   const columns: ProColumns<DataSourceType>[] = [
     // {
@@ -58,7 +59,7 @@ export default () => {
     {
       title: '收费项',
     //   key: 'state',
-      dataIndex: 'state',
+      dataIndex: 'subject',
     //   valueType: 'select',
     //   valueEnum: {
     //     all: { text: '全部', status: 'Default' },
@@ -75,7 +76,7 @@ export default () => {
  
     {
       title: '金额设置',
-      dataIndex: 'created_at',
+      dataIndex: 'value',
     //   valueType: 'date',
     },
     {
@@ -153,7 +154,15 @@ export default () => {
           editableKeys,
           onSave: async (rowKey, data, row) => {
             console.log(rowKey, data, row);
-            await waitTime(2000);
+            const params = {
+              configValue: {
+                subject: data.subject,
+                value: `${data.value}`,
+              },
+              configType: 2,
+            }
+            const res = await getXtpz(params);
+            console.log(res)
           },
           onChange: setEditableRowKeys,
         }}

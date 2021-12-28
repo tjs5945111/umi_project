@@ -71,7 +71,8 @@ export default () => {
             ),
         },
     ];
-
+    const cancel=()=>{};
+    const confirm=()=>{};
     useEffect(() => {
         getList();
         async function getmenu() {

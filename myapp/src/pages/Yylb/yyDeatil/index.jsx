@@ -3,18 +3,22 @@ import BreadcrumbList from '@/components/BreadcrumbList';
 import imgs from '@/image/banner.png'
 
 import { Card, Form, Input, Button,Radio, DatePicker } from 'antd';
+import { getYyxq } from '@/services/ant-design-pro/api';
 
 import styles from './index.less'
 
 export default (props) => {
     const type = props.location?.query?.type || '';
     const [detailData, setDetailData] = useState({});
-    useEffect(() => {
-        console.log(props);
-    })
 
-    const getList = () => {
-        setDetailData({})
+    useEffect(() => {
+        getList()
+      },[])
+
+    const getList =async () => {
+        const res =await getYyxq(1)
+        console.log(res);
+        setDetailData(res)
     }
 
     const urlArray = [

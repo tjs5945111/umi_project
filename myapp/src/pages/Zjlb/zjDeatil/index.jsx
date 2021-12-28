@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import BreadcrumbList from '@/components/BreadcrumbList';
 import imgs from '@/image/banner.png'
-import { getZjlb,getLx,getYysx } from '@/services/ant-design-pro/api';
+import { getZjxq } from '@/services/ant-design-pro/api';
 import {
     Player,
     ControlBar,
@@ -25,11 +25,13 @@ export default (props) => {
     const [money, setMoney] = useState('');
     // const [money, setMoney] = useState(detailData.);
     useEffect(() => {
-        console.log(props);
-    })
+      getList()
+    },[])
 
-    const getList = () => {
-        setDetailData({})
+    const getList =async () => {
+        const res =await getZjxq(1)
+        console.log(res);
+        setDetailData(res)
     }
 
     const urlArray = [
@@ -96,11 +98,11 @@ export default (props) => {
                 <div style={{marginTop:'10px'}}>
                 <DownloadOutlined style={{color:'#1890ff',marginRight:'8px'}}/><a href="">点击下载资料</a>
                 </div>
-               <h3>修改信息</h3>
+               {/* <h3>修改信息</h3>
                <div>
                    <div>出证金额：</div>
                    <Input value={money} onchange={e=>setMoney(e.targer.value)}></Input>
-               </div>
+               </div> */}
                
             </Card>
         </>

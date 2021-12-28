@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { ProColumns } from '@ant-design/pro-table';
 import { EditableProTable } from '@ant-design/pro-table';
 import { ProFormRadio, ProFormField } from '@ant-design/pro-form';
+import { getXtlb, getXtpz } from '@/services/ant-design-pro/api';
 import ProCard from '@ant-design/pro-card';
 
 const waitTime = (time: number = 100) => {
@@ -14,17 +15,17 @@ const waitTime = (time: number = 100) => {
 
 type DataSourceType = {
   id: React.Key;
-  yysx?: string;
+  subject?: string;
 };
 
 const defaultData: DataSourceType[] = [
   {
     id: 624748504,
-    yysx: '2020-05-26T09:42:56Z',
+    subject: '2020-05-26T09:42:56Z',
   },
   {
     id: 624691229,
-    yysx: '',
+    subject: '',
   },
 ];
 
@@ -33,10 +34,18 @@ export default () => {
   const [dataSource, setDataSource] = useState<DataSourceType[]>([]);
   const [position, setPosition] = useState<'top' | 'bottom' | 'hidden'>('bottom');
 
+  useEffect(() => {
+    getList()
+  }, []);
+
+  const getList = async () => {
+    const res = await getXtlb(1);
+    setDataSource(res.records)
+  }
   const columns: ProColumns<DataSourceType>[] = [
     {
       title: '预约事项',
-      dataIndex: 'yysx',
+      dataIndex: 'subject',
     },
     {
       title: '操作',
@@ -72,9 +81,9 @@ export default () => {
         recordCreatorProps={
           position !== 'hidden'
             ? {
-                position: position as 'top',
-                record: () => ({ id: (Math.random() * 1000000).toFixed(0) }),
-              }
+              position: position as 'top',
+              record: () => ({ id: (Math.random() * 1000000).toFixed(0) }),
+            }
             : false
         }
         // toolBarRender={() => [
@@ -113,7 +122,14 @@ export default () => {
           editableKeys,
           onSave: async (rowKey, data, row) => {
             console.log(rowKey, data, row);
-            await waitTime(2000);
+            const params = {
+              configValue: {
+                subject: data.subject, 
+              },
+              configType: 1,
+            }
+            const res = await getXtpz(params);
+            console.log(res)
           },
           onChange: setEditableRowKeys,
         }}
