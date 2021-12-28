@@ -2,8 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import BaseTable from '@/components/BaseTable';
 import { message, Divider, Radio } from 'antd';
-import { getZjlb, getLx, getYysx } from '@/services/ant-design-pro/api';
-import { request } from 'umi';
+import { getZjlb, getLx, getZjlx } from '@/services/ant-design-pro/api';
 import moment from 'moment';
 import styles from './index.less';
 
@@ -13,6 +12,9 @@ export default () => {
     const [totalSize, setTotalSize] = useState(0);
     const [pageSize, setpageSize] = useState(10);
     const [searchWord, setSearchWord] = useState({});
+    const [statusList, setStatusList] = useState([]);
+    const [typeList, setTypeList] = useState([]);
+    const [baseStatues, setBaseStatues] = useState({});
 
     const columns = [
         {
@@ -39,7 +41,8 @@ export default () => {
         },
         {
             title: '大小',
-            dataIndex: 'notarizationSize',
+            // dataIndex: 'notarizationSize',
+            render: ({notarizationSize})=>(<>{parseFloat(notarizationSize).toFixed(2)} kb</>)
         },
         {
             title: '取证时间',
@@ -61,7 +64,7 @@ export default () => {
             title: '操作',
             key: 'actionList',
             // fixed: 'right',
-            width: 230,
+            // width: 230,
             render: ({ id }) => (
                 <div
                     style={{
@@ -93,6 +96,15 @@ export default () => {
 
     useEffect(() => {
         getList();
+        async function getmenu() {
+            const [statusData, typeData] = await Promise.all([
+                getLx(),
+                getZjlx(),
+            ])
+            setStatusList(changType(statusData))
+            setTypeList(changType(typeData))
+        }
+        getmenu();
     }, []);
 
     const getList = async (
@@ -100,18 +112,27 @@ export default () => {
         param = {},
         pageSize = 10,
     ) => {
-        // setLoading(true);
         const params = {
-            pageSize:pageNum,
+            pageSize: pageNum,
             pageNumber: pageSize,
+            ...baseStatues,
             ...param,
         }
-        const res: any = await getZjlb(params)
-        const { records, total,size } = res;
+        const res = await getZjlb(params)
+        const { records, total, size } = res as any;
         setTotalSize(total);
         setpageSize(size);
         setTenantList(records);
         setLoading(false);
+    };
+
+    function changType(value) {
+        if (!Array.isArray(value)) return [];
+        const tempData = [];
+        value.map(ele => {
+            tempData.push({ name: ele, value: ele });
+        })
+        return tempData;
     };
 
     const handleSearch = (data: any) => {
@@ -132,7 +153,9 @@ export default () => {
     };
 
     const onChange = (e: any) => {
-
+        console.log(e);
+        setBaseStatues(e.target.value)
+        getList(1, {statues:e.target.value});
     };
     const actionList: any = [
         // <Button
@@ -145,16 +168,16 @@ export default () => {
         // </Button>,
     ];
     const radioList = [
-        <Radio.Group onChange={(e) => onChange(e)} defaultValue="all" buttonStyle="solid">
-            <Radio.Button value="all">全部</Radio.Button>
-            <Radio.Button value="cz">存证</Radio.Button>
-            <Radio.Button value="chuz">出证</Radio.Button>
+        <Radio.Group onChange={(e) => onChange(e)} defaultValue="" buttonStyle="solid">
+            <Radio.Button value="">全部</Radio.Button>
+            <Radio.Button value="存证">存证</Radio.Button>
+            <Radio.Button value="出证">出证</Radio.Button>
         </Radio.Group>,
     ];
     const searchArray = [
         { name: '编号', value: 'id' },
-        { name: '证据类型', value: 'notarizationWays', type: 'select', data: [{ name: '图片取证', value: '图片取证' }, { name: '视频取证', value: '视频取证' }, { name: '录音取证', value: '录音取证' }] },
-        { name: '状态', value: 'statues', type: 'select', data: [{ name: '出证中', value: '出证中' }, { name: '存证中', value: '存证中' }, { name: '已存证', value: '已存证' }, { name: '出证失败', value: '出证失败' }] },
+        { name: '证据类型', value: 'notarizationWays', type: 'select', data: typeList },
+        { name: '状态', value: 'statues', type: 'select', data: statusList },
     ];
     return (
         <>
@@ -169,8 +192,8 @@ export default () => {
                 columns={columns as any}
                 tableName="证据列表"
                 handleSearch={(e: any) => handleSearch(e)}
-                handlePaging={(e: any,v) => handlePaging(e, v)}
-                pagingSizeChange={(e: any,v) => pagingSizeChange(e, v)}
+                handlePaging={(e: any, v) => handlePaging(e, v)}
+                pagingSizeChange={(e: any, v) => pagingSizeChange(e, v)}
                 totalSize={totalSize}
             />
         </>

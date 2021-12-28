@@ -49,9 +49,10 @@ export async function getZjlb(params: any) {
 /** 预约事项列表 */
 export async function getYysx(params: any) {
   let tempData = {
-    api: "forensics",
+    api: "system",
     request: JSON.stringify(params),
-    method: "getReserveMatters"
+    // request:"{\"pageSize\":10,\"pageNumber\":1,\"configType\":1}",
+    method: "selectPage"
   }
   return request<API.LoginResult>('/manager/getReserveMatters.json', {
     method: 'POST',
@@ -61,14 +62,14 @@ export async function getYysx(params: any) {
     body: JSON.stringify(tempData)
   });
 }
-/** 系统配置 */
+/** 系统保存 */
 export async function getXtpz(params: any) {
   let tempData = {
     api: "system",
-      request: JSON.stringify(params),
-      method: "saveSystem"
+    request: JSON.stringify(params),
+    method: "saveSystem"
   }
-  return request<API.LoginResult>('/manager/getReserveMatters.json', {
+  return request<API.LoginResult>('/manager/application/json', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -80,38 +81,30 @@ export async function getXtpz(params: any) {
 export async function getXtxg(params: any) {
   let tempData = {
     api: "system",
-      request: JSON.stringify(params),
-      method: "saveSystem"
+    request: JSON.stringify(params),
+    method: "updateSystem"
   }
   return request<API.LoginResult>('/manager/updateSystem.json', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      api: "system",
-      request: "",
-      method: "updateSystem"
-    })
+    body: JSON.stringify(tempData)
   });
 }
 /** 系统列表 */
 export async function getXtlb(params: any) {
   let tempData = {
     api: "system",
-      request: JSON.stringify(params),
-      method: "saveSystem"
+    request: JSON.stringify(params),
+    method: "selectSystemConfigPage"
   }
   return request<API.LoginResult>('/manager/selectSystemConfigPage.json', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      api: "system",
-      request: "",
-      method: "selectSystemConfigPage"
-    })
+    body: JSON.stringify(tempData)
   });
 }
 /** 角色列表 */
@@ -135,11 +128,11 @@ export async function getJsbc(params: any) {
     headers: {
       'Content-Type': 'application/json',
     },
-    // body: JSON.stringify({
-    //   api: "",
-    //   request:"",
-    //   method: "saveUserAuth"
-    // })
+    body: JSON.stringify({
+      // api: "",
+      request: JSON.stringify(params),
+      // method: "saveUserAuth"
+    })
   });
 }
 /** 角色修改 */
@@ -150,39 +143,40 @@ export async function getJsxg(params: any) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      access: "Admin",
-      secret: "Admin",
-      role: "超级管理员",
-      id: 1
+      // api: "",
+      request: JSON.stringify(params),
+      // method: "saveUserAuth"
     })
   });
 }
 /** 人员列表 */
 export async function getRylb(params: any) {
+  let tempData = {
+    api: "userAuth",
+    request: JSON.stringify(params),
+    method: "selectUserAuthPage"
+  }
   return request<API.LoginResult>('/manager/selectUserAuthPage.json', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      api: "userAuth",
-      request: "",
-      method: "selectUserAuthPage"
-    })
+    body: JSON.stringify(tempData)
   });
 }
 /** 预约列表 */
 export async function getYylb(params: any) {
+  let tempData = {
+    api: "reserve",
+    request: JSON.stringify(params),
+    method: "selectReservePage"
+  }
   return request<API.LoginResult>('/manager/selectReservePage.json', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      api: "reserve",
-      request: "",
-      method: "selectReservePage"
-    })
+    body: JSON.stringify(tempData)
   });
 }
 /** 状态枚举类型 */
@@ -196,7 +190,7 @@ export async function getLx(params?: { [key: string]: any },) {
     // },
   });
 }
-/** 状态枚举类型 */
+/** 证据类型枚举 */
 export async function getZjlx(params?: { [key: string]: any },) {
   return request<API.LoginResult>('/manager/getEvidenceEnums.json', {
     method: 'GET',

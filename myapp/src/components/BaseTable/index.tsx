@@ -11,7 +11,7 @@ import {
     Checkbox,
 } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
-// import styles from './index.less';
+import styles from './index.less';
 const { Option } = Select;
 
 type on = (x?: any, y?: any) => void;
@@ -89,7 +89,6 @@ export default function BaseTable({
     const formEl = useRef(null);
     useEffect(() => {
         setTimeout(() => {
-            debugger
             if (!formEl || !formEl?.current) return;
             const { setFieldsValue } = formEl.current;
             Object.keys(searchParams || {}).length && setFieldsValue(searchParams);
