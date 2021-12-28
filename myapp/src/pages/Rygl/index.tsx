@@ -1,10 +1,9 @@
-// 人员列表
+// 人员管理
 import React, { useState, useEffect } from 'react';
 import BaseTable from '@/components/BaseTable';
-import { Button, Popconfirm, message, Divider } from 'antd';
+import { message, Divider, Radio, Button,Popconfirm } from 'antd';
+import { getRylb, getJslb } from '@/services/ant-design-pro/api';
 import moment from 'moment';
-
-
 import styles from './index.less';
 
 export default () => {
@@ -12,40 +11,34 @@ export default () => {
     const [loading, setLoading] = useState(true);
     const [totalSize, setTotalSize] = useState(0);
     const [pageSize, setpageSize] = useState(10);
-    const [searchWord, setSearchWord] = useState<any>({
-        tenantId: '',
-        tenantCode: '',
-        tenantName: '',
-    });
-    function confirm(e) {
-        console.log(e);
-        message.success('Click on Yes');
-    }
+    const [searchWord, setSearchWord] = useState({});
+    const [typeList, setTypeList] = useState([]);
+    const [baseStatues, setBaseStatues] = useState({});
 
-    function cancel(e) {
-        console.log(e);
-        message.error('Click on No');
-    }
     const columns = [
         {
             width: 100,
             title: '角色',
-            dataIndex: 'num',
+            dataIndex: 'role',
+        },
+        {
+            title: '编号',
+            dataIndex: 'id',
         },
 
         {
             title: '账号',
-            dataIndex: 'type',
+            dataIndex: 'access',
         },
         {
             title: '密码',
-            dataIndex: 'phone',
+            dataIndex: 'secret',
         },
         {
             title: '操作',
             key: 'actionList',
             // fixed: 'right',
-            width: 230,
+            // width: 230,
             render: ({ id }) => (
                 <div
                     style={{
@@ -81,48 +74,61 @@ export default () => {
 
     useEffect(() => {
         getList();
+        async function getmenu() {
+            const [statusData] = await Promise.all([
+                getJslb(),
+            ])
+            setTypeList(changType(statusData))
+        }
+        getmenu();
     }, []);
 
     const getList = async (
         pageNum = 1,
-        param = { tenantId: '', tenantCode: '', tenantName: '' },
+        param = {},
         pageSize = 10,
     ) => {
-        setLoading(true);
-        //   const res = await fetch({
-        //     url: '/api/sophon/tenantList',
-        //     param: { pageNum, pageSize, param },
-        //   });
-        //   if (res.success) {
-        //     setTenantList(res?.data?.tenantDTOS || []);
-        //     setTotalSize(res?.data?.count || 0);
-        //   } else {
-        //     message.error(`${res?.data}`);
-        //   }
-        setTenantList([{ num: '2334234' }]);
+        const params = {
+            pageSize: pageNum,
+            pageNumber: pageSize,
+            ...baseStatues,
+            ...param,
+        }
+        const res = await getRylb(params)
+        const { records, total, size } = res as any;
+        setTotalSize(total);
+        setpageSize(size);
+        setTenantList(records);
         setLoading(false);
+    };
+
+    function changType(value) {
+        if (!Array.isArray(value)) return [];
+        const tempData = [];
+        value.map(ele => {
+            tempData.push({ name: ele, value: ele });
+        })
+        return tempData;
     };
 
     const handleSearch = (data: any) => {
         setLoading(true);
         getList(1, data);
+        setSearchWord(data)
     };
 
-    const handlePaging = (data: any) => {
+    const handlePaging = (data: any, searchWord: any) => {
         setLoading(true);
         getList(data, searchWord, pageSize);
     };
 
-    const pagingSizeChange = (size: any) => {
+    const pagingSizeChange = (size: any, searchWord: any) => {
         setLoading(true);
         setpageSize(size);
         getList(1, searchWord, size);
     };
 
-    const onChange = (e: any) => {
-
-    };
-    const actionList = [
+    const actionList: any = [
         <Button
             type="primary"
             onClick={() => {
@@ -132,25 +138,24 @@ export default () => {
             添加人员
         </Button>,
     ];
-    const radioList = [];
     const searchArray = [
-        { name: '账号', value: 'num' },
-        { name: '角色', value: 'qzType', type: 'select', data: [{ name: '图片取证', value: 'photo' }, { name: '视频取证', value: 'video' }, { name: '录音取证', value: 'voice' }] },
+        { name: '账号', value: 'access' },
+        { name: '角色', value: 'role', type: 'select', data: typeList },
     ];
     return (
         <>
             <BaseTable
                 dataSource={tenantList || []}
                 actionList={actionList}
-                radioList={radioList}
                 searchArray={searchArray}
+                searchWord={searchWord}
                 hideState={true}
                 loading={loading}
                 columns={columns as any}
-                tableName="人员列表"
+                tableName="人员管理"
                 handleSearch={(e: any) => handleSearch(e)}
-                handlePaging={(e: any) => handlePaging(e)}
-                pagingSizeChange={(e: any) => pagingSizeChange(e)}
+                handlePaging={(e: any, v) => handlePaging(e, v)}
+                pagingSizeChange={(e: any, v) => pagingSizeChange(e, v)}
                 totalSize={totalSize}
             />
         </>

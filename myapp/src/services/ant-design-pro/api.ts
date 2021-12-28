@@ -47,11 +47,11 @@ export async function getZjlb(params: any) {
   });
 }
 /** 预约事项列表 */
-export async function getYysx(params: any) {
+export async function getYysx(params?: any) {
   let tempData = {
     api: "system",
-    request: JSON.stringify(params),
-    // request:"{\"pageSize\":10,\"pageNumber\":1,\"configType\":1}",
+    // request: JSON.stringify(params),
+    request:"{\"pageSize\":100,\"pageNumber\":1}",
     method: "selectPage"
   }
   return request<API.LoginResult>('/manager/getReserveMatters.json', {
@@ -108,7 +108,7 @@ export async function getXtlb(params: any) {
   });
 }
 /** 角色列表 */
-export async function getJslb(params: any) {
+export async function getJslb(params?: any) {
   return request<API.LoginResult>('/manager/getRoleEnums.json', {
     method: 'POST',
     headers: {

@@ -1,11 +1,9 @@
-// 证据列表
+// 预约列表
 import React, { useState, useEffect } from 'react';
 import BaseTable from '@/components/BaseTable';
-import { message, Divider } from 'antd';
-import { getYysx } from '@/services/ant-design-pro/api';
+import { message, Divider, Radio } from 'antd';
+import { getYylb, getYysx, getLx } from '@/services/ant-design-pro/api';
 import moment from 'moment';
-
-
 import styles from './index.less';
 
 export default () => {
@@ -13,43 +11,35 @@ export default () => {
     const [loading, setLoading] = useState(true);
     const [totalSize, setTotalSize] = useState(0);
     const [pageSize, setpageSize] = useState(10);
-    const [searchWord, setSearchWord] = useState<any>({
-        tenantId: '',
-        tenantCode: '',
-        tenantName: '',
-    });
+    const [searchWord, setSearchWord] = useState({});
+    const [statusList, setStatusList] = useState([]);
+    const [typeList, setTypeList] = useState([]);
+    const [baseStatues, setBaseStatues] = useState({});
+
     const columns = [
         {
             width: 100,
             title: '编号',
-            dataIndex: 'num',
+            dataIndex: 'id',
+        },
+        {
+            title: '姓名',
+            dataIndex: 'name',
         },
 
         {
             title: '类型',
-            dataIndex: 'type',
+            dataIndex: 'matter',
         },
         {
             title: '操作人手机号',
             dataIndex: 'phone',
         },
         {
-            title: '大小',
-            dataIndex: 'szie',
-        },
-        {
-            title: '取证时间',
-            render: ({ gmtCreate }) => (
-                <div style={{ maxWidth: 200 }}>
-                    {gmtCreate && moment(gmtCreate).format('YYYY-MM-DD HH:mm:ss')}
-                </div>
-            ),
-        },
-        {
             title: '状态',
-            render: ({ statue }) => (
+            render: ({ status }) => (
                 <div style={{ maxWidth: 200 }}>
-                    123
+                    {status}
                 </div>
             ),
         },
@@ -57,8 +47,8 @@ export default () => {
             title: '操作',
             key: 'actionList',
             // fixed: 'right',
-            width: 230,
-            render: ({id}) => (
+            // width: 230,
+            render: ({ id }) => (
                 <div
                     style={{
                         display: 'flex',
@@ -76,7 +66,7 @@ export default () => {
                     >
                         详情
                     </a>
-                    <Divider />
+                    {/* <Divider /> */}
                     <a
                         style={{ marginRight: 30 }}
                     >
@@ -89,45 +79,63 @@ export default () => {
 
     useEffect(() => {
         getList();
+        getList();
+        async function getmenu() {
+            const [statusData, typeData] = await Promise.all([
+                getLx(),
+                getYysx(),
+            ])
+            setStatusList(changType(statusData))
+            setTypeList(changType(typeData))
+        }
+        getmenu();
     }, []);
-
+    function changType(value) {
+        if (!Array.isArray(value)) return [];
+        const tempData = [];
+        value.map(ele => {
+            tempData.push({ name: ele, value: ele });
+        })
+        return tempData;
+    };
     const getList = async (
         pageNum = 1,
-        param = { tenantId: '', tenantCode: '', tenantName: '' },
+        param = {},
         pageSize = 10,
     ) => {
-        setLoading(true);
-          const res = await getYysx({})
-          if (res.success) {
-            setTenantList(res?.data || []);
-            setTotalSize(res?.data || 0);
-          } else {
-            message.error(`${res?.data}`);
-          }
-        setTenantList([{ num: '2334234' }]);
+        const params = {
+            pageSize: pageNum,
+            pageNumber: pageSize,
+            ...baseStatues,
+            ...param,
+        }
+        const res = await getYylb(params)
+        const { records, total, size } = res as any;
+        setTotalSize(total);
+        setpageSize(size);
+        setTenantList(records);
         setLoading(false);
     };
+
 
     const handleSearch = (data: any) => {
         setLoading(true);
         getList(1, data);
+        setSearchWord(data)
     };
 
-    const handlePaging = (data: any) => {
+    const handlePaging = (data: any, searchWord: any) => {
         setLoading(true);
         getList(data, searchWord, pageSize);
     };
 
-    const pagingSizeChange = (size: any) => {
+    const pagingSizeChange = (size: any, searchWord: any) => {
         setLoading(true);
         setpageSize(size);
         getList(1, searchWord, size);
     };
 
-    const onChange = (e: any) => {
-
-    };
-    const actionList = [
+    const actionList: any = [
         // <Button
         //     type="primary"
         //     onClick={() => {
@@ -137,31 +145,26 @@ export default () => {
         //     新建
         // </Button>,
     ];
-    const radioList = [
-        // <Radio.Group onChange={(e) => onChange(e)} defaultValue="all" buttonStyle="solid">
-        //     <Radio.Button value="all">全部</Radio.Button>
-        //     <Radio.Button value="cz">存证</Radio.Button>
-        //     <Radio.Button value="chuz">出证</Radio.Button>
-        // </Radio.Group>,
-    ];
     const searchArray = [
-        { name: '预约事项', value: 'qzType',type:'select',data:[{name:'图片取证',value:'photo'},{name:'视频取证',value:'video'},{name:'录音取证',value:'voice'}] },
-        { name: '预约时间', value: 'statue',type:'select',data:[{name:'出证中',value:'photo'},{name:'存证中',value:'video'},{name:'已存证',value:'voice'},{name:'出证失败',value:'voice'}] },
+        { name: '姓名', value: 'name' },
+        { name: '预约事项', value: 'matter', type: 'select', data: typeList },
+        { name: '状态', value: 'statues', type: 'select', data: statusList },
     ];
     return (
         <>
             <BaseTable
                 dataSource={tenantList || []}
                 actionList={actionList}
-                radioList={radioList}
+                // radioList={radioList}
                 searchArray={searchArray}
+                searchWord={searchWord}
                 hideState={true}
                 loading={loading}
                 columns={columns as any}
                 tableName="预约列表"
                 handleSearch={(e: any) => handleSearch(e)}
-                handlePaging={(e: any) => handlePaging(e)}
-                pagingSizeChange={(e: any) => pagingSizeChange(e)}
+                handlePaging={(e: any, v) => handlePaging(e, v)}
+                pagingSizeChange={(e: any, v) => pagingSizeChange(e, v)}
                 totalSize={totalSize}
             />
         </>
