@@ -9,7 +9,9 @@ import {
     Input,
     Select,
     Checkbox,
+    DatePicker
 } from 'antd';
+const { RangePicker } = DatePicker;
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import styles from './index.less';
 const { Option } = Select;
@@ -35,7 +37,7 @@ export interface BaseTablehProps {
     handleSearch?: on; // 搜索处理事件
     pagingSizeChange?: on; // 每页条数变化事件
     totalSize?: number; // 总数
-    searchWord?:{}, // 搜索的值
+    searchWord?: {}, // 搜索的值
 }
 
 const checkBoxOptions = [
@@ -141,20 +143,33 @@ export default function BaseTable({
                                         </Select>
                                     </Form.Item>
                                 );
-
-                            default:
-                                return (
-                                    <Form.Item name={`${ele.value}`}
-                                        label={`${ele.name}`}
-                                        rules={[
-                                            {
-                                                required: ele.disable,
-                                                message: '请输入',
-                                            },
-                                        ]}>
-                                        <Input placeholder={`${ele.name}`} />
-                                    </Form.Item>
-                                );
+                            case 'date':
+                            return (
+                                <Form.Item name={`${ele.value}`}
+                                    label={`${ele.name}`}
+                                    rules={[
+                                        {
+                                            required: ele.disable,
+                                            message: '请选择',
+                                        },
+                                    ]}>
+                                    {/* <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" /> */}
+                                    <RangePicker />
+                                </Form.Item>
+                            );
+                    default:
+                    return (
+                    <Form.Item name={`${ele.value}`}
+                        label={`${ele.name}`}
+                        rules={[
+                            {
+                                required: ele.disable,
+                                message: '请输入',
+                            },
+                        ]}>
+                        <Input placeholder={`${ele.name}`} />
+                    </Form.Item>
+                    );
                         }
                     })()}
                 </>,
@@ -187,7 +202,7 @@ export default function BaseTable({
         if (formatSearchStatus?.length) {
             values.statusList = formatSearchStatus;
         }
-        typeof handleSearch !== 'undefined' && handleSearch(values,searchParams);
+        typeof handleSearch !== 'undefined' && handleSearch(values, searchParams);
         SetSearchParams(values);
     };
 
@@ -199,7 +214,7 @@ export default function BaseTable({
     };
 
     const pagingSizeChanges = (size: any) => {
-        typeof pagingSizeChange !== 'undefined' && pagingSizeChange(size,searchParams);
+        typeof pagingSizeChange !== 'undefined' && pagingSizeChange(size, searchParams);
     };
 
     const toggle = () => {
@@ -247,7 +262,7 @@ export default function BaseTable({
                 ))}
                 {!hideSearch && searchArray ? (
                     <div style={{ margin: '20px 12px' }}>
-                        <SearchForm hideSearchType={hideSearch}  />
+                        <SearchForm hideSearchType={hideSearch} />
                     </div>
                 ) : null}
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>

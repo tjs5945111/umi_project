@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import BreadcrumbList from '@/components/BreadcrumbList';
 import imgs from '@/image/banner.png'
-import { getZjxq } from '@/services/ant-design-pro/api';
+import { getZjxq,downLoadFun } from '@/services/ant-design-pro/api';
 import {
     Player,
     ControlBar,
@@ -21,10 +21,12 @@ import styles from './index.less'
 
 export default (props) => {
     const type = props.location?.query?.type || '';
+    const detailId = props.location?.query?.id || '';
     const [detailData, setDetailData] = useState({});
     const [money, setMoney] = useState('');
     // const [money, setMoney] = useState(detailData.);
     useEffect(() => {
+        console.log(detailId);
       getList()
     },[])
 
@@ -37,12 +39,17 @@ export default (props) => {
     const urlArray = [
         {
             name: '证据列表',
-            url: '/zjlb',
+            url: '/manager/zjlb',
         },
         {
             name: '证据详情',
         }
     ];
+    const downLoad=async()=>{
+        const res =downLoadFun('0e718c37-4b56-4f6e-9522-5a41a7e87634')
+        // const res =downLoadFun(detailData.notarizationNumber)
+        console.log(res);
+    }
 
     return (
         <>
@@ -55,14 +62,20 @@ export default (props) => {
                 <div className={styles.con}>
                     <div><span>证据状态：</span>{detailData.status}</div>
                     <div className={styles.textCo}>
+                        <div><span>取证类型：</span>{detailData.fileName}</div>
                         <div><span>取证类型：</span>{detailData.notarizationWay}</div>
                         <div><span>分组</span>{detailData.notarizationGroup}</div>
                         <div><span>取证时间：</span>{detailData.id}</div>
-                        <div><span>大小：</span>{detailData.notarizationSize} kb</div>
-                        <div><span>取证时间：</span>{detailData.id}</div>
-                        <div><span> 证据期限：</span>{detailData.id}</div>
+                        <div><span>大小：</span>{parseFloat(detailData.notarizationSize).toFixed(2)} kb</div>
+                        <div><span>取证时间：</span>{detailData.gmtForensics}</div>
+                        <div><span>存证是否实名认证：</span>{detailData.depositIsCert?'已实名':'未实名'}</div>
+                        <div><span>存证是否支付：</span>{detailData.depositIsPay?'已支付':'未支付'}</div>
+                        <div><span>出证是否实名认证：</span>{detailData.certificateIsCert?'已实名':'未实名'}</div>
+                        <div><span>出证是否支付：</span>{detailData.certificateIsPay?'已支付':'未支付'}</div>
+                        <div><span>存证时间：</span>{detailData.gmtDeposit}</div>
+                        {/* <div><span> 证据期限：</span>{detailData.id}</div> */}
                     </div>
-                    <div><span>备注：</span>{detailData.id}</div>
+                    <div><span>地址：</span>{detailData.notarizationAddress}</div>
                 </div>
                 <div className={styles.view}>
                     {
@@ -73,7 +86,7 @@ export default (props) => {
                                     
                                 case 'video':
                                     return <Player poster={''}>
-                                    <source src={''} type="video/mp4" />
+                                    <source src={detailData.fileUrl} type="video/mp4" />
                                     <ControlBar autoHide={false} disableDefaultControls={false}>
                                         <ReplayControl seconds={10} order={1.1} />
                                         <ForwardControl seconds={30} order={1.2} />
@@ -86,7 +99,9 @@ export default (props) => {
                                 </Player> 
                                     
                                 case 'voice':
-                                    return 
+                                    return <audio src={detailData.fileUrl}>
+                                    您的浏览器不支持 audio 标签。
+                                    </audio>
                                     
                             
                                 default:
@@ -95,9 +110,12 @@ export default (props) => {
                         })()
                     }
                 </div>
-                <div style={{marginTop:'10px'}}>
-                <DownloadOutlined style={{color:'#1890ff',marginRight:'8px'}}/><a href="">点击下载资料</a>
-                </div>
+                {
+                    !detailData.notarizationNumber? <div style={{marginTop:'10px'}}>
+                    <DownloadOutlined style={{color:'#1890ff',marginRight:'8px'}}/><a onClick={()=>downLoad()}>点击下载资料</a>
+                    </div>:null
+                }
+               
                {/* <h3>修改信息</h3>
                <div>
                    <div>出证金额：</div>

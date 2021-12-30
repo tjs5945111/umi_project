@@ -2,10 +2,15 @@
 import React, { useState, useEffect } from 'react';
 import BaseTable from '@/components/BaseTable';
 import { message, Divider, Radio } from 'antd';
-import { getZjlb, getLx, getZjlx } from '@/services/ant-design-pro/api';
+import { getZjlb, getLx, getZjlx, downLoadFun } from '@/services/ant-design-pro/api';
 import moment from 'moment';
 import styles from './index.less';
 
+const eum = {
+    照片取证: 'photo',
+    录音取证: 'voice',
+    视频取证: 'video',
+}
 export default () => {
     const [tenantList, setTenantList] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -36,13 +41,17 @@ export default () => {
             dataIndex: 'notarizationGroup',
         },
         {
-            title: '地址',
+            title: '取证地址',
             dataIndex: 'notarizationAddress',
+        },
+        {
+            title: '邮寄地址',
+            dataIndex: 'sendaddress',
         },
         {
             title: '大小',
             // dataIndex: 'notarizationSize',
-            render: ({notarizationSize})=>(<>{parseFloat(notarizationSize).toFixed(2)} kb</>)
+            render: ({ notarizationSize }) => (<>{parseFloat(notarizationSize).toFixed(2)} kb</>)
         },
         {
             title: '取证时间',
@@ -65,7 +74,7 @@ export default () => {
             key: 'actionList',
             // fixed: 'right',
             // width: 230,
-            render: ({ id }) => (
+            render: ({ status, id, notarizationWay }) => (
                 <div
                     style={{
                         display: 'flex',
@@ -78,21 +87,30 @@ export default () => {
                     <a
                         style={{ marginRight: 30 }}
                         onClick={() => {
-                            window.open(`./zjlb/detail?id=${id}&type=voice`);
+                            window.open(`/zjlb/detail?id=${id}&type=${eum[notarizationWay]}`);
                         }}
                     >
                         详情
                     </a>
                     {/* <Divider /> */}
-                    <a
-                        style={{ marginRight: 30 }}
-                    >
-                        下载
-                    </a>
+                    {
+                        status === '出证中' ? <a
+                            onClick={() => downLoad()}
+                            style={{ marginRight: 30 }}
+                        >
+                            下载
+                        </a> : null
+                    }
+
                 </div>
             ),
         },
     ];
+    const downLoad = async () => {
+        const res = downLoadFun('0e718c37-4b56-4f6e-9522-5a41a7e87634')
+        // const res =downLoadFun(detailData.notarizationNumber)
+        console.log(res);
+    }
 
     useEffect(() => {
         getList();
@@ -117,6 +135,9 @@ export default () => {
             pageNumber: pageSize,
             ...baseStatues,
             ...param,
+        }
+        if (!Array.isArray(params.statuses)) {
+            params.statuses = [params.statuses]
         }
         const res = await getZjlb(params)
         const { records, total, size } = res as any;
@@ -154,8 +175,8 @@ export default () => {
 
     const onChange = (e: any) => {
         console.log(e);
-        setBaseStatues(e.target.value)
-        getList(1, {statues:e.target.value});
+        setBaseStatues({ statuses: [e.target.value] })
+        getList(1, { statuses: [e.target.value] });
     };
     const actionList: any = [
         // <Button
@@ -177,7 +198,7 @@ export default () => {
     const searchArray = [
         { name: '编号', value: 'id' },
         { name: '证据类型', value: 'notarizationWays', type: 'select', data: typeList },
-        { name: '状态', value: 'statues', type: 'select', data: statusList },
+        { name: '状态', value: 'statuses', type: 'select', data: statusList },
     ];
     return (
         <>

@@ -6,7 +6,7 @@ import { request } from 'umi';
 export async function currentUser(options?: { [key: string]: any }) {
   return request<{
     data: API.CurrentUser;
-  }>('/api/currentUser', {
+  }>('/manage/currentUser', {
     method: 'GET',
     ...(options || {}),
   });
@@ -65,8 +65,8 @@ export async function getYysx(params?: any) {
   let tempData = {
     api: "system",
     // request: JSON.stringify(params),
-    request: "{\"pageSize\":100,\"pageNumber\":1}",
-    method: "selectPage"
+    request: "{\"pageSize\":1,\"pageNumber\":100,\"configType\":1}",
+    method: "selectSystemConfigPage"
   }
   return request<API.LoginResult>('/manager/getReserveMatters.json', {
     method: 'POST',
@@ -99,6 +99,66 @@ export async function getXtxg(params: any) {
     method: "updateSystem"
   }
   return request<API.LoginResult>('/manager/updateSystem.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(tempData)
+  });
+}
+/** 预约删除 */
+export async function yysc(params: any) {
+  let tempData = {
+    api: "reserve",
+    request: params,
+    method: "deleteReserve"
+  }
+  return request<API.LoginResult>('/manager/deleteReserve.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(tempData)
+  });
+}
+/** 人员删除 */
+export async function rysc(params: any) {
+  let tempData = {
+    api: "userAuth",
+    request: params,
+    method: "deleteUserAuth"
+  }
+  return request<API.LoginResult>('/manager/deleteUserAuth.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(tempData)
+  });
+}
+/** 下载 */
+export async function downLoadFun(params: any) {
+  let tempData = {
+    api: "forensics",
+    request: params,
+    method: "getForensicsZip"
+  }
+  return request<API.LoginResult>('/manager/forensics.zip', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(tempData)
+  });
+}
+/** 预约状态修改 */
+export async function yyzt(params: any) {
+  let tempData = {
+    // api: "system",
+    request: JSON.stringify(params),
+    // method: "updateSystem"
+  }
+  return request<API.LoginResult>('/manager/updateReserveStatus.json', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -146,11 +206,7 @@ export async function getJsbc(params: any) {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      // api: "",
-      request: JSON.stringify(params),
-      // method: "saveUserAuth"
-    })
+    data: params
   });
 }
 /** 角色修改 */

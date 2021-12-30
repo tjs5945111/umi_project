@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import type { ProColumns } from '@ant-design/pro-table';
 import { EditableProTable } from '@ant-design/pro-table';
 import { ProFormRadio, ProFormField } from '@ant-design/pro-form';
-import { getXtlb, getXtpz } from '@/services/ant-design-pro/api';
+import { getXtlb, getXtpz, getXtxg } from '@/services/ant-design-pro/api';
 import ProCard from '@ant-design/pro-card';
 
 const waitTime = (time: number = 100) => {
@@ -40,7 +40,11 @@ export default () => {
 
   const getList = async () => {
     const res = await getXtlb(1);
-    setDataSource(res.records)
+    const tempDate = []
+    res.records?.map(item => {
+      tempDate.push({ id: item.id, ...JSON.parse(item.configValue || '{}') })
+    })
+    setDataSource(tempDate)
   }
   const columns: ProColumns<DataSourceType>[] = [
     {
@@ -82,7 +86,7 @@ export default () => {
           position !== 'hidden'
             ? {
               position: position as 'top',
-              record: () => ({ id: (Math.random() * 1000000).toFixed(0) }),
+              record: () => ({ id: (Math.random() * 1000000).toFixed(0) + 'add' }),
             }
             : false
         }
@@ -124,17 +128,24 @@ export default () => {
             console.log(rowKey, data, row);
             const params = {
               configValue: {
-                subject: data.subject, 
+                subject: data.subject,
+                value: `${data.value}`,
               },
               configType: 1,
             }
-            const res = await getXtpz(params);
+            let res = [];
+            if (typeof (row.id) === 'number') {
+              params.id = row.id
+              res = await getXtxg(params)
+            } else {
+              res = await getXtpz(params);
+            }
             console.log(res)
           },
           onChange: setEditableRowKeys,
         }}
       />
-      <ProCard title="表格数据" headerBordered collapsible defaultCollapsed>
+      {/* <ProCard title="表格数据" headerBordered collapsible defaultCollapsed>
         <ProFormField
           ignoreFormItem
           fieldProps={{
@@ -146,7 +157,7 @@ export default () => {
           valueType="jsonCode"
           text={JSON.stringify(dataSource)}
         />
-      </ProCard>
+      </ProCard> */}
     </>
   );
 };

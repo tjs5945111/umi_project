@@ -19,7 +19,7 @@
     ],
   },
   {
-    path: '/zjlb',
+    path: '/manager/zjlb',
     name: '证据列表',
     icon: 'smile',
     component: './Zjlb',

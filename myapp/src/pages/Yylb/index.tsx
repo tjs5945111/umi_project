@@ -1,8 +1,8 @@
 // 预约列表
 import React, { useState, useEffect } from 'react';
 import BaseTable from '@/components/BaseTable';
-import { message, Divider, Radio } from 'antd';
-import { getYylb, getYysx, getLx } from '@/services/ant-design-pro/api';
+import { message, Divider, Radio, Popconfirm } from 'antd';
+import { getYylb, getYysx, getLx, yysc } from '@/services/ant-design-pro/api';
 import moment from 'moment';
 import styles from './index.less';
 
@@ -66,19 +66,29 @@ export default () => {
                     >
                         详情
                     </a>
+                    <a onClick={()=>confirm(id)}>删除</a>
                     {/* <Divider /> */}
-                    <a
-                        style={{ marginRight: 30 }}
+                    {/* <Popconfirm
+                        title="你确定要删除该人员吗?"
+                        onConfirm={confirm}
+                        onCancel={async() => cancel(id)}
+                        okText="确认"
+                        cancelText="取消"
                     >
-                        下载
-                    </a>
+                        <a href="#">删除</a>
+                    </Popconfirm> */}
                 </div>
             ),
         },
     ];
-
+    const confirm = async (id) => {
+        console.log(id)     
+        const res = await yysc(id);
+        if (res === 1) {
+            getList();
+        }
+    };
     useEffect(() => {
-        getList();
         getList();
         async function getmenu() {
             const [statusData, typeData] = await Promise.all([
@@ -86,7 +96,7 @@ export default () => {
                 getYysx(),
             ])
             setStatusList(changType(statusData))
-            setTypeList(changType(typeData))
+            setTypeList(changType(typeData.records))
         }
         getmenu();
     }, []);
@@ -94,7 +104,13 @@ export default () => {
         if (!Array.isArray(value)) return [];
         const tempData = [];
         value.map(ele => {
-            tempData.push({ name: ele, value: ele });
+            if (typeof (ele) === 'object') {
+                const temp = JSON.parse(ele.configValue).subject
+                tempData.push({ name: temp, value: temp });
+            } else {
+                tempData.push({ name: ele, value: ele });
+            }
+
         })
         return tempData;
     };
@@ -107,7 +123,11 @@ export default () => {
             pageSize: pageNum,
             pageNumber: pageSize,
             ...baseStatues,
-            ...param,
+            ...param
+        }
+        if (param.startTime && param.startTime.length) {
+            params.startTime = moment(param.startTime[0]._d).format('YYYY-MM-DD hh:mm:ss')
+            params.endTime = moment(param.startTime[1]._d).format('YYYY-MM-DD hh:mm:ss')
         }
         const res = await getYylb(params)
         const { records, total, size } = res as any;
@@ -119,9 +139,12 @@ export default () => {
 
 
     const handleSearch = (data: any) => {
+        console.log('111', data);
+
+        // data.gmtCreate =moment(data.gmtCreate._d).format('YYYY-MM-DD hh:mm:ss')
         setLoading(true);
         getList(1, data);
-        setSearchWord(data)
+        // setSearchWord(data)
     };
 
     const handlePaging = (data: any, searchWord: any) => {
@@ -146,9 +169,11 @@ export default () => {
         // </Button>,
     ];
     const searchArray = [
-        { name: '姓名', value: 'name' },
+        // { name: '姓名', value: 'name' },
         { name: '预约事项', value: 'matter', type: 'select', data: typeList },
-        { name: '状态', value: 'statues', type: 'select', data: statusList },
+        { name: '预约开始时间', value: 'startTime', type: 'date' },
+        // { name: '预约结束时间', value: 'endTime', type: 'date'},
+        // { name: '状态', value: 'statues', type: 'select', data: statusList },
     ];
     return (
         <>

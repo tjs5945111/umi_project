@@ -1,8 +1,8 @@
 // 人员管理
 import React, { useState, useEffect } from 'react';
 import BaseTable from '@/components/BaseTable';
-import { message, Divider, Radio, Button,Popconfirm } from 'antd';
-import { getRylb, getJslb } from '@/services/ant-design-pro/api';
+import { message, Divider, Radio, Button, Popconfirm } from 'antd';
+import { getRylb, getJslb, rysc } from '@/services/ant-design-pro/api';
 import moment from 'moment';
 import styles from './index.less';
 
@@ -57,22 +57,27 @@ export default () => {
                     >
                         编辑
                     </a>
-                    <Divider />
-                    <Popconfirm
+                    {/* <Divider /> */}
+                    <a onClick={()=>confirm(id)}>删除</a>
+                    {/* <Popconfirm
                         title="你确定要删除该人员吗?"
                         onConfirm={confirm}
-                        onCancel={cancel}
+                        onCancel={e=>cancel(e,id)}
                         okText="确认"
                         cancelText="取消"
                     >
                         <a href="#">删除</a>
-                    </Popconfirm>
+                    </Popconfirm> */}
                 </div>
             ),
         },
     ];
-    const cancel=()=>{};
-    const confirm=()=>{};
+    const confirm = async (id) => {
+        const res = await rysc(id);
+        if (res === 1) {
+            getList();
+        }
+    };
     useEffect(() => {
         getList();
         async function getmenu() {
