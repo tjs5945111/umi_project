@@ -46,8 +46,8 @@ export default (props) => {
         }
     ];
     const downLoad=async()=>{
-        const res =downLoadFun('0e718c37-4b56-4f6e-9522-5a41a7e87634')
-        // const res =downLoadFun(detailData.notarizationNumber)
+        // const res =downLoadFun('0e718c37-4b56-4f6e-9522-5a41a7e87634')
+        const res =downLoadFun(detailData.notarizationNumber)
         console.log(res);
     }
 
@@ -111,7 +111,7 @@ export default (props) => {
                     }
                 </div>
                 {
-                    !detailData.notarizationNumber? <div style={{marginTop:'10px'}}>
+                    detailData.notarizationNumber? <div style={{marginTop:'10px'}}>
                     <DownloadOutlined style={{color:'#1890ff',marginRight:'8px'}}/><a onClick={()=>downLoad()}>点击下载资料</a>
                     </div>:null
                 }

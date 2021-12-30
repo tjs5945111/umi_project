@@ -107,8 +107,8 @@ export default () => {
         },
     ];
     const downLoad = async () => {
-        const res = downLoadFun('0e718c37-4b56-4f6e-9522-5a41a7e87634')
-        // const res =downLoadFun(detailData.notarizationNumber)
+        // const res = downLoadFun('0e718c37-4b56-4f6e-9522-5a41a7e87634')
+        const res =downLoadFun(detailData.notarizationNumber)
         console.log(res);
     }
 

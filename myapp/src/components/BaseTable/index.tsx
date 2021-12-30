@@ -207,7 +207,10 @@ export default function BaseTable({
     };
 
     const handleReset = (form: any) => {
-        form.resetFields();
+        console.log(form);
+        
+        // form.resetFields();
+        typeof handleSearch !== 'undefined' && handleSearch({}, {});
         SetFormatSearchStatus([]);
         SetcheckAll(false);
         SetSearchParams({});

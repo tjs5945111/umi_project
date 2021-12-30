@@ -6,7 +6,7 @@ import { request } from 'umi';
 export async function currentUser(options?: { [key: string]: any }) {
   return request<{
     data: API.CurrentUser;
-  }>('/manage/currentUser', {
+  }>('/manager/currentUser', {
     method: 'GET',
     ...(options || {}),
   });
