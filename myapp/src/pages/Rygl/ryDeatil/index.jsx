@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import BreadcrumbList from '@/components/BreadcrumbList';
-import { getJsbc, getJslb } from '@/services/ant-design-pro/api';
+import { getJsbc, getJslb, getJsxg } from '@/services/ant-design-pro/api';
 import imgs from '@/image/banner.png'
 
 import { Card, Form, Input, Button, Select, message, } from 'antd';
@@ -10,8 +10,11 @@ const { Option } = Select;
 
 export default (props) => {
     const type = props.location?.query?.type || '';
+    const id = props.location?.query?.id || '';
+    const data = props.location?.query?.data || '';
     const [detailData, setDetailData] = useState({});
     const [typeList, setTypeList] = useState([]);
+    const formE = useRef(null);
     useEffect(() => {
         getList();
         async function getmenu() {
@@ -32,8 +35,13 @@ export default (props) => {
         })
         return tempData;
     };
-    const getList = () => {
-        setDetailData({})
+    const getList = async () => {
+        // id && setDetailData(data)
+        if (id) {
+            if (!formE || !formE?.current) return;
+            const { setFieldsValue } = formE.current;
+            setFieldsValue(JSON.parse(data))
+        }
     }
 
     const urlArray = [
@@ -42,17 +50,26 @@ export default (props) => {
             url: '/rygl',
         },
         {
-            name: '添加人员',
+            name: id ? '修改人员' : '添加人员',
         }
     ];
 
     const onFinish = async (values) => {
         // console.log('Success:', values);
-        const res = await getJsbc(values);
-        if (res === 1) {
-            message.success('添加成功')
+        if (!id) {
+            const res = await getJsbc(values);
+            if (res === 1) {
+                message.success('添加成功')
+            }
+            props.history.push('/rygl');
+        } else {
+            values.id = JSON.parse(data).id
+            const res = await getJsxg(values);
+            if (res === 1) {
+                message.success('修改成功')
+            }
+            props.history.push('/rygl');
         }
-        props.history.push('/rygl');
     };
 
     const onFinishFailed = (errorInfo) => {
@@ -67,6 +84,7 @@ export default (props) => {
                 <h3>添加人员</h3>
                 <div className={styles.form}>
                     <Form
+                        ref={formE}
                         name="basic"
                         labelCol={{ span: 8 }}
                         wrapperCol={{ span: 16 }}

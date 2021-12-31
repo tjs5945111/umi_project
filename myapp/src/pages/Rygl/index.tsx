@@ -39,7 +39,7 @@ export default () => {
             key: 'actionList',
             // fixed: 'right',
             // width: 230,
-            render: ({ id }) => (
+            render: (data) => (
                 <div
                     style={{
                         display: 'flex',
@@ -52,13 +52,13 @@ export default () => {
                     <a
                         style={{ marginRight: 30 }}
                         onClick={() => {
-                            window.open(`./rygl/detail?id=${id}&type=VIEW`);
+                            window.open(`./rygl/detail?id=${data.id}&type=VIEW&data=${JSON.stringify(data)}`);
                         }}
                     >
                         编辑
                     </a>
                     {/* <Divider /> */}
-                    <a onClick={()=>confirm(id)}>删除</a>
+                    <a onClick={()=>confirm(data.id)}>删除</a>
                     {/* <Popconfirm
                         title="你确定要删除该人员吗?"
                         onConfirm={confirm}
@@ -138,7 +138,7 @@ export default () => {
         <Button
             type="primary"
             onClick={() => {
-                window.open('./deatil');
+                window.open(`./rygl/detail`);
             }}
         >
             添加人员

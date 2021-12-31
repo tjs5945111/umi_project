@@ -163,7 +163,7 @@ export async function yyzt(params: any) {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(tempData)
+    data: tempData
   });
 }
 /** 系统列表 */
@@ -216,11 +216,7 @@ export async function getJsxg(params: any) {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      // api: "",
-      request: JSON.stringify(params),
-      // method: "saveUserAuth"
-    })
+    data:params
   });
 }
 /** 人员列表 */

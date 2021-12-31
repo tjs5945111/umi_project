@@ -14,10 +14,10 @@ export default (props) => {
     const [detailData, setDetailData] = useState({});
 
     useEffect(() => {
-        getList()
+        getList(detailId)
       },[])
 
-    const getList =async () => {
+    const getList =async (detailId) => {
         const res =await getYyxq(detailId)
         console.log(res);
         

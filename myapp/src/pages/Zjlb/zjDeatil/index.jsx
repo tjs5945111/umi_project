@@ -27,11 +27,11 @@ export default (props) => {
     // const [money, setMoney] = useState(detailData.);
     useEffect(() => {
         console.log(detailId);
-      getList()
+      getList(detailId)
     },[])
 
     const getList =async () => {
-        const res =await getZjxq(1)
+        const res =await getZjxq(detailId)
         console.log(res);
         setDetailData(res)
     }
