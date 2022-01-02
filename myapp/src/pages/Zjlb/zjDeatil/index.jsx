@@ -46,9 +46,13 @@ export default (props) => {
         }
     ];
     const downLoad=async()=>{
-        // const res =downLoadFun('0e718c37-4b56-4f6e-9522-5a41a7e87634')
-        const res =downLoadFun(detailData.notarizationNumber)
-        console.log(res);
+        const anchor = document.createElement('a')
+        anchor.href = `/manager/forensics.zip?notarizationNumber=${detailData.notarizationNumber}`
+        anchor.download = `${+new Date()}.zip`
+        anchor.click();
+        // const res = await downLoadFun('c1322e6d-119f-41e8-ba76-c7be01183b84')
+        // const res =await downLoadFun(detailData.notarizationNumber)
+        // console.log(res);
     }
 
     return (

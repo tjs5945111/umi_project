@@ -85,7 +85,10 @@ export default () => {
         console.log(id)     
         const res = await yysc(id);
         if (res === 1) {
+            message.success('删除成功')
             getList();
+        }else{
+            message.error('删除失败，请稍后再试')
         }
     };
     useEffect(() => {

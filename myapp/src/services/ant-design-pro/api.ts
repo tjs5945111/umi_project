@@ -163,7 +163,7 @@ export async function yyzt(params: any) {
     headers: {
       'Content-Type': 'application/json',
     },
-    data: tempData
+    data: params
   });
 }
 /** 系统列表 */

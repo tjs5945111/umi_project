@@ -74,7 +74,7 @@ export default () => {
             key: 'actionList',
             // fixed: 'right',
             // width: 230,
-            render: ({ status, id, notarizationWay }) => (
+            render: ({ status, id, notarizationWay, notarizationNumber }) => (
                 <div
                     style={{
                         display: 'flex',
@@ -95,7 +95,7 @@ export default () => {
                     {/* <Divider /> */}
                     {
                         status === '出证中' ? <a
-                            onClick={() => downLoad()}
+                            onClick={() => downLoad(notarizationNumber)}
                             style={{ marginRight: 30 }}
                         >
                             下载
@@ -106,10 +106,13 @@ export default () => {
             ),
         },
     ];
-    const downLoad = async () => {
-        // const res = downLoadFun('0e718c37-4b56-4f6e-9522-5a41a7e87634')
-        const res =downLoadFun(detailData.notarizationNumber)
-        console.log(res);
+    const downLoad = async (notarizationNumber) => {
+        const anchor = document.createElement('a')
+        anchor.href = `/manager/forensics.zip?notarizationNumber=${notarizationNumber}`
+        anchor.download = `${+new Date()}.zip`
+        anchor.click();
+        // const res =await downLoadFun(notarizationNumber)
+        // console.log(res);
     }
 
     useEffect(() => {
