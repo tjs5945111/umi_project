@@ -57,7 +57,7 @@ export default (props) => {
             <Card bordered={false} className={styles.contain}>
                 <div className={styles.title}>
                     <img src={imgs} alt="" />
-                    <p><span>证件编号：</span>{detailData.id}</p>
+                    <p><span>证件编号：</span>{detailData.notarizationNumber}</p>
                 </div>
                 <div className={styles.con}>
                     <div><span>证据状态：</span>{detailData.status}</div>
@@ -99,10 +99,9 @@ export default (props) => {
                                 </Player> 
                                     
                                 case 'voice':
-                                    return <audio src={detailData.fileUrl}>
-                                    您的浏览器不支持 audio 标签。
+                                    return   <audio src={detailData.fileUrl}controls="controls">
+                                   您的浏览器不支持 audio 标签。
                                     </audio>
-                                    
                             
                                 default:
                                     return null;

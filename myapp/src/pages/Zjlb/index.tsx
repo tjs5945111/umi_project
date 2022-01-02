@@ -28,8 +28,8 @@ export default () => {
             dataIndex: 'fileName',
         },
         {
-            title: '编号',
-            dataIndex: 'id',
+            title: '编码',
+            dataIndex: 'notarizationNumber',
         },
 
         {
