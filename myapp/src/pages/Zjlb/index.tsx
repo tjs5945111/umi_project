@@ -73,33 +73,45 @@ export default () => {
             title: '操作',
             key: 'actionList',
             fixed: 'right',
-            // width: 230,
-            render: ({ status, id, notarizationWay, notarizationNumber }) => (
+            width: 200,
+            render: ({ status, id, notarizationWay, notarizationNumber, certificateTotalAmount }) => (
                 <div
                     style={{
                         display: 'flex',
-                        minWidth: '60px',
-                        justifyContent: "space-between",
+                        // minWidth: '60px',
+                        // justifyContent: "space-between",
                         alignItems: 'center',
                         lineHeight: '0px',
                     }}
                 >
                     <a
-                        // style={{ marginRight: 30 }}
+                        style={{ marginRight: 30 }}
                         onClick={() => {
                             window.open(`/zjlb/detail?id=${id}&type=${eum[notarizationWay]}`);
                         }}
                     >
                         详情
                     </a>
+
                     {/* <Divider /> */}
                     {
-                        status === '出证中' ? <a
-                            onClick={() => downLoad(notarizationNumber)}
+                        status === '出证中' ? <>
+                            <a
+                                style={{ marginRight: 30 }}
+                                onClick={() => {
+                                    window.open(`/zjlb/detail?id=${id}&edit=true&status=${status}&num=${certificateTotalAmount || 0}`);
+                                }}
+                            >
+                                修改
+                            </a>
+                            <a
+                                onClick={() => downLoad(notarizationNumber)}
                             // style={{ marginRight: 30 }}
-                        >
-                            下载
-                        </a> : null
+                            >
+                                下载
+                            </a>
+                        </>
+                            : null
                     }
 
                 </div>
@@ -165,9 +177,9 @@ export default () => {
         setSearchWord(data)
     };
 
-    const handlePaging = (data: any, searchWord: any) => {
+    const handlePaging = (num: any, size: any) => {
         setLoading(true);
-        getList(data, searchWord, pageSize);
+        getList(num, searchWord, size);
     };
 
     const pagingSizeChange = (size: any, searchWord: any) => {

@@ -121,6 +121,36 @@ export async function yysc(params: any) {
     body: JSON.stringify(tempData)
   });
 }
+/** 预约事项删除 */
+export async function yysxsc(params: any) {
+  let tempData = {
+    api: "system",
+    request: params,
+    method: "deleteSystem"
+  }
+  return request<API.LoginResult>('/manager/deleteSystem.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(tempData)
+  });
+}
+/** 金额删除 */
+export async function jesc(params: any) {
+  let tempData = {
+    api: "system",
+    request: params,
+    method: "deleteSystem"
+  }
+  return request<API.LoginResult>('/manager/deleteSystem.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(tempData)
+  });
+}
 /** 人员删除 */
 export async function rysc(params: any) {
   let tempData = {
@@ -166,6 +196,22 @@ export async function yyzt(params: any) {
     data: params
   });
 }
+/** 出证状态jine修改 */
+export async function czsz(params: any) {
+  let tempData = {
+    api: "forensics",
+    request: JSON.stringify(params),
+    method: "updateNotaryStatus"
+  }
+  return request<API.LoginResult>('/manager/updateNotaryStatus.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(tempData)
+  });
+}
+
 /** 系统列表 */
 export async function getXtlb(params: any) {
   let tempData = {
@@ -216,7 +262,7 @@ export async function getJsxg(params: any) {
     headers: {
       'Content-Type': 'application/json',
     },
-    data:params
+    data: params
   });
 }
 /** 人员列表 */

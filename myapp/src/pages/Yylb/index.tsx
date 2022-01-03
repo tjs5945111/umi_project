@@ -66,7 +66,7 @@ export default () => {
                     >
                         详情
                     </a>
-                    <a onClick={()=>confirm(id)}>删除</a>
+                    <a onClick={() => confirm(id)}>删除</a>
                     {/* <Divider /> */}
                     {/* <Popconfirm
                         title="你确定要删除该人员吗?"
@@ -82,12 +82,12 @@ export default () => {
         },
     ];
     const confirm = async (id) => {
-        console.log(id)     
+        console.log(id)
         const res = await yysc(id);
         if (res === 1) {
             message.success('删除成功')
             getList();
-        }else{
+        } else {
             message.error('删除失败，请稍后再试')
         }
     };
@@ -150,9 +150,9 @@ export default () => {
         // setSearchWord(data)
     };
 
-    const handlePaging = (data: any, searchWord: any) => {
+    const handlePaging = (num: any, size: any) => {
         setLoading(true);
-        getList(data, searchWord, pageSize);
+        getList(num, searchWord, size);
     };
 
     const pagingSizeChange = (size: any, searchWord: any) => {

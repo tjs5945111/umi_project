@@ -102,8 +102,8 @@ export default function BaseTable({
         // console.log(rowKeys, rows);
     };
 
-    const pagingChange = (page: any) => {
-        typeof handlePaging !== 'undefined' && handlePaging(page);
+    const pagingChange = (page: any,size) => {
+        typeof handlePaging !== 'undefined' && handlePaging(page,size);
     };
 
     const onCheckAllChange = e => {
@@ -144,32 +144,32 @@ export default function BaseTable({
                                     </Form.Item>
                                 );
                             case 'date':
-                            return (
-                                <Form.Item name={`${ele.value}`}
-                                    label={`${ele.name}`}
-                                    rules={[
-                                        {
-                                            required: ele.disable,
-                                            message: '请选择',
-                                        },
-                                    ]}>
-                                    {/* <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" /> */}
-                                    <RangePicker />
-                                </Form.Item>
-                            );
-                    default:
-                    return (
-                    <Form.Item name={`${ele.value}`}
-                        label={`${ele.name}`}
-                        rules={[
-                            {
-                                required: ele.disable,
-                                message: '请输入',
-                            },
-                        ]}>
-                        <Input placeholder={`${ele.name}`} />
-                    </Form.Item>
-                    );
+                                return (
+                                    <Form.Item name={`${ele.value}`}
+                                        label={`${ele.name}`}
+                                        rules={[
+                                            {
+                                                required: ele.disable,
+                                                message: '请选择',
+                                            },
+                                        ]}>
+                                        {/* <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" /> */}
+                                        <RangePicker />
+                                    </Form.Item>
+                                );
+                            default:
+                                return (
+                                    <Form.Item name={`${ele.value}`}
+                                        label={`${ele.name}`}
+                                        rules={[
+                                            {
+                                                required: ele.disable,
+                                                message: '请输入',
+                                            },
+                                        ]}>
+                                        <Input placeholder={`${ele.name}`} />
+                                    </Form.Item>
+                                );
                         }
                     })()}
                 </>,
@@ -208,7 +208,7 @@ export default function BaseTable({
 
     const handleReset = (form: any) => {
         console.log(form);
-        
+
         // form.resetFields();
         typeof handleSearch !== 'undefined' && handleSearch({}, {});
         SetFormatSearchStatus([]);
@@ -296,11 +296,11 @@ export default function BaseTable({
                         showSizeChanger: true,
                         showQuickJumper: true,
                         size: 'small',
-                        onChange: (page: any) => {
-                            pagingChange(page);
+                        onChange: (page: any, size) => {
+                            pagingChange(page,size);
                         },
                         onShowSizeChange: (page: any, size: any) => {
-                            pagingSizeChanges(size);
+                            // pagingSizeChanges(size);
                         },
                         total: totalSize,
                         showTotal: totalSize => `共${totalSize}个`,

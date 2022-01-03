@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import type { ProColumns } from '@ant-design/pro-table';
 import { EditableProTable } from '@ant-design/pro-table';
 import { ProFormRadio, ProFormField } from '@ant-design/pro-form';
-import { getXtlb, getXtpz, getXtxg } from '@/services/ant-design-pro/api';
+import { getXtlb, getXtpz, getXtxg, yysxsc } from '@/services/ant-design-pro/api';
 import ProCard from '@ant-design/pro-card';
+import { message } from 'antd';
 
 const waitTime = (time: number = 100) => {
   return new Promise((resolve) => {
@@ -66,8 +67,14 @@ export default () => {
         </a>,
         <a
           key="delete"
-          onClick={() => {
-            setDataSource(dataSource.filter((item) => item.id !== record.id));
+          onClick={async () => {
+            const res = await yysxsc(record.id);
+            if (res) {
+              setDataSource(dataSource.filter((item) => item.id !== record.id));
+            } else {
+              message.error('删除失败请稍后重试')
+            }
+
           }}
         >
           删除

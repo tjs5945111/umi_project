@@ -123,9 +123,9 @@ export default () => {
         setSearchWord(data)
     };
 
-    const handlePaging = (data: any, searchWord: any) => {
+    const handlePaging = (num: any, size: any) => {
         setLoading(true);
-        getList(data, searchWord, pageSize);
+        getList(num, searchWord, size);
     };
 
     const pagingSizeChange = (size: any, searchWord: any) => {
