@@ -72,20 +72,20 @@ export default () => {
         {
             title: '操作',
             key: 'actionList',
-            // fixed: 'right',
+            fixed: 'right',
             // width: 230,
             render: ({ status, id, notarizationWay, notarizationNumber }) => (
                 <div
                     style={{
                         display: 'flex',
-                        minWidth: '150px',
-                        // justifyContent: "space-between",
+                        minWidth: '60px',
+                        justifyContent: "space-between",
                         alignItems: 'center',
                         lineHeight: '0px',
                     }}
                 >
                     <a
-                        style={{ marginRight: 30 }}
+                        // style={{ marginRight: 30 }}
                         onClick={() => {
                             window.open(`/zjlb/detail?id=${id}&type=${eum[notarizationWay]}`);
                         }}
@@ -96,7 +96,7 @@ export default () => {
                     {
                         status === '出证中' ? <a
                             onClick={() => downLoad(notarizationNumber)}
-                            style={{ marginRight: 30 }}
+                            // style={{ marginRight: 30 }}
                         >
                             下载
                         </a> : null
@@ -199,7 +199,7 @@ export default () => {
         </Radio.Group>,
     ];
     const searchArray = [
-        { name: '编号', value: 'id' },
+        { name: '编号', value: 'notarizationNumber' },
         { name: '证据类型', value: 'notarizationWays', type: 'select', data: typeList },
         { name: '状态', value: 'statuses', type: 'select', data: statusList },
     ];

@@ -46,13 +46,13 @@ export default () => {
         {
             title: '操作',
             key: 'actionList',
-            // fixed: 'right',
+            fixed: 'right',
             // width: 230,
             render: ({ id }) => (
                 <div
                     style={{
                         display: 'flex',
-                        minWidth: '150px',
+                        minWidth: '80px',
                         // justifyContent: "space-between",
                         alignItems: 'center',
                         lineHeight: '0px',

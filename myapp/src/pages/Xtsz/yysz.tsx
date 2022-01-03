@@ -19,14 +19,14 @@ type DataSourceType = {
 };
 
 const defaultData: DataSourceType[] = [
-  {
-    id: 624748504,
-    subject: '2020-05-26T09:42:56Z',
-  },
-  {
-    id: 624691229,
-    subject: '',
-  },
+  // {
+  //   id: 624748504,
+  //   subject: '2020-05-26T09:42:56Z',
+  // },
+  // {
+  //   id: 624691229,
+  //   subject: '',
+  // },
 ];
 
 export default () => {

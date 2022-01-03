@@ -69,14 +69,15 @@ export default (props) => {
                         <div><span>取证类型：</span>{detailData.fileName}</div>
                         <div><span>取证类型：</span>{detailData.notarizationWay}</div>
                         <div><span>分组</span>{detailData.notarizationGroup}</div>
-                        <div><span>取证时间：</span>{detailData.id}</div>
                         <div><span>大小：</span>{parseFloat(detailData.notarizationSize).toFixed(2)} kb</div>
                         <div><span>取证时间：</span>{detailData.gmtForensics}</div>
+                        <div><span>存证时间：</span>{detailData.gmtDeposit}</div>
+                        {/* <div><span>出证时间：</span>{detailData.gmtDeposit}</div> */}
                         <div><span>存证是否实名认证：</span>{detailData.depositIsCert?'已实名':'未实名'}</div>
                         <div><span>存证是否支付：</span>{detailData.depositIsPay?'已支付':'未支付'}</div>
                         <div><span>出证是否实名认证：</span>{detailData.certificateIsCert?'已实名':'未实名'}</div>
                         <div><span>出证是否支付：</span>{detailData.certificateIsPay?'已支付':'未支付'}</div>
-                        <div><span>存证时间：</span>{detailData.gmtDeposit}</div>
+                       
                         {/* <div><span> 证据期限：</span>{detailData.id}</div> */}
                     </div>
                     <div><span>地址：</span>{detailData.notarizationAddress}</div>
