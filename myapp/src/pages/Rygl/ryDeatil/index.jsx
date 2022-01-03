@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import BreadcrumbList from '@/components/BreadcrumbList';
-import { getJsbc, getJslb, getJsxg } from '@/services/ant-design-pro/api';
+import { getJsbc, getJslb, getJsxg, ryxq } from '@/services/ant-design-pro/api';
 import imgs from '@/image/banner.png'
 
 import { Card, Form, Input, Button, Select, message, } from 'antd';
@@ -38,9 +38,12 @@ export default (props) => {
     const getList = async () => {
         // id && setDetailData(data)
         if (id) {
+            const res = await ryxq({ id });
+            console.log(res);
+            setDetailData(res)
             if (!formE || !formE?.current) return;
             const { setFieldsValue } = formE.current;
-            setFieldsValue(JSON.parse(data))
+            setFieldsValue(res)
         }
     }
 
@@ -63,7 +66,7 @@ export default (props) => {
             }
             props.history.push('/rygl');
         } else {
-            values.id = JSON.parse(data).id
+            values.id = detailData.id
             const res = await getJsxg(values);
             if (res === 1) {
                 message.success('修改成功')

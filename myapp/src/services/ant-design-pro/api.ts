@@ -166,6 +166,21 @@ export async function rysc(params: any) {
     body: JSON.stringify(tempData)
   });
 }
+/** 人员详情 */
+export async function ryxq(params: any) {
+  let tempData = {
+    api: "userAuth",
+    request: params,
+    method: "deleteUserAuth"
+  }
+  return request<API.LoginResult>('/manager/selectUserAuth.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    params,
+  });
+}
 /** 下载 */
 export async function downLoadFun(params: any) {
   let tempData = {

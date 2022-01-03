@@ -113,9 +113,10 @@ export default (props) => {
                                 // onChange={onGenderChange}
                                 allowClear
                             >
-                                {statusList?.map(item => {
+                                <Option value= '已出证未付款'>已出证未付款</Option>
+                                {/* {statusList?.map(item => {
                                     return <Option key={item.name} value={item.value}>{item.name}</Option>
-                                })}
+                                })} */}
                             </Select>
                         </Form.Item>
 
@@ -140,7 +141,7 @@ export default (props) => {
                     <div className={styles.con}>
                         <div><span>证据状态：</span>{detailData.status}</div>
                         <div className={styles.textCo}>
-                            <div><span>取证类型：</span>{detailData.fileName}</div>
+                            <div><span>取证名称：</span>{detailData.fileName}</div>
                             <div><span>取证类型：</span>{detailData.notarizationWay}</div>
                             <div><span>分组</span>{detailData.notarizationGroup}</div>
                             <div><span>大小：</span>{parseFloat(detailData.notarizationSize).toFixed(2)} kb</div>

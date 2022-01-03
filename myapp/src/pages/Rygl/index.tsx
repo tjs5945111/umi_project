@@ -52,7 +52,7 @@ export default () => {
                     <a
                         style={{ marginRight: 30 }}
                         onClick={() => {
-                            window.open(`./rygl/detail?id=${data.id}&type=VIEW&data=${JSON.stringify(data)}`);
+                            window.open(`./rygl/detail?id=${data.id}&type=VIEW`);
                         }}
                     >
                         编辑
