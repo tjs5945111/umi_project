@@ -28,8 +28,16 @@ export default () => {
             dataIndex: 'fileName',
         },
         {
-            title: '编码',
+            title: '证据编号',
             dataIndex: 'notarizationNumber',
+        },
+        {
+            title: '姓名',
+            dataIndex: 'userName',
+        },
+        {
+            title: '手机号',
+            dataIndex: 'phone',
         },
 
         {
@@ -121,7 +129,7 @@ export default () => {
     const downLoad = async (notarizationNumber) => {
         const anchor = document.createElement('a')
         anchor.href = `/manager/forensics.zip?notarizationNumber=${notarizationNumber}`
-        anchor.download = `${+new Date()}.zip`
+        anchor.download = `${notarizationNumber}.zip`
         anchor.click();
         // const res =await downLoadFun(notarizationNumber)
         // console.log(res);
@@ -211,7 +219,7 @@ export default () => {
         </Radio.Group>,
     ];
     const searchArray = [
-        { name: '编号', value: 'notarizationNumber' },
+        { name: '证据编号', value: 'notarizationNumber' },
         { name: '证据类型', value: 'notarizationWays', type: 'select', data: typeList },
         { name: '状态', value: 'statuses', type: 'select', data: statusList },
     ];

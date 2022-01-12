@@ -2,17 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import BreadcrumbList from '@/components/BreadcrumbList';
 import imgs from '@/image/banner.png'
 import { getZjxq, downLoadFun, getLx, czsz } from '@/services/ant-design-pro/api';
-import {
-    Player,
-    ControlBar,
-    PlayToggle, // PlayToggle 播放/暂停按钮 若需禁止加 disabled
-    ReplayControl, // 后退按钮
-    ForwardControl, // 前进按钮
-    CurrentTimeDisplay,
-    TimeDivider,
-    PlaybackRateMenuButton, // 倍速播放选项
-    VolumeMenuButton,
-} from 'video-react';
+import Player from 'griffith'
 import 'video-react/dist/video-react.css';
 import { Card, Select, Input, Form, message, Button } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
@@ -72,7 +62,7 @@ export default (props) => {
     const downLoad = async () => {
         const anchor = document.createElement('a')
         anchor.href = `/manager/forensics.zip?notarizationNumber=${detailData.notarizationNumber}`
-        anchor.download = `${+new Date()}.zip`
+        anchor.download = `${detailData.notarizationNumber}.zip`
         anchor.click();
         // const res = await downLoadFun('c1322e6d-119f-41e8-ba76-c7be01183b84')
         // const res =await downLoadFun(detailData.notarizationNumber)
@@ -80,7 +70,7 @@ export default (props) => {
     }
     const onFinish = async (values) => {
         console.log('Success:', values);
-        values.notarization_number=detailData.notarizationNumber
+        values.notarization_number = detailData.notarizationNumber
         const res = await czsz(values);
         if (res.code === 'OK') {
             message.success('修改成功');
@@ -113,7 +103,7 @@ export default (props) => {
                                 // onChange={onGenderChange}
                                 allowClear
                             >
-                                <Option value= '已出证未付款'>已出证未付款</Option>
+                                <Option value='已出证未付款'>已出证未付款</Option>
                                 {/* {statusList?.map(item => {
                                     return <Option key={item.name} value={item.value}>{item.name}</Option>
                                 })} */}
@@ -136,13 +126,15 @@ export default (props) => {
                 </> : <>
                     <div className={styles.title}>
                         <img src={imgs} alt="" />
-                        <p><span>证件编号：</span>{detailData.notarizationNumber}</p>
+                        <p><span>证据编号：</span>{detailData.notarizationNumber}</p>
                     </div>
                     <div className={styles.con}>
                         <div><span>证据状态：</span>{detailData.status}</div>
                         <div className={styles.textCo}>
                             <div><span>取证名称：</span>{detailData.fileName}</div>
                             <div><span>取证类型：</span>{detailData.notarizationWay}</div>
+                            <div><span>姓名：</span>{detailData.userName||''}</div>
+                            <div><span>手机号：</span>{detailData.phone||''}</div>
                             <div><span>分组</span>{detailData.notarizationGroup}</div>
                             <div><span>大小：</span>{parseFloat(detailData.notarizationSize).toFixed(2)} kb</div>
                             <div><span>取证时间：</span>{detailData.gmtForensics}</div>
@@ -165,18 +157,14 @@ export default (props) => {
                                         return <img src={detailData.fileUrl} alt="" />
 
                                     case 'video':
-                                        return <Player poster={''}>
-                                            <source src={detailData.fileUrl} type="video/mp4" />
-                                            <ControlBar autoHide={false} disableDefaultControls={false}>
-                                                <ReplayControl seconds={10} order={1.1} />
-                                                <ForwardControl seconds={30} order={1.2} />
-                                                <PlayToggle />
-                                                <CurrentTimeDisplay order={4.1} />
-                                                <TimeDivider order={4.2} />
-                                                <PlaybackRateMenuButton rates={[5, 2, 1.5, 1, 0.5]} order={7.1} />
-                                                <VolumeMenuButton />
-                                            </ControlBar>
-                                        </Player>
+                                        return <Player sources={{
+                                            hd: {
+                                                play_url: detailData.fileUrl,
+                                            },
+                                            sd: {
+                                                play_url: detailData.fileUrl,
+                                            },
+                                        }} />
 
                                     case 'voice':
                                         return <audio src={detailData.fileUrl} controls="controls">

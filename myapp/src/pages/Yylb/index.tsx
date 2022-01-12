@@ -36,6 +36,10 @@ export default () => {
             dataIndex: 'phone',
         },
         {
+            title: '预约时间',
+            dataIndex: 'gmtCreate',
+        },
+        {
             title: '状态',
             render: ({ status }) => (
                 <div style={{ maxWidth: 200 }}>
@@ -136,7 +140,7 @@ export default () => {
         const { records, total, size } = res as any;
         setTotalSize(total);
         setpageSize(size);
-        setTenantList(records);
+        setTenantList(records.sort((a, b) => a.gmtCreate.split('-')[2] - b.gmtCreate.split('-')[2]));
         setLoading(false);
     };
 
