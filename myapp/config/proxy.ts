@@ -18,10 +18,9 @@ export default {
     },
   },
   test: {
-    '/api/': {
-      target: 'https://proapi.azurewebsites.net',
+    '/manager/': {
+      target: 'http://localhost:8000',
       changeOrigin: true,
-      pathRewrite: { '^': '' },
     },
   },
   pre: {

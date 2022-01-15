@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import BreadcrumbList from '@/components/BreadcrumbList';
 import imgs from '@/image/banner.png'
 
-import { Card, Form, Input, Button, Select, } from 'antd';
-
+import { Card, Form, Input, Button, Select, Steps } from 'antd';
+ 
 import styles from './index.less'
 const { Option } = Select;
+const { Step } = Steps;
 
 export default (props) => {
     const type = props.location?.query?.type || '';
@@ -20,11 +21,11 @@ export default (props) => {
 
     const urlArray = [
         {
-            name: '人员列表',
-            url: '/rygl',
+            name: '电子面签',
+            url: '/dzmq',
         },
         {
-            name: '添加人员',
+            name: '自定义合同新建',
         }
     ];
 
@@ -41,7 +42,21 @@ export default (props) => {
             <BreadcrumbList urls={urlArray} />
             <Card bordered={false} className={styles.contain}>
 
-                <h3>添加人员</h3>
+                <h3>自定义合同新建</h3>
+                {/* <Steps current={1}>
+                    <Step title="新增案件" />
+                    <Step title="选择签约主体"/>
+                    <Step title="签署合同" />
+                    <Step title="确认推送" />
+                </Steps> */}
+                 <Steps current={1}>
+    <Step title="Finished" description="This is a description." />
+    <Step title="In Progress" subTitle="Left 00:00:08" description="This is a description." />
+    <Step title="Waiting" description="This is a description." />
+  </Steps>
+                <div>
+                    <div></div>
+                </div>
                 <div className={styles.form}>
                     <Form
                         name="basic"

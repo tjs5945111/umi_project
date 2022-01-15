@@ -102,8 +102,8 @@ export default function BaseTable({
         // console.log(rowKeys, rows);
     };
 
-    const pagingChange = (page: any,size) => {
-        typeof handlePaging !== 'undefined' && handlePaging(page,size);
+    const pagingChange = (page: any, size) => {
+        typeof handlePaging !== 'undefined' && handlePaging(page, size);
     };
 
     const onCheckAllChange = e => {
@@ -259,7 +259,10 @@ export default function BaseTable({
     return (
         <>
             <Card bordered={false}>
-                <h3>{tableName}</h3>
+                {
+                    tableName ? <h3>{tableName}</h3> : null
+                }
+
                 {radioList?.map((item: any, index) => (
                     <div key={index}>{item}</div>
                 ))}
@@ -268,14 +271,17 @@ export default function BaseTable({
                         <SearchForm hideSearchType={hideSearch} />
                     </div>
                 ) : null}
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-                    {/* {tableName ? <h3 style={{ marginBottom: '24px' }}>{tableName}</h3> : null} */}
-                    <>
-                        {actionList?.map((item: any, index) => (
-                            <div key={index}>{item}</div>
-                        ))}
-                    </>
-                </div>
+                {
+                    actionList?.length ? <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+                        {/* {tableName ? <h3 style={{ marginBottom: '24px' }}>{tableName}</h3> : null} */}
+                        <>
+                            {actionList?.map((item: any, index) => (
+                                <div key={index}>{item}</div>
+                            ))}
+                        </>
+                    </div> : null
+                }
+
                 <Table
                     showHeader={showHeader}
                     rowSelection={
@@ -297,7 +303,7 @@ export default function BaseTable({
                         showQuickJumper: true,
                         size: 'small',
                         onChange: (page: any, size) => {
-                            pagingChange(page,size);
+                            pagingChange(page, size);
                         },
                         onShowSizeChange: (page: any, size: any) => {
                             // pagingSizeChanges(size);

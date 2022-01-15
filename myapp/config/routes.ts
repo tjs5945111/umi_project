@@ -54,12 +54,12 @@
     icon: 'smile',
     component: './Xtsz',
   },
-  // {
-  //   path: '/dzmq',
-  //   name: '电子面签',
-  //   icon: 'smile',
-  //   component: './Dzmq',
-  // },
+  {
+    path: '/dzmq',
+    name: '电子面签',
+    icon: 'smile',
+    component: './Dzmq',
+  },
   {
     path: '/dzmq/detail',
     component: './Dzmq/dzDeatil',
