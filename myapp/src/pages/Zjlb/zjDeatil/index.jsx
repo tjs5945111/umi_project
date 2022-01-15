@@ -43,7 +43,7 @@ export default (props) => {
                 certificateTotalAmount,
             })
         }
-        videoEl.current.load();
+        videoEl?.current?.load();
     }
     function changType(value) {
         if (!Array.isArray(value)) return [];
