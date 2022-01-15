@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import BreadcrumbList from '@/components/BreadcrumbList';
 import imgs from '@/image/banner.png'
 import { getZjxq, downLoadFun, getLx, czsz } from '@/services/ant-design-pro/api';
-// import Player from 'griffith'
-import 'video-react/dist/video-react.css';
+
 import { Card, Select, Input, Form, message, Button } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import { get } from 'lodash';
