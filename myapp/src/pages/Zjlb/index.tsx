@@ -4,6 +4,7 @@ import BaseTable from '@/components/BaseTable';
 import { message, Divider, Radio } from 'antd';
 import { getZjlb, getLx, getZjlx, downLoadFun } from '@/services/ant-design-pro/api';
 import moment from 'moment';
+import { sizeChange } from '@/util/util';
 import styles from './index.less';
 
 const eum = {
@@ -59,7 +60,7 @@ export default () => {
         {
             title: '大小',
             // dataIndex: 'notarizationSize',
-            render: ({ notarizationSize }) => (<>{parseFloat(notarizationSize).toFixed(2)} kb</>)
+            render: ({ notarizationSize }) => (<>{sizeChange(notarizationSize)}</>)
         },
         {
             title: '取证时间',

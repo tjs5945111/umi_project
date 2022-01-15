@@ -2,11 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import BreadcrumbList from '@/components/BreadcrumbList';
 import imgs from '@/image/banner.png'
 import { getZjxq, downLoadFun, getLx, czsz } from '@/services/ant-design-pro/api';
-import Player from 'griffith'
+// import Player from 'griffith'
 import 'video-react/dist/video-react.css';
 import { Card, Select, Input, Form, message, Button } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import { get } from 'lodash';
+import { sizeChange } from '@/util/util';
 import styles from './index.less'
 
 const { Option } = Select;
@@ -18,6 +19,7 @@ export default (props) => {
     const status = props.location?.query?.status || '';
     const certificateTotalAmount = props.location?.query?.num || '';
     const formE = useRef(null);
+    const videoEl = useRef(null);
     const [detailData, setDetailData] = useState({});
     const [statusList, setStatusList] = useState([]);
     const [money, setMoney] = useState('');
@@ -41,6 +43,7 @@ export default (props) => {
                 certificateTotalAmount,
             })
         }
+        videoEl.current.load();
     }
     function changType(value) {
         if (!Array.isArray(value)) return [];
@@ -136,7 +139,7 @@ export default (props) => {
                             <div><span>姓名：</span>{detailData.userName||''}</div>
                             <div><span>手机号：</span>{detailData.phone||''}</div>
                             <div><span>分组</span>{detailData.notarizationGroup}</div>
-                            <div><span>大小：</span>{parseFloat(detailData.notarizationSize).toFixed(2)} kb</div>
+                            <div><span>大小：</span>{sizeChange(detailData.notarizationSize)}</div>
                             <div><span>取证时间：</span>{detailData.gmtForensics}</div>
                             <div><span>存证时间：</span>{detailData.gmtDeposit}</div>
                             {/* <div><span>出证时间：</span>{detailData.gmtDeposit}</div> */}
@@ -157,15 +160,10 @@ export default (props) => {
                                         return <img src={detailData.fileUrl} alt="" />
 
                                     case 'video':
-                                        return <Player sources={{
-                                            hd: {
-                                                play_url: detailData.fileUrl,
-                                            },
-                                            sd: {
-                                                play_url: detailData.fileUrl,
-                                            },
-                                        }} />
-
+                                        return <video width="320" height="240" controls ref={videoEl}>
+                                        <source src={detailData.fileUrl} type="video/mp4" />
+                                      您的浏览器不支持Video标签。
+                                      </video>
                                     case 'voice':
                                         return <audio src={detailData.fileUrl} controls="controls">
                                             您的浏览器不支持 audio 标签。
