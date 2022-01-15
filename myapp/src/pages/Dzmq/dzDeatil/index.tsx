@@ -130,13 +130,25 @@ export default (props) => {
                                 </div>
 
                             case 2:
-                                return <div></div>
+                                return <>
+                                    <div className={styles.stepthree}>
+                                        <div className={styles.left}>1</div>
+                                        <div className={styles.contain}>2</div>
+                                        <div className={styles.right}>3</div>
+
+                                    </div>
+                                    <div>
+                                        <Button type='primary' style={{ marginRight: '8px' }} onClick={() => setActive(() => active - 1)}>上一步</Button>
+                                        <Button type='primary' onClick={() => handeleNext()}>下一步</Button>
+                                    </div>
+                                </>
+
 
                             case 3:
-                                return <div></div>
+                                return <div>1</div>
 
                             default:
-                                break;
+                                return <div>123</div>
                         }
                     })()
                 }
