@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import BreadcrumbList from '@/components/BreadcrumbList';
 import imgs from '@/image/banner.png'
+import mammoth from 'mammoth'
+// import FileViewer from 'react-file-viewer';
+// import { CustomErrorComponent } from 'custom-error';
 
 import { Card, Form, Input, Button, Select, Drawer } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 
 import styles from './index.less'
+// const mammoth = window.Mammoth;
 const { Option } = Select;
 // const { Step } = Steps;
 
@@ -100,6 +104,7 @@ export default (props) => {
         e.stopPropagation();// 不再派发事件。解决Firefox浏览器，打开新窗口的问题。
         e.preventDefault()
         let namesEle = document.getElementById('names')
+        debugger
         if (!namesEle) return;
         let returnObj = e.dataTransfer.getData('Text')
         // let element = document.createElement("div");
@@ -112,7 +117,7 @@ export default (props) => {
     }
 
 
-   
+
     const mouseDown = evt => {
         let child = document.querySelector('#names')
         let mBounds = mouseBounds(
@@ -120,14 +125,14 @@ export default (props) => {
             child.getBoundingClientRect(),
             document.querySelector('#Contain').getBoundingClientRect()
         )
-        document.onmousemove = function(ev) {
+        document.onmousemove = function (ev) {
             let pt = calcPositon(ev, mBounds)
             child.style.left = pt.left + 'px'
             child.style.top = pt.top + 'px'
             child.style.opacity = 0.9
             child.style.cursor = 'move'
         }
-        document.onmouseup = function() {
+        document.onmouseup = function () {
             document.onmousemove = null
             document.onmouseup = null
             child.style.opacity = 1
@@ -139,14 +144,14 @@ export default (props) => {
             (pt.x > bounds.left && pt.x < bounds.right
                 ? pt.x
                 : pt.x >= bounds.right
-                ? bounds.right
-                : bounds.left) - bounds.offsetX
+                    ? bounds.right
+                    : bounds.left) - bounds.offsetX
         const top =
             (pt.y > bounds.top && pt.y < bounds.bottom
                 ? pt.y
                 : pt.y >= bounds.bottom
-                ? bounds.bottom
-                : bounds.top) - bounds.offsetY
+                    ? bounds.bottom
+                    : bounds.top) - bounds.offsetY
         return { left, top }
     }
     /**
@@ -167,6 +172,38 @@ export default (props) => {
         }
     }
 
+
+    function parseWordDocxFile(inputElement) {
+        var files = inputElement.currentTarget.files || [];
+        debugger
+        if (!files.length) return;
+        var file = files[0];
+    
+        console.time();
+        var reader = new FileReader();
+        reader.onloadend = function(event) {
+          var arrayBuffer = reader.result;
+          // debugger
+    
+          mammoth.convertToHtml({arrayBuffer: arrayBuffer}).then(function (resultObject) {
+            // result1.innerHTML = resultObject.value
+            console.log(resultObject.value)
+          })
+          console.timeEnd();
+    
+          mammoth.extractRawText({arrayBuffer: arrayBuffer}).then(function (resultObject) {
+            // result2.innerHTML = resultObject.valueçç
+            console.log(resultObject.value)
+          })
+    
+          mammoth.convertToMarkdown({arrayBuffer: arrayBuffer}).then(function (resultObject) {
+            // result3.innerHTML = resultObject.value
+            console.log(resultObject.value)
+          })
+        };
+        reader.readAsArrayBuffer(file);
+      }
+    
 
     return (
         <>
@@ -218,7 +255,7 @@ export default (props) => {
                                             name="date"
                                             rules={[{ required: false, message: '请输入' }]}
                                         >
-                                            <input type="file" />
+                                            <input type="file" onChange={e=>parseWordDocxFile(e)}/>
                                         </Form.Item>
                                         <Form.Item wrapperCol={{ offset: 6, span: 8 }}>
                                             <Button type="primary" htmlType="submit">
@@ -252,7 +289,15 @@ export default (props) => {
                                     <div className={styles.stepthree}>
                                         <div className={styles.left}>1</div>
                                         <div className={styles.contain} id='Contain'>
+                                            
                                             <div className={styles.names} id='names' onMouseDown={mouseDown}></div>
+                                            <iframe src='https://view.officeapps.live.com/op/view.aspx?src=http://storage.xuetangx.com/public_assets/xuetangx/PDF/1.xls' width='100%' height='100%' frameborder='none'>
+                                            </iframe>
+                                            {/* <FileViewer
+                                                fileType='http://example.com/image.png'
+                                                filePath='png'
+                                                // errorComponent={CustomErrorComponent}
+                                                onError={e => console.error(e)} /> */}
                                         </div>
                                         <div className={styles.right}>
                                             <div className={styles.title}>
