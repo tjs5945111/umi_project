@@ -5,7 +5,7 @@ import mammoth from 'mammoth'
 // import FileViewer from 'react-file-viewer';
 // import { CustomErrorComponent } from 'custom-error';
 
-import { Card, Form, Input, Button, Select, Drawer, Radio } from 'antd';
+import { Card, Form, Input, Button, Select, Drawer, Radio, Upload, message, Modal } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 
 import styles from './index.less'
@@ -18,6 +18,7 @@ export default (props) => {
     const [detailData, setDetailData] = useState({});
     const [active, setActive] = useState(0);
     const [fileData, setFileData] = useState('');
+    const [isModalVisible, setIsModalVisible] = useState(false);
     const qyEl = useRef(null);
     useEffect(() => {
         console.log(props, '1231323');
@@ -54,6 +55,10 @@ export default (props) => {
         setVisible(false);
     };
     const handeleNext = () => {
+        if (active === 2) {
+            // 签署
+            setIsModalVisible(true)
+        }
         setActive(() => active + 1)
     }
 
@@ -215,10 +220,51 @@ export default (props) => {
 
     }
     const handeleTs = () => {
-        if (!qyEl || !qyEl?.current) return;
-        const { setFieldsValue } = qyEl.current;
+        props.history?.push('/dzmq');
 
     }
+
+    const propsU = {
+        name: 'file',
+        action: '',
+        headers: {
+            authorization: 'authorization-text',
+        },
+        onChange(info) {
+            debugger
+            if (info.file.status !== 'uploading') {
+                console.log(info.file, info.fileList);
+            }
+            if (info.file.status === 'done') {
+                var reader = new FileReader();
+                reader.onloadend = function (event) {
+                    var arrayBuffer = reader.result;
+                    // debugger
+
+                    mammoth.convertToHtml({ arrayBuffer: arrayBuffer }).then(function (resultObject) {
+                        // result1.innerHTML = resultObject.value
+                        setFileData(resultObject.value)
+                        console.log(resultObject.value)
+                    })
+
+                    // mammoth.extractRawText({ arrayBuffer: arrayBuffer }).then(function (resultObject) {
+                    //     // result2.innerHTML = resultObject.value
+                    //     console.log(resultObject.value)
+                    // })
+
+                    // mammoth.convertToMarkdown({ arrayBuffer: arrayBuffer }).then(function (resultObject) {
+                    //     // result3.innerHTML = resultObject.value
+                    //     console.log(resultObject.value)
+                    // })
+                };
+                reader.readAsArrayBuffer(info.file?.originFileObj);
+                message.success(`${info.file.name} file uploaded successfully`);
+            } else if (info.file.status === 'error') {
+                message.error(`${info.file.name} file upload failed.`);
+            }
+        },
+    };
+
 
     return (
         <>
@@ -270,7 +316,10 @@ export default (props) => {
                                             name="date"
                                             rules={[{ required: false, message: '请输入' }]}
                                         >
-                                            <input type="file" onChange={e => parseWordDocxFile(e)} />
+                                            <Upload {...propsU}>
+                                                <Button icon={<UploadOutlined />}>上传文件</Button>
+                                            </Upload>
+                                            {/* <input type="file" onChange={e => parseWordDocxFile(e)} /> */}
                                         </Form.Item>
                                         <Form.Item wrapperCol={{ offset: 6, span: 8 }}>
                                             <Button type="primary" htmlType="submit">
@@ -302,11 +351,13 @@ export default (props) => {
                             case 2:
                                 return <>
                                     <div className={styles.stepthree}>
-                                        <div className={styles.left}>{fileData}</div>
+                                        <div className={styles.left}>
+                                            <div dangerouslySetInnerHTML={{ __html: fileData }} />
+                                        </div>
                                         <div className={styles.contain} id='Contain'>
 
                                             <div className={styles.names} id='names' onMouseDown={mouseDown}></div>
-                                            <div>{fileData}</div>
+                                            <div dangerouslySetInnerHTML={{ __html: fileData }} ></div>
                                             {/* <FileViewer
                                                 fileType='http://example.com/image.png'
                                                 filePath='png'
@@ -334,20 +385,18 @@ export default (props) => {
 
                             case 3:
                                 return <div className={styles.stepfore}>
-                                    <h3>基本信息</h3>
+                                    <h4>基本信息</h4>
                                     <div>
-                                        <p> <span>案件名称：</span> </p>
-                                        <p> <span>上传人：</span> </p>
-                                        <p> <span>文书数量：</span> </p>
+                                        <p> <span>案件名称：</span>这是名词 </p>
+                                        <p> <span>上传人：</span>张三 </p>
+                                        <p> <span>文书数量：</span>1 </p>
                                     </div>
-                                    <h3>签约</h3>
+                                    <h4>签约</h4>
                                     <div>
-                                        <p> <span>签约方：</span> </p>
+                                        <p> <span>签约方：张江公证处</span> </p>
                                     </div>
-                                    <h3>业务合同书</h3>
-                                    <div>
-                                        {fileData}
-                                    </div>
+                                    <h4>业务合同书</h4>
+                                    <div dangerouslySetInnerHTML={{ __html: fileData }} className={styles.contain} ></div>
                                     <div>
                                         <Button type='primary' style={{ marginRight: '8px' }} onClick={() => setActive(() => active - 1)}>上一步</Button>
                                         <Button type='primary' onClick={() => handeleTs()}>确认推送</Button>
@@ -420,6 +469,9 @@ export default (props) => {
                     </Form.Item>
                 </Form>
             </Drawer>
+            <Modal width={300} title="温馨提示" visible={isModalVisible} onOk={() => setIsModalVisible(false)} onCancel={() => setIsModalVisible(false)}>
+                <p>为了避免签约失败，请确认相关企业章和法人章都指定到合同中！</p>
+            </Modal>
         </>
     )
 }
