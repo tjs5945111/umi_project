@@ -65,6 +65,10 @@
     component: './Dzmq/dzDeatil',
   },
   {
+    path: '/dzmq/add',
+    component: './Dzmq/dzAdd',
+  },
+  {
     path: '/',
     redirect: '/manager/zjlb',
   },

@@ -172,7 +172,9 @@ export default () => {
         <div className={styles.contain}>
             <div className={styles.containHead}>
                 <h3>电子面签</h3>
-                <div className={styles.add} >add</div>
+                <div className={styles.add} onClick={() => {
+                            window.open(`/dzmq/add`);
+                        }} >add</div>
             </div>
             <Tabs defaultActiveKey="1" onChange={callback}>
                 <TabPane tab={`待签署(${totalSize})`} key="1">
