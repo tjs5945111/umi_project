@@ -10,13 +10,16 @@ import styles from './index.less';
 const { TabPane } = Tabs;
 export default () => {
     const [tenantList, setTenantList] = useState([]);
+    const [tenantListC, setTenantListC] = useState([]);
     const [loading, setLoading] = useState(true);
     const [totalSize, setTotalSize] = useState(0);
+    const [totalSizeC, setTotalSizeC] = useState(0);
     const [pageSize, setpageSize] = useState(10);
     const [searchWord, setSearchWord] = useState({});
     const [statusList, setStatusList] = useState([]);
     const [typeList, setTypeList] = useState([]);
     const [baseStatues, setBaseStatues] = useState({});
+    const [keys, setKeys] = useState(1);
 
     const columns = [
         {
@@ -79,8 +82,9 @@ export default () => {
             key: 'actionList',
             fixed: 'right',
             width: 200,
-            render: ({ status, id, notarizationWay, notarizationNumber, certificateTotalAmount }) => (
+            render: ({ id }) => (
                 <div
+
                     style={{
                         display: 'flex',
                         // minWidth: '60px',
@@ -105,36 +109,37 @@ export default () => {
 
     useEffect(() => {
         getList();
-        async function getmenu() {
-            const [statusData, typeData] = await Promise.all([
-                getLx(),
-                getZjlx(),
-            ])
-            setStatusList(changType(statusData))
-            setTypeList(changType(typeData))
-        }
-        getmenu();
     }, []);
 
     const getList = async (
         pageNum = 1,
         param = {},
         pageSize = 10,
+        type=[1,2]
     ) => {
         const params = {
             pageSize: pageNum,
             pageNumber: pageSize,
-            ...baseStatues,
             ...param,
         }
-        if (!Array.isArray(params.statuses)) {
-            params.statuses = [params.statuses]
-        }
-        const res = await getZjlb(params)
-        const { records, total, size } = res as any;
-        setTotalSize(total);
-        setpageSize(size);
-        setTenantList(records);
+        for (let i of type) {
+            let res ={}
+            let ress ={}
+            if(i === 1){
+                res = await getZjlb(params)
+                const { records, total, size } = res as any;
+                setTenantList(records);
+                setTotalSize(total);
+            }else{
+                ress = await getZjlb(params)
+                const { records, total, size } = ress as any;
+                setTenantListC(records);
+                setTotalSizeC(total);
+            }
+          }
+        
+        // setpageSize(size);
+        // setTenantList(records);
         setLoading(false);
     };
 
@@ -155,17 +160,23 @@ export default () => {
 
     const handlePaging = (num: any, size: any) => {
         setLoading(true);
-        getList(num, searchWord, size);
+        if(keys === 1){
+            getList(num, {status:'待签署'}, size);
+        }else{
+            getList(num, {status:'已完成'}, size);
+        }
+        setLoading(false);
+       
     };
 
     const pagingSizeChange = (size: any, searchWord: any) => {
-        setLoading(true);
-        setpageSize(size);
-        getList(1, searchWord, size);
+        // setLoading(true);
+        // setpageSize(size);
+        // getList(1, searchWord, size);
     };
 
     function callback(key) {
-        console.log(key);
+        setKeys(key)
     }
 
     return (
@@ -173,8 +184,14 @@ export default () => {
             <div className={styles.containHead}>
                 <h3>电子面签</h3>
                 <div className={styles.add} onClick={() => {
-                            window.open(`/dzmq/add`);
-                        }} >add</div>
+                    window.open(`/dzmq/add`);
+                }} >
+                    <img src="" alt="" />
+                    <div>
+                        <p>自定义合同新建</p>
+                        <p style={{ color: '#666' }}>支持pdf、word</p>
+                    </div>
+                </div>
             </div>
             <Tabs defaultActiveKey="1" onChange={callback}>
                 <TabPane tab={`待签署(${totalSize})`} key="1">
@@ -183,24 +200,20 @@ export default () => {
                         hideState={true}
                         loading={loading}
                         columns={columns as any}
-
-                        handleSearch={(e: any) => handleSearch(e)}
                         handlePaging={(e: any, v) => handlePaging(e, v)}
                         pagingSizeChange={(e: any, v) => pagingSizeChange(e, v)}
                         totalSize={totalSize}
                     />
                 </TabPane>
-                <TabPane tab={`已完成(${totalSize})`} key="2">
+                <TabPane tab={`已完成(${totalSizeC})`} key="2">
                     <BaseTable
-                        dataSource={tenantList || []}
+                        dataSource={tenantListC || []}
                         hideState={true}
                         loading={loading}
                         columns={columns as any}
-
-                        handleSearch={(e: any) => handleSearch(e)}
                         handlePaging={(e: any, v) => handlePaging(e, v)}
                         pagingSizeChange={(e: any, v) => pagingSizeChange(e, v)}
-                        totalSize={totalSize}
+                        totalSize={totalSizeC}
                     />
                 </TabPane>
             </Tabs>

@@ -1,425 +1,59 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import BreadcrumbList from '@/components/BreadcrumbList';
 import imgs from '@/image/banner.png'
-import mammoth from 'mammoth'
-// import FileViewer from 'react-file-viewer';
-// import { CustomErrorComponent } from 'custom-error';
 
-import { Card, Form, Input, Button, Select, Drawer, Radio } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import { Card, Form, Input, Button, Radio, DatePicker, message } from 'antd';
+import { getYyxq, yyzt } from '@/services/ant-design-pro/api';
+import moment from 'moment';
 
 import styles from './index.less'
-// const mammoth = window.Mammoth;
-const { Option } = Select;
-// const { Step } = Steps;
 
 export default (props) => {
     const type = props.location?.query?.type || '';
+    const detailId = props.location?.query?.id || '';
     const [detailData, setDetailData] = useState({});
-    const [active, setActive] = useState(0);
-    const [fileData, setFileData] = useState('');
-    const qyEl = useRef(null);
+
     useEffect(() => {
-        console.log(props, '1231323');
+        getList(detailId)
     }, [])
 
-    const getList = () => {
-        setDetailData({})
+    const getList = async (detailId) => {
+        const res = await getYyxq(detailId)
+        console.log(res);
+        setDetailData(res)
     }
 
     const urlArray = [
         {
-            name: '电子面签',
+            name: '电子面签列表',
             url: '/dzmq',
         },
         {
-            name: '自定义合同新建',
+            name: '电子面签详情',
         }
     ];
 
-    const onFinish = (values) => {
-        console.log('Success:', values);
-        const temp = active + 1
-        setActive(temp);
-    };
-
-    const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
-    };
-    const [visible, setVisible] = useState(false);
-    const showDrawer = () => {
-        setVisible(true);
-    };
-    const onClose = () => {
-        setVisible(false);
-    };
-    const handeleNext = () => {
-        setActive(() => active + 1)
-    }
-
-    useEffect(() => {
-        if (active === 2) {
-            let txtObj = document.getElementsByClassName('txt')
-            for (let i = 0; i < txtObj.length; i++) {
-                txtObj[i].ondragstart = handle_start
-                txtObj[i].ondrag = handle_drag
-                txtObj[i].ondragend = handle_end
-            }
-            let leftTarget = document.getElementById('Contain')
-
-            leftTarget.ondragenter = handle_enter
-            leftTarget.ondragover = handle_over
-            leftTarget.ondragleave = handle_leave
-            leftTarget.ondrop = handle_drop
-        }
-    }, [active])
-
-
-    function handle_start(e) {
-        e.dataTransfer.setData('Text', e.target.innerText)
-        console.log('handle_start-拖动开始')
-    }
-    function handle_drag(e) {
-        console.log('handle_drag-拖动中')
-    }
-    function handle_end(e) {
-        console.log('handle_end-拖动结束')
-    }
-
-
-    function handle_enter(e) {
-        e.preventDefault()
-        console.log('handle_enter-进入目的地')
-    }
-    function handle_over(e) {
-        e.preventDefault()
-        let returnObj = e.dataTransfer.getData('Text')
-        console.log(returnObj + '-handle_over-在目的地范围内')
-    }
-    function handle_leave(e) {
-        e.preventDefault()
-        let returnObj = e.dataTransfer.getData('Text')
-        console.log(returnObj)
-        console.log('handle_leave-没有放下就离开目的地')
-    }
-    function handle_drop(e) {
-        e.stopPropagation();// 不再派发事件。解决Firefox浏览器，打开新窗口的问题。
-        e.preventDefault()
-        let namesEle = document.getElementById('names')
-        debugger
-        if (!namesEle) return;
-        let returnObj = e.dataTransfer.getData('Text')
-        // let element = document.createElement("div");
-        namesEle.innerHTML = returnObj;
-        namesEle.style.cssText = 'display:block'
-        // if (returnObj) {
-        //     e.target.appendChild(namesEle)
-        // }
-        console.log(returnObj + '-handle_drop-在目的地区释放')
-    }
-
-
-
-    const mouseDown = evt => {
-        let child = document.querySelector('#names')
-        let mBounds = mouseBounds(
-            evt.nativeEvent,
-            child.getBoundingClientRect(),
-            document.querySelector('#Contain').getBoundingClientRect()
-        )
-        document.onmousemove = function (ev) {
-            let pt = calcPositon(ev, mBounds)
-            child.style.left = pt.left + 'px'
-            child.style.top = pt.top + 'px'
-            child.style.opacity = 0.9
-            child.style.cursor = 'move'
-        }
-        document.onmouseup = function () {
-            document.onmousemove = null
-            document.onmouseup = null
-            child.style.opacity = 1
-            child.style.cursor = 'default'
-        }
-    }
-
-    const calcPositon = (pt, bounds) => {
-        const left =
-            (pt.x > bounds.left && pt.x < bounds.right
-                ? pt.x
-                : pt.x >= bounds.right
-                    ? bounds.right
-                    : bounds.left) - bounds.offsetX
-        const top =
-            (pt.y > bounds.top && pt.y < bounds.bottom
-                ? pt.y
-                : pt.y >= bounds.bottom
-                    ? bounds.bottom
-                    : bounds.top) - bounds.offsetY
-        return { left, top }
-    }
-    /**
-     * 鼠标可以移动的范围
-     * pt:鼠标按下的点
-     * compRact：要移动组件的矩形对象
-     * containerRact：容器的矩形对象
-     * return 的范围为浏览器窗口中的范围（offset为左上角相对于浏览器的偏移）
-     */
-    const mouseBounds = (pt, compRact, containerRact) => {
-        return {
-            left: containerRact.left + (pt.x - compRact.left),
-            right: containerRact.right - (compRact.right - pt.x),
-            top: containerRact.top + (pt.y - compRact.top),
-            bottom: containerRact.bottom - (compRact.bottom - pt.y),
-            offsetX: containerRact.left + (pt.x - compRact.left),
-            offsetY: containerRact.top + (pt.y - compRact.top)
-        }
-    }
-
-
-    function parseWordDocxFile(inputElement) {
-        var files = inputElement.currentTarget.files || [];
-        debugger
-        if (!files.length) return;
-        var file = files[0];
-
-        console.time();
-        var reader = new FileReader();
-        reader.onloadend = function (event) {
-            var arrayBuffer = reader.result;
-            // debugger
-
-            mammoth.convertToHtml({ arrayBuffer: arrayBuffer }).then(function (resultObject) {
-                // result1.innerHTML = resultObject.value
-                setFileData(resultObject.value)
-                console.log(resultObject.value)
-            })
-            console.timeEnd();
-
-            // mammoth.extractRawText({ arrayBuffer: arrayBuffer }).then(function (resultObject) {
-            //     // result2.innerHTML = resultObject.value
-            //     console.log(resultObject.value)
-            // })
-
-            // mammoth.convertToMarkdown({ arrayBuffer: arrayBuffer }).then(function (resultObject) {
-            //     // result3.innerHTML = resultObject.value
-            //     console.log(resultObject.value)
-            // })
-        };
-        reader.readAsArrayBuffer(file);
-    }
-
-    const handleOk = () => {
-        if (!qyEl || !qyEl?.current) return;
-        const { setFieldsValue } = qyEl.current;
-
-
-    }
-    const handeleTs = () => {
-        if (!qyEl || !qyEl?.current) return;
-        const { setFieldsValue } = qyEl.current;
-
-    }
 
     return (
         <>
             <BreadcrumbList urls={urlArray} />
             <Card bordered={false} className={styles.contain}>
-
-                <h3>自定义合同新建</h3>
-                {/* <Upload action="https://www.mocky.io/v2/5cc8019d300000980a055e76" directory>
-    <Button icon={<UploadOutlined />}>Upload Directory</Button>
-  </Upload> */}
-                <div className={styles.contan}>
-                    {
-                        ['新增案件', '选择签约主体', '签署合同', '确认推送'].map((item, index) => (
-                            <div className={`${styles.item} ${index === active ? styles.active : ''}`} >
-                                <div className={styles.num}>{index + 1}</div>
-                                <div className={styles.title}>{item}</div>
-                                {
-                                    index !== 3 ? <div className={styles.line}></div> : null
-                                }
-
-                            </div>
-                        ))
-                    }
-                    <div></div>
+                <div className={styles.stepfore}>
+                    <h4>基本信息</h4>
+                    <div>
+                        <p> <span>案件名称：</span>这是名词 </p>
+                        <p> <span>上传人：</span>张三 </p>
+                        <p> <span>文书数量：</span>1 </p>
+                    </div>
+                    <h4>签约</h4>
+                    <div>
+                        <p> <span>签约方：张江公证处</span> </p>
+                    </div>
+                    <h4>业务合同书</h4>
+                    <div dangerouslySetInnerHTML={{ __html: 'fileData' }} className={styles.contain} ></div>
                 </div>
-                {
-                    (() => {
-                        switch (active) {
-                            case 0:
-                                return <div className={styles.form}>
-                                    <Form
-                                        name="basic"
-                                        labelCol={{ span: 6 }}
-                                        wrapperCol={{ span: 8 }}
-                                        initialValues={{ remember: true }}
-                                        onFinish={onFinish}
-                                        onFinishFailed={onFinishFailed}
-                                        autoComplete="off"
-                                    >
-                                        <Form.Item
-                                            label="新增案件名称"
-                                            name="status"
-                                            rules={[{ required: false, message: '请输入' }]}
-                                        >
-                                            <Input />
-                                        </Form.Item>
-                                        <Form.Item
-                                            label="上传文件合同"
-                                            name="date"
-                                            rules={[{ required: false, message: '请输入' }]}
-                                        >
-                                            <input type="file" onChange={e => parseWordDocxFile(e)} />
-                                        </Form.Item>
-                                        <Form.Item wrapperCol={{ offset: 6, span: 8 }}>
-                                            <Button type="primary" htmlType="submit">
-                                                下一步
-                                            </Button>
-                                        </Form.Item>
-                                    </Form>
-                                </div>
-
-                            case 1:
-                                return <div className={styles.steptwo}>
-                                    <Button type='primary' onClick={() => setVisible(true)} >添加签约主体</Button>
-                                    <div className={styles.stept}>
-                                        <img src="" alt="" />
-                                        <div>
-                                            <h4>个人主体</h4>
-                                            <p>姓名：</p>
-                                            <p>手机号：</p>
-                                            <p>身份证号：</p>
-                                            <p><a href="#">编辑</a> ｜ <a href="#">删除</a></p>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <Button type='primary' style={{ marginRight: '8px' }} onClick={() => setActive(() => active - 1)}>上一步</Button>
-                                        <Button type='primary' onClick={() => handeleNext()}>下一步</Button>
-                                    </div>
-                                </div>
-
-                            case 2:
-                                return <>
-                                    <div className={styles.stepthree}>
-                                        <div className={styles.left}>{fileData}</div>
-                                        <div className={styles.contain} id='Contain'>
-
-                                            <div className={styles.names} id='names' onMouseDown={mouseDown}></div>
-                                            <div>{fileData}</div>
-                                            {/* <FileViewer
-                                                fileType='http://example.com/image.png'
-                                                filePath='png'
-                                                // errorComponent={CustomErrorComponent}
-                                                onError={e => console.error(e)} /> */}
-                                        </div>
-                                        <div className={styles.right}>
-                                            <div className={styles.title}>
-                                                <h3>主体</h3>
-                                            </div>
-                                            <div className={styles.contain}>
-                                                <div draggable className='txt'>童建设</div>
-
-                                                <div>签署</div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div>
-                                        <Button type='primary' style={{ marginRight: '8px' }} onClick={() => setActive(() => active - 1)}>上一步</Button>
-                                        <Button type='primary' onClick={() => handeleNext()}>下一步</Button>
-                                    </div>
-                                </>
-
-
-                            case 3:
-                                return <div className={styles.stepfore}>
-                                    <h3>基本信息</h3>
-                                    <div>
-                                        <p> <span>案件名称：</span> </p>
-                                        <p> <span>上传人：</span> </p>
-                                        <p> <span>文书数量：</span> </p>
-                                    </div>
-                                    <h3>签约</h3>
-                                    <div>
-                                        <p> <span>签约方：</span> </p>
-                                    </div>
-                                    <h3>业务合同书</h3>
-                                    <div>
-                                        {fileData}
-                                    </div>
-                                    <div>
-                                        <Button type='primary' style={{ marginRight: '8px' }} onClick={() => setActive(() => active - 1)}>上一步</Button>
-                                        <Button type='primary' onClick={() => handeleTs()}>确认推送</Button>
-                                    </div>
-                                </div>
-
-                            default:
-                                return
-                        }
-                    })()
-                }
-
 
             </Card>
-            <Drawer title="签约主体" placement="right" onClose={onClose} visible={visible} footer={true}>
-                <Form
-                    name="basic"
-                    ref={qyEl}
-                    labelCol={{ span: 6 }}
-                    wrapperCol={{ span: 8 }}
-                    // initialValues={{ remember: true }}
-                    onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
-                    autoComplete="off"
-                >
-                    <Form.Item
-                        label="签约主体类型"
-                        name="status"
-                        rules={[{ required: false, message: '请输入' }]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="签约主体姓名"
-                        name="date"
-                        rules={[{ required: false, message: '请输入' }]}
-                    >
-                        <input type="file" onChange={e => parseWordDocxFile(e)} />
-                    </Form.Item>
-                    <Form.Item
-                        label="签约主体手机号"
-                        name="date"
-                        rules={[{ required: false, message: '请输入' }]}
-                    >
-                        <input type="file" onChange={e => parseWordDocxFile(e)} />
-                    </Form.Item>
-                    <Form.Item
-                        label="证件类型"
-                        name="date"
-                        rules={[{ required: false, message: '请输入' }]}
-                    >
-                        <input type="file" onChange={e => parseWordDocxFile(e)} />
-                    </Form.Item>
-                    <Form.Item
-                        label="证件号码"
-                        name="date"
-                        rules={[{ required: false, message: '请输入' }]}
-                    >
-                        <input type="file" onChange={e => parseWordDocxFile(e)} />
-                    </Form.Item>
-                    <Form.Item
-                        label="是否需要活体检验"
-                        name="date"
-                        rules={[{ required: false, message: '请输入' }]}
-                    >
-                        <Radio.Group>
-                            <Radio value="是">是</Radio>
-                            <Radio value="否">否</Radio>
-                        </Radio.Group>
-                    </Form.Item>
-                </Form>
-            </Drawer>
         </>
     )
 }
