@@ -5,7 +5,7 @@ import mammoth from 'mammoth'
 // import FileViewer from 'react-file-viewer';
 // import { CustomErrorComponent } from 'custom-error';
 
-import { Card, Form, Input, Button, Select, Drawer, Radio, Upload, message, Modal } from 'antd';
+import { Card, Form, Input, Button, Select, Drawer, Radio, Upload, message, Modal, Space } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 
 import styles from './index.less'
@@ -16,6 +16,7 @@ const { Option } = Select;
 export default (props) => {
     const type = props.location?.query?.type || '';
     const [detailData, setDetailData] = useState({});
+    const [feilSuccess, setFeilSuccess] = useState(false);
     const [active, setActive] = useState(0);
     const [fileData, setFileData] = useState('');
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -111,7 +112,7 @@ export default (props) => {
         e.stopPropagation();// 不再派发事件。解决Firefox浏览器，打开新窗口的问题。
         e.preventDefault()
         let namesEle = document.getElementById('names')
-        debugger
+        // debugger
         if (!namesEle) return;
         let returnObj = e.dataTransfer.getData('Text')
         // let element = document.createElement("div");
@@ -231,7 +232,6 @@ export default (props) => {
             authorization: 'authorization-text',
         },
         onChange(info) {
-            debugger
             if (info.file.status !== 'uploading') {
                 console.log(info.file, info.fileList);
             }
@@ -258,12 +258,17 @@ export default (props) => {
                     // })
                 };
                 reader.readAsArrayBuffer(info.file?.originFileObj);
-                message.success(`${info.file.name} file uploaded successfully`);
+                setFeilSuccess(true)
+                // message.success(`${info.file.name} file uploaded successfully`);
             } else if (info.file.status === 'error') {
                 message.error(`${info.file.name} file upload failed.`);
             }
         },
     };
+
+    const ztSubmit = () => {
+        // 主体添加
+    }
 
 
     return (
@@ -272,9 +277,6 @@ export default (props) => {
             <Card bordered={false} className={styles.contain}>
 
                 <h3>自定义合同新建</h3>
-                {/* <Upload action="https://www.mocky.io/v2/5cc8019d300000980a055e76" directory>
-    <Button icon={<UploadOutlined />}>Upload Directory</Button>
-  </Upload> */}
                 <div className={styles.contan}>
                     {
                         ['新增案件', '选择签约主体', '签署合同', '确认推送'].map((item, index) => (
@@ -322,6 +324,9 @@ export default (props) => {
                                             {/* <input type="file" onChange={e => parseWordDocxFile(e)} /> */}
                                         </Form.Item>
                                         <Form.Item wrapperCol={{ offset: 6, span: 8 }}>
+                                            {/* <Button type="primary" htmlType="submit" disabled={!feilSuccess}>
+                                                下一步
+                                            </Button> */}
                                             <Button type="primary" htmlType="submit">
                                                 下一步
                                             </Button>
@@ -411,12 +416,22 @@ export default (props) => {
 
 
             </Card>
-            <Drawer title="签约主体" placement="right" onClose={onClose} visible={visible} footer={true}>
+            <Drawer title="签约主体" placement="right" onClose={onClose} visible={visible} footer={true} width={500} footer={
+                <Space>
+
+                    <Button onClick={onClose}>取消</Button>
+                    <Button type="primary" onClick={ztSubmit}>
+                        提交
+                    </Button>
+                    {/* </div> */}
+
+                </Space>
+            }>
                 <Form
                     name="basic"
                     ref={qyEl}
-                    labelCol={{ span: 6 }}
-                    wrapperCol={{ span: 8 }}
+                    labelCol={{ span: 8 }}
+                    wrapperCol={{ span: 14 }}
                     // initialValues={{ remember: true }}
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
@@ -427,35 +442,35 @@ export default (props) => {
                         name="status"
                         rules={[{ required: false, message: '请输入' }]}
                     >
-                        <Input />
+                        <Input placeholder='请输入' />
                     </Form.Item>
                     <Form.Item
                         label="签约主体姓名"
                         name="date"
                         rules={[{ required: false, message: '请输入' }]}
                     >
-                        <input type="file" onChange={e => parseWordDocxFile(e)} />
+                        <Input />
                     </Form.Item>
                     <Form.Item
                         label="签约主体手机号"
                         name="date"
                         rules={[{ required: false, message: '请输入' }]}
                     >
-                        <input type="file" onChange={e => parseWordDocxFile(e)} />
+                        <Input placeholder='请输入' />
                     </Form.Item>
                     <Form.Item
                         label="证件类型"
                         name="date"
                         rules={[{ required: false, message: '请输入' }]}
                     >
-                        <input type="file" onChange={e => parseWordDocxFile(e)} />
+                        <Input placeholder='请输入' />
                     </Form.Item>
                     <Form.Item
                         label="证件号码"
                         name="date"
                         rules={[{ required: false, message: '请输入' }]}
                     >
-                        <input type="file" onChange={e => parseWordDocxFile(e)} />
+                        <Input placeholder='请输入' />
                     </Form.Item>
                     <Form.Item
                         label="是否需要活体检验"

@@ -61,6 +61,16 @@
     component: './Dzmq',
   },
   {
+    path: '/yzgl',
+    name: '印章管理',
+    icon: 'smile',
+    component: './Yzgl',
+  },
+  {
+    path: '/yzgl/detail',
+    component: './Yzgl/YzDeatil',
+  },
+  {
     path: '/dzmq/detail',
     component: './Dzmq/dzDeatil',
   },

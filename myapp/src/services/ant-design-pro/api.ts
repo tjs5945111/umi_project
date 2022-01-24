@@ -348,6 +348,84 @@ export async function getZjlx(params?: { [key: string]: any },) {
   });
 }
 
+/** 电签列表 */
+export async function getDqlb(params: any) {
+  let tempData = {
+    api: "reserve",
+    request: JSON.stringify(params),
+    method: "selectReservePage"
+  }
+  return request<API.LoginResult>('/manager/selectReservePage.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(tempData)
+  });
+}
+/** 主体列表 */
+export async function ztList(params: any) {
+  let tempData = {
+    api: "reserve",
+    request: JSON.stringify(params),
+    method: "selectReservePage"
+  }
+  return request<API.LoginResult>('/manager/selectReservePage.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(tempData)
+  });
+}
+
+
+/** 电签添加 */
+export async function dqAdd(params: any) {
+  return request<API.LoginResult>('/manager/updateUserAuth.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: params
+  });
+}
+/** 主体添加 */
+export async function ztAdd(params: any) {
+  return request<API.LoginResult>('/manager/updateUserAuth.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: params
+  });
+}
+/** 主体修改 */
+export async function changeZt(params: any) {
+  return request<API.LoginResult>('/manager/updateUserAuth.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: params
+  });
+}
+/** 主体删除 */
+export async function ztDelect(params: any) {
+  let tempData = {
+    api: "userAuth",
+    request: params,
+    method: "deleteUserAuth"
+  }
+  return request<API.LoginResult>('/manager/deleteUserAuth.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(tempData)
+  });
+}
+
 /** 此处后端没有提供注释 GET /api/notices */
 export async function getNotices(options?: { [key: string]: any }) {
   return request<API.NoticeIconList>('/api/notices', {

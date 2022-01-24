@@ -18,7 +18,6 @@ export default () => {
 
     const columns = [
         {
-            width: 100,
             title: '编号',
             dataIndex: 'id',
         },

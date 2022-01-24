@@ -51,7 +51,7 @@ export default () => {
                     <a
                         style={{ marginRight: 30 }}
                         onClick={() => {
-                            window.open(`./rygl/detail?id=${data.id}&type=VIEW`);
+                            window.open(`/yzgl/detail?id=${data.id}&type=VIEW`);
                         }}
                     >
                         编辑
@@ -157,7 +157,7 @@ export default () => {
                 hideState={true}
                 loading={loading}
                 columns={columns as any}
-                tableName="人员管理"
+                tableName="印章管理"
                 handleSearch={(e: any) => handleSearch(e)}
                 handlePaging={(e: any, v) => handlePaging(e, v)}
                 pagingSizeChange={(e: any, v) => pagingSizeChange(e, v)}

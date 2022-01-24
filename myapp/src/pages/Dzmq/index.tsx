@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import BaseTable from '@/components/BaseTable';
 import { message, Tabs } from 'antd';
-import { getZjlb, getLx, getZjlx } from '@/services/ant-design-pro/api';
+import { ztList } from '@/services/ant-design-pro/api';
 import moment from 'moment';
 import { sizeChange } from '@/util/util';
 import styles from './index.less';
@@ -14,11 +14,6 @@ export default () => {
     const [loading, setLoading] = useState(true);
     const [totalSize, setTotalSize] = useState(0);
     const [totalSizeC, setTotalSizeC] = useState(0);
-    const [pageSize, setpageSize] = useState(10);
-    const [searchWord, setSearchWord] = useState({});
-    const [statusList, setStatusList] = useState([]);
-    const [typeList, setTypeList] = useState([]);
-    const [baseStatues, setBaseStatues] = useState({});
     const [keys, setKeys] = useState(1);
 
     const columns = [
@@ -126,12 +121,14 @@ export default () => {
             let res ={}
             let ress ={}
             if(i === 1){
-                res = await getZjlb(params)
+                params.status='待签署';
+                res = await ztList(params)
                 const { records, total, size } = res as any;
                 setTenantList(records);
                 setTotalSize(total);
             }else{
-                ress = await getZjlb(params)
+                params.status='已完成';
+                ress = await ztList(params)
                 const { records, total, size } = ress as any;
                 setTenantListC(records);
                 setTotalSizeC(total);
@@ -141,21 +138,6 @@ export default () => {
         // setpageSize(size);
         // setTenantList(records);
         setLoading(false);
-    };
-
-    function changType(value) {
-        if (!Array.isArray(value)) return [];
-        const tempData = [];
-        value.map(ele => {
-            tempData.push({ name: ele, value: ele });
-        })
-        return tempData;
-    };
-
-    const handleSearch = (data: any) => {
-        setLoading(true);
-        getList(1, data);
-        setSearchWord(data)
     };
 
     const handlePaging = (num: any, size: any) => {
