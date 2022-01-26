@@ -5,6 +5,7 @@ import imgs from '@/image/banner.png'
 import { Card, Form, Input, Button, Radio, DatePicker, message } from 'antd';
 import { getDqDeatil } from '@/services/ant-design-pro/api';
 import moment from 'moment';
+// import FileViewer from 'react-file-viewer';
 
 import styles from './index.less'
 
@@ -18,7 +19,7 @@ export default (props) => {
     }, [])
 
     const getList = async (detailId) => {
-        const res = await getDqDeatil({id:detailId})
+        const res = await getDqDeatil({ id: detailId })
         console.log(res);
         setDetailData(res)
     }
@@ -41,16 +42,23 @@ export default (props) => {
                 <div className={styles.stepfore}>
                     <h4>基本信息</h4>
                     <div>
-                        <p> <span>案件名称：</span>这是名词 </p>
-                        <p> <span>上传人：</span>张三 </p>
-                        <p> <span>文书数量：</span>1 </p>
+                        <p> <span>案件名称：</span>{detailData.name}</p>
+                        <p> <span>上传人：</span>{detailData.contractCaseSignerResponseVOS?.name}</p>
+                        <p> <span>文书数量：</span>{detailData.docCount}</p>
                     </div>
                     <h4>签约</h4>
                     <div>
-                        <p> <span>签约方：张江公证处</span> </p>
+                        <p> <span>签约方：</span>{detailData.contractCaseSignerResponseVOS?.name}({detailData.contractCaseSignerResponseVOS?.mobile}) </p>
+                        <p> <span>发起方：</span>{detailData.initiator} </p>
                     </div>
                     <h4>业务合同书</h4>
-                    <div dangerouslySetInnerHTML={{ __html: 'fileData' }} className={styles.contain} ></div>
+                    <div className={styles.contain} >
+                        {/* <FileViewer
+                                                fileType='http://example.com/image.png'
+                                                filePath='png'
+                                                // errorComponent={CustomErrorComponent}
+                                                onError={e => console.error(e)} /> */}
+                    </div>
                 </div>
 
             </Card>

@@ -20,6 +20,7 @@ export default (props) => {
     const [feilSuccess, setFeilSuccess] = useState(false);
     const [active, setActive] = useState(0);
     const [fileData, setFileData] = useState('');
+    const [isqs, setIsqs] = useState(false);
     const [caseId, setCaseId] = useState('');
     const [ajData, setAjData] = useState({});
     const [userData, setUserData] = useState({});
@@ -52,7 +53,7 @@ export default (props) => {
         const res = await addOne(params);
         console.log('res', res);
         if (res.code === 'ok') {
-        setCaseId(res.data.id);
+            setCaseId(res.data.id);
             const temp = active + 1
             setActive(temp);
         }
@@ -73,9 +74,16 @@ export default (props) => {
     const handeleNext = async () => {
         if (active === 2) {
             // 签署
-            setIsModalVisible(true)
-        }
-        setActive(() => active + 1)
+            if (isqs) {
+                message.error('请先将签约主体，拖拽至合同右下方位置')
+                return
+            } else {
+                setIsModalVisible(true)
+            }
+
+        }else if(active === 3){
+            setActive(() => active + 1)
+        }   
     }
 
     useEffect(() => {
@@ -128,6 +136,7 @@ export default (props) => {
         e.preventDefault()
         let namesEle = document.getElementById('names')
         // debugger
+        setIsqs(true);
         if (!namesEle) return;
         let returnObj = e.dataTransfer.getData('Text')
         // let element = document.createElement("div");
@@ -236,7 +245,7 @@ export default (props) => {
 
     }
     const handeleTs = async () => {
-        const res = await ts({flowId:ajData.flowId})
+        const res = await ts({ flowId: ajData.flowId })
         if (res.code === 'ok') {
             props.history?.push('/dzmq');
         }

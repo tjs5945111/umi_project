@@ -365,7 +365,7 @@ export async function getDqlb(params: any) {
 }
 /** 电签详情 */
 export async function getDqDeatil(params: any) {
-  return request<API.LoginResult>('/manager/case/search.json', {
+  return request<API.LoginResult>('/manager/case/query.json', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
