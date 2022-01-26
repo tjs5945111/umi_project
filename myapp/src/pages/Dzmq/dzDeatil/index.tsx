@@ -3,7 +3,7 @@ import BreadcrumbList from '@/components/BreadcrumbList';
 import imgs from '@/image/banner.png'
 
 import { Card, Form, Input, Button, Radio, DatePicker, message } from 'antd';
-import { getYyxq, yyzt } from '@/services/ant-design-pro/api';
+import { getDqDeatil } from '@/services/ant-design-pro/api';
 import moment from 'moment';
 
 import styles from './index.less'
@@ -18,7 +18,7 @@ export default (props) => {
     }, [])
 
     const getList = async (detailId) => {
-        const res = await getYyxq(detailId)
+        const res = await getDqDeatil({id:detailId})
         console.log(res);
         setDetailData(res)
     }

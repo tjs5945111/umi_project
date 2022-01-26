@@ -355,12 +355,32 @@ export async function getDqlb(params: any) {
     request: JSON.stringify(params),
     method: "selectReservePage"
   }
-  return request<API.LoginResult>('/manager/selectReservePage.json', {
+  return request<API.LoginResult>('/manager/case/search.json', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(tempData)
+    body: JSON.stringify(params)
+  });
+}
+/** 电签详情 */
+export async function getDqDeatil(params: any) {
+  return request<API.LoginResult>('/manager/case/search.json', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    params,
+  });
+}
+/** 电签文件上传 */
+export async function wjsc(params: any) {
+  return request<API.LoginResult>('/manager/signdoc/upload.json', {
+    method: 'POST',
+    headers: {
+      authorization: 'authorization-text',
+    },
+    params,
   });
 }
 /** 主体列表 */
@@ -380,6 +400,16 @@ export async function ztList(params: any) {
 }
 
 
+/** 电签第一步 */
+export async function addOne(params: any) {
+  return request<API.LoginResult>('/manager/signdoc/save.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: params
+  });
+}
 /** 电签添加 */
 export async function dqAdd(params: any) {
   return request<API.LoginResult>('/manager/updateUserAuth.json', {
@@ -392,7 +422,7 @@ export async function dqAdd(params: any) {
 }
 /** 主体添加 */
 export async function ztAdd(params: any) {
-  return request<API.LoginResult>('/manager/updateUserAuth.json', {
+  return request<API.LoginResult>('/manager/signer/add.json', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -412,17 +442,63 @@ export async function changeZt(params: any) {
 }
 /** 主体删除 */
 export async function ztDelect(params: any) {
-  let tempData = {
-    api: "userAuth",
-    request: params,
-    method: "deleteUserAuth"
-  }
   return request<API.LoginResult>('/manager/deleteUserAuth.json', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    params
+  });
+}
+
+/** 流程 */
+export async function lcOne(params: any) {
+  return request<API.LoginResult>('/manager/flow/create.json', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(tempData)
+    data: params
+  });
+}
+/** 流程 */
+export async function lcTwo(params: any) {
+  return request<API.LoginResult>('/manager/flow/addoc.json', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    params
+  });
+}
+/** 流程 */
+export async function lcThree(params: any) {
+  return request<API.LoginResult>('/manager/flow/addsigner.json', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    params
+  });
+}
+/** 流程 */
+export async function lcFore(params: any) {
+  return request<API.LoginResult>('/manager/flow/start.json', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    params
+  });
+}
+/** 流程 */
+export async function ts(params: any) {
+  return request<API.LoginResult>('/manager/flow/notify.json', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    params
   });
 }
 

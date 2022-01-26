@@ -3,7 +3,7 @@ import BreadcrumbList from '@/components/BreadcrumbList';
 import { getJsbc, getJslb, getJsxg, ryxq } from '@/services/ant-design-pro/api';
 import imgs from '@/image/banner.png'
 
-import { Card, Form, Input, Button, Select, message, } from 'antd';
+import { Card, Form, Input, Button, Select, message,Radio } from 'antd';
 
 import styles from './index.less'
 const { Option } = Select;
@@ -84,20 +84,90 @@ export default (props) => {
             <BreadcrumbList urls={urlArray} />
             <Card bordered={false} className={styles.contain}>
 
-                <h3>添加人员</h3>
+                <h3>{id ? '修改印章' : '添加印章'}</h3>
                 <div className={styles.form}>
                     <Form
                         ref={formE}
                         name="basic"
                         labelCol={{ span: 8 }}
                         wrapperCol={{ span: 16 }}
-                        initialValues={{ remember: true }}
+                        initialValues={{ dj: '否' }}
                         onFinish={onFinish}
                         onFinishFailed={onFinishFailed}
                         autoComplete="off"
                     >
+                          <Form.Item
+                            label="印章名称"
+                            name="access"
+                            rules={[{ required: true, message: '请输入' }]}
+                        >
+                            <Input placeholder='请输入'/>
+                        </Form.Item>
+                          <Form.Item
+                            label="印章编码"
+                            name="access"
+                            rules={[{ required: true, message: '请输入' }]}
+                        >
+                            <Input placeholder='请输入'/>
+                        </Form.Item>
+                          <Form.Item
+                            label="印章形状"
+                            name="access"
+                            rules={[{ required: true, message: '请输入' }]}
+                        >
+                            <Input placeholder='请输入'/>
+                        </Form.Item>
+                          <Form.Item
+                            label="印章类型"
+                            name="access"
+                            rules={[{ required: true, message: '请输入' }]}
+                        >
+                            <Input placeholder='请输入'/>
+                        </Form.Item>
+                          <Form.Item
+                            label="印章用途"
+                            name="access"
+                            rules={[{ required: true, message: '请输入' }]}
+                        >
+                            <Input placeholder='请输入'/>
+                        </Form.Item>
+                          <Form.Item
+                            label="公司名称"
+                            name="access"
+                            rules={[{ required: true, message: '请输入' }]}
+                        >
+                            <Input placeholder='请输入'/>
+                        </Form.Item>
+                          <Form.Item
+                            label="法人"
+                            name="access"
+                            rules={[{ required: true, message: '请输入' }]}
+                        >
+                            <Input placeholder='请输入'/>
+                        </Form.Item>
+                          <Form.Item
+                            label="公司地址"
+                            name="access"
+                            rules={[{ required: true, message: '请输入' }]}
+                        >
+                            <Input placeholder='请输入'/>
+                        </Form.Item>
+                          <Form.Item
+                            label="邮编"
+                            name="access"
+                            rules={[{ required: false, message: '请输入' }]}
+                        >
+                            <Input placeholder='请输入'/>
+                        </Form.Item>
+                          <Form.Item
+                            label="电话"
+                            name="access"
+                            rules={[{ required: true, message: '请输入' }]}
+                        >
+                            <Input placeholder='请输入'/>
+                        </Form.Item>
                         <Form.Item
-                            label="角色"
+                            label="电子邮件"
                             name="role"
                             rules={[{ required: true, message: '请选择' }]}
                         >
@@ -113,18 +183,14 @@ export default (props) => {
                         </Form.Item>
 
                         <Form.Item
-                            label="账号"
-                            name="access"
-                            rules={[{ required: true, message: '请输入' }]}
+                            label="冻结"
+                            name="dj"
+                            rules={[{ required: false, message: '请输入' }]}
                         >
-                            <Input />
-                        </Form.Item>
-                        <Form.Item
-                            label="密码"
-                            name="secret"
-                            rules={[{ required: true, message: '请输入' }]}
-                        >
-                            <Input.Password />
+                             <Radio.Group>
+                            <Radio value="是">是</Radio>
+                            <Radio value="否">否</Radio>
+                        </Radio.Group>
                         </Form.Item>
                         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                             <Button type="primary" htmlType="submit">

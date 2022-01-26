@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import BreadcrumbList from '@/components/BreadcrumbList';
 import imgs from '@/image/banner.png'
-import mammoth from 'mammoth'
+import mammoth from 'mammoth';
+import { addOne, ztAdd, ztDelect, lcFore, lcThree, lcTwo, lcOne, ts } from '@/services/ant-design-pro/api'
 // import FileViewer from 'react-file-viewer';
 // import { CustomErrorComponent } from 'custom-error';
 
-import { Card, Form, Input, Button, Select, Drawer, Radio, Upload, message, Modal, Space } from 'antd';
+import { Card, Form, Input, Button, Select, Drawer, Radio, Upload, message, Modal, Space, Empty } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 
 import styles from './index.less'
@@ -19,6 +20,10 @@ export default (props) => {
     const [feilSuccess, setFeilSuccess] = useState(false);
     const [active, setActive] = useState(0);
     const [fileData, setFileData] = useState('');
+    const [caseId, setCaseId] = useState('');
+    const [ajData, setAjData] = useState({});
+    const [userData, setUserData] = useState({});
+    const [contractFileModels, setContractFileModels] = useState({});
     const [isModalVisible, setIsModalVisible] = useState(false);
     const qyEl = useRef(null);
     useEffect(() => {
@@ -39,10 +44,20 @@ export default (props) => {
         }
     ];
 
-    const onFinish = (values) => {
+    //第一步
+    const onFinish = async (values) => {
         console.log('Success:', values);
-        const temp = active + 1
-        setActive(temp);
+        setAjData(values)
+        const params = { caseName: values.caseName, contractFileModels }
+        const res = await addOne(params);
+        console.log('res', res);
+        if (res.code === 'ok') {
+        setCaseId(res.data.id);
+            const temp = active + 1
+            setActive(temp);
+        }
+        // const temp = active + 1
+        // setActive(temp);
     };
 
     const onFinishFailed = (errorInfo) => {
@@ -55,7 +70,7 @@ export default (props) => {
     const onClose = () => {
         setVisible(false);
     };
-    const handeleNext = () => {
+    const handeleNext = async () => {
         if (active === 2) {
             // 签署
             setIsModalVisible(true)
@@ -220,27 +235,30 @@ export default (props) => {
 
 
     }
-    const handeleTs = () => {
-        props.history?.push('/dzmq');
-
+    const handeleTs = async () => {
+        const res = await ts({flowId:ajData.flowId})
+        if (res.code === 'ok') {
+            props.history?.push('/dzmq');
+        }
     }
 
     const propsU = {
         name: 'file',
-        action: '',
+        action: '/manager/signdoc/upload.json',
         headers: {
             authorization: 'authorization-text',
         },
-        onChange(info) {
+        onChange: async (info) => {
             if (info.file.status !== 'uploading') {
                 console.log(info.file, info.fileList);
             }
             if (info.file.status === 'done') {
+                const { fileId = '', fileName = '' } = info.file.response;
+                setContractFileModels({ fileId, fileName });
                 var reader = new FileReader();
                 reader.onloadend = function (event) {
                     var arrayBuffer = reader.result;
                     // debugger
-
                     mammoth.convertToHtml({ arrayBuffer: arrayBuffer }).then(function (resultObject) {
                         // result1.innerHTML = resultObject.value
                         setFileData(resultObject.value)
@@ -261,15 +279,52 @@ export default (props) => {
                 setFeilSuccess(true)
                 // message.success(`${info.file.name} file uploaded successfully`);
             } else if (info.file.status === 'error') {
-                message.error(`${info.file.name} file upload failed.`);
+                message.error(`${info.file.name} 文件上传失败.`);
             }
         },
     };
 
-    const ztSubmit = () => {
+    const ztSubmit = async () => {
         // 主体添加
+        if (!qyEl || !qyEl?.current) return;
+        qyEl.current.validateFields().then(async (values) => {
+            console.log(values);
+            setUserData(values)
+            const params = { caseId: caseId, userType: values.userType, contractUser: values }
+            const res = await ztAdd(params);
+            console.log('res', res);
+            if (res.code === 'ok') {
+                setVisible(false)
+            }
+        })
     }
 
+    const handleDe = async e => {
+        e.preventDefault();
+        const res = ztDelect({ id: '' })
+    }
+    //编辑
+    const handleBj = async e => {
+        e.preventDefault();
+        // const res = ztDelect({ id: '' })
+    }
+
+    const handleQy = async () => {
+        if (await startQs()) {
+            message.success('签署成功！')
+            setActive(() => active + 1)
+        } else {
+            message.error('签署失败')
+        }
+    }
+
+    const startQs = async () => {
+        const a = await lcOne({ caseId, businessScene: `${(fileData.fileName || '').split('.')[0]}_${fileData.fileId || ''}` });
+        const b = await lcTwo({ caseId });
+        const c = await lcThree({ caseId });
+        const d = await lcFore({ caseId });
+        return a.code === 'ok' && b.code === 'ok' && c.code === 'ok' && d.code === 'ok'
+    }
 
     return (
         <>
@@ -308,7 +363,7 @@ export default (props) => {
                                     >
                                         <Form.Item
                                             label="新增案件名称"
-                                            name="status"
+                                            name="caseName"
                                             rules={[{ required: false, message: '请输入' }]}
                                         >
                                             <Input />
@@ -337,16 +392,19 @@ export default (props) => {
                             case 1:
                                 return <div className={styles.steptwo}>
                                     <Button type='primary' onClick={() => setVisible(true)} >添加签约主体</Button>
-                                    <div className={styles.stept}>
-                                        <img src="" alt="" />
-                                        <div>
-                                            <h4>个人主体</h4>
-                                            <p>姓名：</p>
-                                            <p>手机号：</p>
-                                            <p>身份证号：</p>
-                                            <p><a href="#">编辑</a> ｜ <a href="#">删除</a></p>
-                                        </div>
-                                    </div>
+                                    {
+                                        userData.name ? <div className={styles.stept}>
+                                            <img src="https://gw.alipayobjects.com/mdn/rms_3015bf/afts/img/A*kIaURpYqqekAAAAAAAAAAAAAARQnAQ" alt="" />
+                                            <div>
+                                                <h4>个人主体</h4>
+                                                <p>姓名：{userData.name}</p>
+                                                <p>手机号：{userData.mobile}</p>
+                                                <p>身份证号：{userData.idNumber}</p>
+                                                <p><a href="#" onClick={e => handleBj(e)}>编辑</a> ｜ <a href="#" onClick={e => handleDe(e)}>删除</a></p>
+                                            </div>
+                                        </div> : <Empty />
+                                    }
+
                                     <div>
                                         <Button type='primary' style={{ marginRight: '8px' }} onClick={() => setActive(() => active - 1)}>上一步</Button>
                                         <Button type='primary' onClick={() => handeleNext()}>下一步</Button>
@@ -374,7 +432,7 @@ export default (props) => {
                                                 <h3>主体</h3>
                                             </div>
                                             <div className={styles.contain}>
-                                                <div draggable className='txt'>童建设</div>
+                                                <div draggable className='txt'>{userData.name}</div>
 
                                                 <div>签署</div>
                                             </div>
@@ -392,13 +450,13 @@ export default (props) => {
                                 return <div className={styles.stepfore}>
                                     <h4>基本信息</h4>
                                     <div>
-                                        <p> <span>案件名称：</span>这是名词 </p>
-                                        <p> <span>上传人：</span>张三 </p>
-                                        <p> <span>文书数量：</span>1 </p>
+                                        <p> <span>案件名称：</span>{ajData.caseName} </p>
+                                        <p> <span>上传人：</span>{userData.name} </p>
+                                        <p> <span>文书数量：</span>{ajData.docCount}</p>
                                     </div>
                                     <h4>签约</h4>
                                     <div>
-                                        <p> <span>签约方：张江公证处</span> </p>
+                                        <p> <span>签约方：{userData.name}({userData.name})</span> </p>
                                     </div>
                                     <h4>业务合同书</h4>
                                     <div dangerouslySetInnerHTML={{ __html: fileData }} className={styles.contain} ></div>
@@ -432,59 +490,62 @@ export default (props) => {
                     ref={qyEl}
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 14 }}
-                    // initialValues={{ remember: true }}
-                    onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
+                    initialValues={{ userType: 'PERSON', platform: true }}
                     autoComplete="off"
                 >
                     <Form.Item
                         label="签约主体类型"
-                        name="status"
+                        name="idType"
                         rules={[{ required: false, message: '请输入' }]}
                     >
                         <Input placeholder='请输入' />
                     </Form.Item>
                     <Form.Item
                         label="签约主体姓名"
-                        name="date"
+                        name="name"
                         rules={[{ required: false, message: '请输入' }]}
                     >
                         <Input />
                     </Form.Item>
                     <Form.Item
                         label="签约主体手机号"
-                        name="date"
+                        name="mobile"
                         rules={[{ required: false, message: '请输入' }]}
                     >
                         <Input placeholder='请输入' />
                     </Form.Item>
                     <Form.Item
                         label="证件类型"
-                        name="date"
+                        name="userType"
                         rules={[{ required: false, message: '请输入' }]}
                     >
-                        <Input placeholder='请输入' />
+                        <Select
+                            placeholder="请选择"
+                            allowClear
+                        >
+                            <Option value='PERSON'>身份证</Option>
+                        </Select>
                     </Form.Item>
                     <Form.Item
                         label="证件号码"
-                        name="date"
+                        name="idNumber"
                         rules={[{ required: false, message: '请输入' }]}
                     >
                         <Input placeholder='请输入' />
                     </Form.Item>
                     <Form.Item
                         label="是否需要活体检验"
-                        name="date"
+                        name="platform"
                         rules={[{ required: false, message: '请输入' }]}
                     >
                         <Radio.Group>
-                            <Radio value="是">是</Radio>
-                            <Radio value="否">否</Radio>
+                            <Radio value={true}>是</Radio>
+                            <Radio value={false}>否</Radio>
                         </Radio.Group>
                     </Form.Item>
                 </Form>
             </Drawer>
-            <Modal width={300} title="温馨提示" visible={isModalVisible} onOk={() => setIsModalVisible(false)} onCancel={() => setIsModalVisible(false)}>
+            <Modal width={300} title="温馨提示" visible={isModalVisible} onOk={() => { setIsModalVisible(false); handleQy(); }} onCancel={() => setIsModalVisible(false)}>
                 <p>为了避免签约失败，请确认相关企业章和法人章都指定到合同中！</p>
             </Modal>
         </>

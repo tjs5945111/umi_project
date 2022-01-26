@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import BaseTable from '@/components/BaseTable';
 import { message, Tabs } from 'antd';
-import { ztList } from '@/services/ant-design-pro/api';
+import { getDqlb } from '@/services/ant-design-pro/api';
 import moment from 'moment';
 import { sizeChange } from '@/util/util';
 import styles from './index.less';
@@ -18,54 +18,23 @@ export default () => {
 
     const columns = [
         {
-            width: 100,
-            title: '名称',
-            dataIndex: 'fileName',
+            title: '案件名称',
+            dataIndex: 'name',
         },
         {
-            title: '证据编号',
-            dataIndex: 'notarizationNumber',
+            title: '发起方',
+            dataIndex: 'initiator',
         },
         {
-            title: '姓名',
-            dataIndex: 'userName',
+            title: '发起时间',
+            dataIndex: 'gmtCreate',
         },
         {
-            title: '手机号',
-            dataIndex: 'phone',
-        },
-
-        {
-            title: '类型',
-            dataIndex: 'notarizationWay',
+            title: '文书数量',
+            dataIndex: 'docCount',
         },
         {
-            title: '分组',
-            dataIndex: 'notarizationGroup',
-        },
-        {
-            title: '取证地址',
-            dataIndex: 'notarizationAddress',
-        },
-        {
-            title: '邮寄地址',
-            dataIndex: 'sendaddress',
-        },
-        {
-            title: '大小',
-            // dataIndex: 'notarizationSize',
-            render: ({ notarizationSize }) => (<>{sizeChange(notarizationSize)}</>)
-        },
-        {
-            title: '取证时间',
-            render: ({ gmtCreate }) => (
-                <div style={{ maxWidth: 200 }}>
-                    {gmtCreate && moment(gmtCreate).format('YYYY-MM-DD HH:mm:ss')}
-                </div>
-            ),
-        },
-        {
-            title: '状态',
+            title: '合同状态',
             render: ({ status }) => (
                 <div style={{ maxWidth: 200 }}>
                     {status}
@@ -94,7 +63,7 @@ export default () => {
                             window.open(`/dzmq/detail?id=${id}&type=}`);
                         }}
                     >
-                        详情
+                        查看详情
                     </a>
 
                 </div>
@@ -110,7 +79,7 @@ export default () => {
         pageNum = 1,
         param = {},
         pageSize = 10,
-        type=[1,2]
+        type = [1, 2]
     ) => {
         const params = {
             pageSize: pageNum,
@@ -118,23 +87,23 @@ export default () => {
             ...param,
         }
         for (let i of type) {
-            let res ={}
-            let ress ={}
-            if(i === 1){
-                params.status='待签署';
-                res = await ztList(params)
-                const { records, total, size } = res as any;
-                setTenantList(records);
+            let res = {}
+            let ress = {}
+            if (i === 1) {
+                params.status = '待签署';
+                res = await getDqlb(params)
+                const { data = {}, total, size } = res as any;
+                setTenantList(data.data);
                 setTotalSize(total);
-            }else{
-                params.status='已完成';
-                ress = await ztList(params)
-                const { records, total, size } = ress as any;
-                setTenantListC(records);
+            } else {
+                params.status = '已完成';
+                ress = await getDqlb(params)
+                const { data = {}, total, size } = ress as any;
+                setTenantListC(data.data);
                 setTotalSizeC(total);
             }
-          }
-        
+        }
+
         // setpageSize(size);
         // setTenantList(records);
         setLoading(false);
@@ -142,13 +111,13 @@ export default () => {
 
     const handlePaging = (num: any, size: any) => {
         setLoading(true);
-        if(keys === 1){
-            getList(num, {status:'待签署'}, size);
-        }else{
-            getList(num, {status:'已完成'}, size);
+        if (keys === 1) {
+            getList(num, { status: '待签署' }, size);
+        } else {
+            getList(num, { status: '已完成' }, size);
         }
         setLoading(false);
-       
+
     };
 
     const pagingSizeChange = (size: any, searchWord: any) => {
@@ -168,7 +137,7 @@ export default () => {
                 <div className={styles.add} onClick={() => {
                     window.open(`/dzmq/add`);
                 }} >
-                    <img src="" alt="" />
+                    <img src="https://gw.alipayobjects.com/mdn/rms_3015bf/afts/img/A*mzI2QZieUyEAAAAAAAAAAAAAARQnAQ" alt="" />
                     <div>
                         <p>自定义合同新建</p>
                         <p style={{ color: '#666' }}>支持pdf、word</p>

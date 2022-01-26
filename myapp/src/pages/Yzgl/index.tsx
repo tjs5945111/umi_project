@@ -1,4 +1,4 @@
-// 人员管理
+// 印章管理
 import React, { useState, useEffect } from 'react';
 import BaseTable from '@/components/BaseTable';
 import { message, Divider, Radio, Button, Popconfirm } from 'antd';
@@ -140,7 +140,7 @@ export default () => {
                 window.open(`./rygl/detail`);
             }}
         >
-            添加人员
+            添加印章
         </Button>,
     ];
     const searchArray = [
