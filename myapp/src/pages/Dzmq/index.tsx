@@ -145,7 +145,7 @@ export default () => {
                 </div>
             </div>
             <Tabs defaultActiveKey="1" onChange={callback}>
-                <TabPane tab={`待签署(${totalSize})`} key="1">
+                <TabPane tab={`待签署(${totalSize||0})`} key="1">
                     <BaseTable
                         dataSource={tenantList || []}
                         hideState={true}
@@ -156,7 +156,7 @@ export default () => {
                         totalSize={totalSize}
                     />
                 </TabPane>
-                <TabPane tab={`已完成(${totalSizeC})`} key="2">
+                <TabPane tab={`已完成(${totalSizeC ||0})`} key="2">
                     <BaseTable
                         dataSource={tenantListC || []}
                         hideState={true}

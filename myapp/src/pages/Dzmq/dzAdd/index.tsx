@@ -26,6 +26,7 @@ export default (props) => {
     const [userData, setUserData] = useState({});
     const [contractFileModels, setContractFileModels] = useState({});
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [loadingNext, setLoadingNext] = useState(false);
     const qyEl = useRef(null);
     useEffect(() => {
         console.log(props, '1231323');
@@ -49,13 +50,15 @@ export default (props) => {
     const onFinish = async (values) => {
         console.log('Success:', values);
         setAjData(values)
-        const params = { caseName: values.caseName, contractFileModels }
+        const params = { caseName: values.caseName, contractFileModels: [contractFileModels] }
         const res = await addOne(params);
         console.log('res', res);
         if (res.code === 'ok') {
             setCaseId(res.data.id);
             const temp = active + 1
             setActive(temp);
+        } else {
+            message.error(res.msg || '失败')
         }
         // const temp = active + 1
         // setActive(temp);
@@ -74,16 +77,16 @@ export default (props) => {
     const handeleNext = async () => {
         if (active === 2) {
             // 签署
-            if (isqs) {
+            if (!isqs) {
                 message.error('请先将签约主体，拖拽至合同右下方位置')
                 return
             } else {
                 setIsModalVisible(true)
             }
 
-        }else if(active === 3){
+        } else {
             setActive(() => active + 1)
-        }   
+        }
     }
 
     useEffect(() => {
@@ -262,8 +265,8 @@ export default (props) => {
                 console.log(info.file, info.fileList);
             }
             if (info.file.status === 'done') {
-                const { fileId = '', fileName = '' } = info.file.response;
-                setContractFileModels({ fileId, fileName });
+                const { fileId = '', fileName = '' } = info.file.response?.data;
+                setContractFileModels({ fileId, name: fileName });
                 var reader = new FileReader();
                 reader.onloadend = function (event) {
                     var arrayBuffer = reader.result;
@@ -298,12 +301,15 @@ export default (props) => {
         if (!qyEl || !qyEl?.current) return;
         qyEl.current.validateFields().then(async (values) => {
             console.log(values);
+            values.userId = new Date().getTime();
             setUserData(values)
             const params = { caseId: caseId, userType: values.userType, contractUser: values }
             const res = await ztAdd(params);
             console.log('res', res);
             if (res.code === 'ok') {
                 setVisible(false)
+            } else {
+                message.error(res.msg || '失败')
             }
         })
     }
@@ -319,16 +325,18 @@ export default (props) => {
     }
 
     const handleQy = async () => {
+        setLoadingNext(true)
         if (await startQs()) {
             message.success('签署成功！')
             setActive(() => active + 1)
         } else {
             message.error('签署失败')
         }
+        setLoadingNext(false)
     }
 
     const startQs = async () => {
-        const a = await lcOne({ caseId, businessScene: `${(fileData.fileName || '').split('.')[0]}_${fileData.fileId || ''}` });
+        const a = await lcOne({ caseId, businessScene: `${(fileData.fileName || '').split('.')[0]}_${new Date().getTime()}}` });
         const b = await lcTwo({ caseId });
         const c = await lcThree({ caseId });
         const d = await lcFore({ caseId });
@@ -373,17 +381,17 @@ export default (props) => {
                                         <Form.Item
                                             label="新增案件名称"
                                             name="caseName"
-                                            rules={[{ required: false, message: '请输入' }]}
+                                            rules={[{ required: true, message: '请输入' }]}
                                         >
                                             <Input />
                                         </Form.Item>
                                         <Form.Item
                                             label="上传文件合同"
                                             name="date"
-                                            rules={[{ required: false, message: '请输入' }]}
+                                            rules={[{ required: true, message: '请输入' }]}
                                         >
                                             <Upload {...propsU}>
-                                                <Button icon={<UploadOutlined />}>上传文件</Button>
+                                                <Button icon={<UploadOutlined />} disabled={contractFileModels.fileId}>上传文件</Button>
                                             </Upload>
                                             {/* <input type="file" onChange={e => parseWordDocxFile(e)} /> */}
                                         </Form.Item>
@@ -450,7 +458,7 @@ export default (props) => {
                                     </div>
                                     <div>
                                         <Button type='primary' style={{ marginRight: '8px' }} onClick={() => setActive(() => active - 1)}>上一步</Button>
-                                        <Button type='primary' onClick={() => handeleNext()}>下一步</Button>
+                                        <Button type='primary' onClick={() => handeleNext()} loading={loadingNext}>下一步</Button>
                                     </div>
                                 </>
 

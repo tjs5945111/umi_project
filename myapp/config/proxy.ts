@@ -11,8 +11,8 @@ export default {
     // localhost:8000/api/** -> https://preview.pro.ant.design/api/**
     '/manager/': {
       // 要代理的地址
-      // target: 'http://192.168.249.1:8000',
-      target: 'http://api.blockchain.zjnotary.com',
+      target: 'http://116.62.250.146:90/', 
+      // target: 'http://api.blockchain.zjnotary.com',
       // 配置了这个可以从 http 代理到 https
       // 依赖 origin 的功能可能需要这个，比如 cookie
       changeOrigin: true,

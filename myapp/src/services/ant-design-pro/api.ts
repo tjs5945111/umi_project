@@ -399,6 +399,18 @@ export async function ztList(params: any) {
   });
 }
 
+/** 印章列表 */
+export async function yzList(params: any) {
+
+  return request<API.LoginResult>('/manager/user/search.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(params)
+  });
+}
+
 
 /** 电签第一步 */
 export async function addOne(params: any) {

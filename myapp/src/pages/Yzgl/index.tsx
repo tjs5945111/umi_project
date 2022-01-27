@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import BaseTable from '@/components/BaseTable';
 import { message, Divider, Radio, Button, Popconfirm } from 'antd';
-import { getRylb, getJslb, rysc } from '@/services/ant-design-pro/api';
+import { yzList, rysc } from '@/services/ant-design-pro/api';
 import moment from 'moment';
 import styles from './index.less';
 
@@ -79,13 +79,6 @@ export default () => {
     };
     useEffect(() => {
         getList();
-        async function getmenu() {
-            const [statusData] = await Promise.all([
-                getJslb(),
-            ])
-            setTypeList(changType(statusData))
-        }
-        getmenu();
     }, []);
 
     const getList = async (
@@ -99,21 +92,12 @@ export default () => {
             ...baseStatues,
             ...param,
         }
-        const res = await getRylb(params)
+        const res = await yzList(params)
         const { records, total, size } = res as any;
         setTotalSize(total);
         setpageSize(size);
         setTenantList(records);
         setLoading(false);
-    };
-
-    function changType(value) {
-        if (!Array.isArray(value)) return [];
-        const tempData = [];
-        value.map(ele => {
-            tempData.push({ name: ele, value: ele });
-        })
-        return tempData;
     };
 
     const handleSearch = (data: any) => {
