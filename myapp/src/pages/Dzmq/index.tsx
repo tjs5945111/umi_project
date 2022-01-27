@@ -90,13 +90,15 @@ export default () => {
             let res = {}
             let ress = {}
             if (i === 1) {
-                params.status = '待签署';
+                params.status = '';
+                // params.status = '待签署';
                 res = await getDqlb(params)
                 const { data = {}, total, size } = res as any;
                 setTenantList(data.data);
                 setTotalSize(total);
             } else {
-                params.status = '已完成';
+                params.status = '';
+                // params.status = '已完成';
                 ress = await getDqlb(params)
                 const { data = {}, total, size } = ress as any;
                 setTenantListC(data.data);

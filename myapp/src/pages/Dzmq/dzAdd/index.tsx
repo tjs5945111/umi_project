@@ -248,10 +248,18 @@ export default (props) => {
 
     }
     const handeleTs = async () => {
-        const res = await ts({ flowId: ajData.flowId })
-        if (res.code === 'ok') {
+        // const res = await ts({ flowId: ajData.flowId })
+        // if (res.code === 'ok') {
+        //     props.history?.push('/dzmq');
+        // }
+        setLoadingNext(true)
+        if (await startQs()) {
+            message.success('推送成功！')
             props.history?.push('/dzmq');
+        } else {
+            message.error('推送失败')
         }
+        setLoadingNext(false)
     }
 
     const propsU = {
@@ -458,7 +466,7 @@ export default (props) => {
                                     </div>
                                     <div>
                                         <Button type='primary' style={{ marginRight: '8px' }} onClick={() => setActive(() => active - 1)}>上一步</Button>
-                                        <Button type='primary' onClick={() => handeleNext()} loading={loadingNext}>下一步</Button>
+                                        <Button type='primary' onClick={() => handeleNext()}>下一步</Button>
                                     </div>
                                 </>
 
@@ -479,7 +487,7 @@ export default (props) => {
                                     <div dangerouslySetInnerHTML={{ __html: fileData }} className={styles.contain} ></div>
                                     <div>
                                         <Button type='primary' style={{ marginRight: '8px' }} onClick={() => setActive(() => active - 1)}>上一步</Button>
-                                        <Button type='primary' onClick={() => handeleTs()}>确认推送</Button>
+                                        <Button type='primary' onClick={() => handeleTs()} loading={loadingNext}>确认推送</Button>
                                     </div>
                                 </div>
 
@@ -562,7 +570,7 @@ export default (props) => {
                     </Form.Item>
                 </Form>
             </Drawer>
-            <Modal width={300} title="温馨提示" visible={isModalVisible} onOk={() => { setIsModalVisible(false); handleQy(); }} onCancel={() => setIsModalVisible(false)}>
+            <Modal width={300} title="温馨提示" visible={isModalVisible} onOk={() => { setIsModalVisible(false); }} onCancel={() => setIsModalVisible(false)}>
                 <p>为了避免签约失败，请确认相关企业章和法人章都指定到合同中！</p>
             </Modal>
         </>
