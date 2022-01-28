@@ -17,20 +17,20 @@ export default () => {
 
     const columns = [
         {
-            title: '角色',
+            title: '印章名称',
             dataIndex: 'role',
         },
         {
-            title: '编号',
+            title: '印章编号',
             dataIndex: 'id',
         },
 
         {
-            title: '账号',
+            title: '公司名称',
             dataIndex: 'access',
         },
         {
-            title: '密码',
+            title: '状态',
             dataIndex: 'secret',
         },
         {
@@ -51,13 +51,13 @@ export default () => {
                     <a
                         style={{ marginRight: 30 }}
                         onClick={() => {
-                            window.open(`/yzgl/detail?id=${data.id}&type=VIEW`);
+                            window.open(`/yzgl/detail?id=${data.id}`);
                         }}
                     >
-                        编辑
+                        查看详情
                     </a>
                     {/* <Divider /> */}
-                    <a onClick={()=>confirm(data.id)}>删除</a>
+                    {/* <a onClick={() => confirm(data.id)}>删除</a> */}
                     {/* <Popconfirm
                         title="你确定要删除该人员吗?"
                         onConfirm={confirm}
@@ -87,16 +87,16 @@ export default () => {
         pageSize = 10,
     ) => {
         const params = {
-            pageSize: pageNum,
-            pageNumber: pageSize,
+            pageSize: pageSize,
+            pageNumber: pageNum,
             ...baseStatues,
             ...param,
         }
         const res = await yzList(params)
-        const { records, total, size } = res as any;
+        const { data = [], total, size } = res.data || {} as any;
         setTotalSize(total);
         setpageSize(size);
-        setTenantList(records);
+        setTenantList(data);
         setLoading(false);
     };
 
@@ -128,8 +128,9 @@ export default () => {
         </Button>,
     ];
     const searchArray = [
-        { name: '账号', value: 'access' },
-        { name: '角色', value: 'role', type: 'select', data: typeList },
+        { name: '印章名称', value: 'access' },
+        { name: '公司名称', value: 'role', type: 'select', data: typeList },
+        { name: '印章状态', value: 'role', type: 'select', data: typeList },
     ];
     return (
         <>

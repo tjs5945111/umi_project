@@ -60,7 +60,7 @@ export default () => {
                     <a
                         style={{ marginRight: 30 }}
                         onClick={() => {
-                            window.open(`/dzmq/detail?id=${id}&type=}`);
+                            window.open(`/dzmq/detail?id=${id}`);
                         }}
                     >
                         查看详情
@@ -82,8 +82,8 @@ export default () => {
         type = [1, 2]
     ) => {
         const params = {
-            pageSize: pageNum,
-            pageNumber: pageSize,
+            pageSize: pageSize,
+            pageNumber: pageNum,
             ...param,
         }
         for (let i of type) {

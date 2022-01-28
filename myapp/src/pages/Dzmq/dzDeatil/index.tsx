@@ -34,34 +34,41 @@ export default (props) => {
         }
     ];
 
+    return () => {
+        if (detailData?.contractCaseSignerResponseVOS && !detailData?.contractCaseSignerResponseVOS.length) return <></>
+        return (
+            <>
+                <BreadcrumbList urls={urlArray} />
+                <Card bordered={false} className={styles.contain}>
+                    <div className={styles.stepfore}>
+                        <h4>基本信息</h4>
+                        <div>
+                            <p> <span>案件名称：</span>{detailData.name || ''}</p>
+                            <p> <span>上传人：</span>{detailData?.contractCaseSignerResponseVOS[0]?.name || ''}</p>
+                            <p> <span>文书数量：</span>{detailData.docCount || ''}</p>
+                            <p> <span>案件状态：</span>{detailData.status || ''}</p>
+                        </div>
+                        <h4>签约</h4>
+                        <div>
+                            <p> <span>签约方：</span>{detailData?.contractCaseSignerResponseVOS[0]?.contractUser?.name || ''}({detailData?.contractCaseSignerResponseVOS[0]?.contractUser?.mobile || ''}) </p>
+                            <p> <span>身份证：</span>{detailData?.contractCaseSignerResponseVOS[0]?.contractUser?.idNumber || ''} </p>
+                            {/* <p> <span>签约主体类型：</span>{detailData?.contractCaseSignerResponseVOS[0]?.contractUser?.idType || ''} </p> */}
+                            <p> <span>发起方：</span>{detailData.initiator || ''} </p>
+                            <p> <span>是否需要活体检验：</span>{detailData?.contractCaseSignerResponseVOS[0]?.contractUser?.platform ? "需要" : '不需要'} </p>
+                            <p> <span>签署状态：</span>{detailData?.contractCaseSignerResponseVOS[0]?.status === 'Y' ? '已签署' : '未签署'} </p>
+                        </div>
+                        <h4>业务合同书</h4>
+                        <div className={styles.contain} >
+                            {/* <FileViewer
+                                    fileType='http://example.com/image.png'
+                                    filePath='png'
+                                    // errorComponent={CustomErrorComponent}
+                                    onError={e => console.error(e)} /> */}
+                        </div>
+                    </div>
 
-    return (
-        <>
-            <BreadcrumbList urls={urlArray} />
-            <Card bordered={false} className={styles.contain}>
-                <div className={styles.stepfore}>
-                    <h4>基本信息</h4>
-                    <div>
-                        <p> <span>案件名称：</span>{detailData.name}</p>
-                        <p> <span>上传人：</span>{detailData.contractCaseSignerResponseVOS?.name}</p>
-                        <p> <span>文书数量：</span>{detailData.docCount}</p>
-                    </div>
-                    <h4>签约</h4>
-                    <div>
-                        <p> <span>签约方：</span>{detailData.contractCaseSignerResponseVOS?.name}({detailData.contractCaseSignerResponseVOS?.mobile}) </p>
-                        <p> <span>发起方：</span>{detailData.initiator} </p>
-                    </div>
-                    <h4>业务合同书</h4>
-                    <div className={styles.contain} >
-                        {/* <FileViewer
-                                                fileType='http://example.com/image.png'
-                                                filePath='png'
-                                                // errorComponent={CustomErrorComponent}
-                                                onError={e => console.error(e)} /> */}
-                    </div>
-                </div>
-
-            </Card>
-        </>
-    )
+                </Card>
+            </>
+        )
+    }
 }
