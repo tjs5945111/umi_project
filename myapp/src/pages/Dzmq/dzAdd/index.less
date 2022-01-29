@@ -72,17 +72,31 @@
 
     .left{
         width:300px;
-        
+        .title{
+            background: #F5F7FA;
+            height: 56px;
+            // padding: 20px;
+            font-size: 14px;
+        }
         display: flex;
         justify-content: center;
         >div{
-            width: 90%;
+            width: 100%;
             padding: 10px;
             height: 300px;
-            margin-top: 20px;
-            border: 1px solid #1677FF;
+            // margin-top: 20px;
+            // border: 1px solid #1677FF;
             overflow: scroll;
             font-size: 10px;
+        }
+        :global{
+            .ant-radio-group{
+                display: flex;
+                flex-direction: column;
+                .ant-radio-button-wrapper{
+                    margin-top:20px ;
+                }
+            }
         }
     }
     .contain{
@@ -112,7 +126,7 @@
        .title{
             background: #F5F7FA;
             height: 56px;
-            padding: 20px;
+            padding: 10px;
         }
         .contain{
             display: flex;

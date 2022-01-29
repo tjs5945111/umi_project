@@ -19,12 +19,13 @@ export default (props) => {
     const [detailData, setDetailData] = useState({});
     const [feilSuccess, setFeilSuccess] = useState(false);
     const [active, setActive] = useState(0);
-    const [fileData, setFileData] = useState('');
+    const [fileData, setFileData] = useState([]);
     const [isqs, setIsqs] = useState(false);
     const [caseId, setCaseId] = useState('');
     const [ajData, setAjData] = useState({});
-    const [userData, setUserData] = useState({});
-    const [contractFileModels, setContractFileModels] = useState({});
+    const [userData, setUserData] = useState([]);
+    const [contractFileModels, setContractFileModels] = useState([]);
+    const [feilActive, setFeilActive] = useState(0);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [loadingNext, setLoadingNext] = useState(false);
     const qyEl = useRef(null);
@@ -50,7 +51,7 @@ export default (props) => {
     const onFinish = async (values) => {
         console.log('Success:', values);
         setAjData(values)
-        const params = { caseName: values.caseName, contractFileModels: [contractFileModels] }
+        const params = { caseName: values.caseName, contractFileModels }
         const res = await addOne(params);
         console.log('res', res);
         if (res.code === 'ok') {
@@ -60,8 +61,8 @@ export default (props) => {
         } else {
             message.error(res.msg || '失败')
         }
-        // const temp = active + 1
-        // setActive(temp);
+        const temp = active + 1
+        setActive(temp);
     };
 
     const onFinishFailed = (errorInfo) => {
@@ -97,7 +98,7 @@ export default (props) => {
                 txtObj[i].ondrag = handle_drag
                 txtObj[i].ondragend = handle_end
             }
-            let leftTarget = document.getElementById('Contain')
+            let leftTarget = document.getElementById(`Contain${feilActive}`) || {}
 
             leftTarget.ondragenter = handle_enter
             leftTarget.ondragover = handle_over
@@ -137,7 +138,7 @@ export default (props) => {
     function handle_drop(e) {
         e.stopPropagation();// 不再派发事件。解决Firefox浏览器，打开新窗口的问题。
         e.preventDefault()
-        let namesEle = document.getElementById('names')
+        let namesEle = document.getElementById(`names${feilActive}`)
         // debugger
         setIsqs(true);
         if (!namesEle) return;
@@ -154,11 +155,11 @@ export default (props) => {
 
 
     const mouseDown = evt => {
-        let child = document.querySelector('#names')
+        let child = document.querySelector(`#names${feilActive}`)
         let mBounds = mouseBounds(
             evt.nativeEvent,
             child.getBoundingClientRect(),
-            document.querySelector('#Contain').getBoundingClientRect()
+            document.querySelector(`#Contain${feilActive}`)?.getBoundingClientRect()
         )
         document.onmousemove = function (ev) {
             let pt = calcPositon(ev, mBounds)
@@ -274,15 +275,15 @@ export default (props) => {
             }
             if (info.file.status === 'done') {
                 const { fileId = '', fileName = '' } = info.file.response?.data;
-                setContractFileModels({ fileId, name: fileName });
+                setContractFileModels([...contractFileModels, { fileId, name: fileName }]);
                 var reader = new FileReader();
                 reader.onloadend = function (event) {
                     var arrayBuffer = reader.result;
                     // debugger
                     mammoth.convertToHtml({ arrayBuffer: arrayBuffer }).then(function (resultObject) {
                         // result1.innerHTML = resultObject.value
-                        setFileData(resultObject.value)
-                        console.log(resultObject.value)
+                        setFileData([...fileData, resultObject.value])
+                        // console.log(resultObject.value)
                     })
 
                     // mammoth.extractRawText({ arrayBuffer: arrayBuffer }).then(function (resultObject) {
@@ -302,6 +303,12 @@ export default (props) => {
                 message.error(`${info.file.name} 文件上传失败.`);
             }
         },
+        onRemove(data) {
+            const { fileId = '' } = data.response?.data;
+            const tempData = contractFileModels.filter(item => item.fileId !== fileId)
+            setContractFileModels(tempData);
+
+        }
     };
 
     const ztSubmit = async () => {
@@ -310,21 +317,23 @@ export default (props) => {
         qyEl.current.validateFields().then(async (values) => {
             console.log(values);
             values.userId = new Date().getTime();
-            setUserData(values)
             const params = { caseId: caseId, userType: values.userType, contractUser: values }
             const res = await ztAdd(params);
             console.log('res', res);
             if (res.code === 'ok') {
-                setVisible(false)
+                setUserData([...userData, values])
+                setVisible(false);
             } else {
                 message.error(res.msg || '失败')
             }
         })
     }
 
-    const handleDe = async e => {
+    const handleDe = async (e, item) => {
         e.preventDefault();
-        const res = ztDelect({ id: '' })
+        const res = ztDelect({ id: item.id || '' })
+        console.log(res, 'res');
+
     }
     //编辑
     const handleBj = async e => {
@@ -344,7 +353,7 @@ export default (props) => {
     }
 
     const startQs = async () => {
-        const a = await lcOne({ caseId, businessScene: `${(fileData.fileName || '').split('.')[0]}_${new Date().getTime()}}` });
+        const a = await lcOne({ caseId, businessScene: `${(fileData[feilActive].fileName || '').split('.')[0]}_${new Date().getTime()}}` });
         const b = await lcTwo({ caseId });
         const c = await lcThree({ caseId });
         const d = await lcFore({ caseId });
@@ -389,17 +398,17 @@ export default (props) => {
                                         <Form.Item
                                             label="新增案件名称"
                                             name="caseName"
-                                            rules={[{ required: true, message: '请输入' }]}
+                                            rules={[{ required: false, message: '请输入' }]}
                                         >
                                             <Input />
                                         </Form.Item>
                                         <Form.Item
                                             label="上传文件合同"
                                             name="date"
-                                            rules={[{ required: true, message: '请输入' }]}
+                                            rules={[{ required: false, message: '请输入' }]}
                                         >
                                             <Upload {...propsU}>
-                                                <Button icon={<UploadOutlined />} disabled={contractFileModels.fileId}>上传文件</Button>
+                                                <Button icon={<UploadOutlined />}>上传文件</Button>
                                             </Upload>
                                             {/* <input type="file" onChange={e => parseWordDocxFile(e)} /> */}
                                         </Form.Item>
@@ -418,16 +427,23 @@ export default (props) => {
                                 return <div className={styles.steptwo}>
                                     <Button type='primary' onClick={() => setVisible(true)} >添加签约主体</Button>
                                     {
-                                        userData.name ? <div className={styles.stept}>
-                                            <img src="https://gw.alipayobjects.com/mdn/rms_3015bf/afts/img/A*kIaURpYqqekAAAAAAAAAAAAAARQnAQ" alt="" />
+                                        userData?.map(item => (
                                             <div>
-                                                <h4>个人主体</h4>
-                                                <p>姓名：{userData.name}</p>
-                                                <p>手机号：{userData.mobile}</p>
-                                                <p>身份证号：{userData.idNumber}</p>
-                                                <p><a href="#" onClick={e => handleBj(e)}>编辑</a> ｜ <a href="#" onClick={e => handleDe(e)}>删除</a></p>
+                                                <div className={styles.stept}>
+                                                    <img src="https://gw.alipayobjects.com/mdn/rms_3015bf/afts/img/A*kIaURpYqqekAAAAAAAAAAAAAARQnAQ" alt="" />
+                                                    <div>
+                                                        <h4>个人主体</h4>
+                                                        <p>姓名：{item.name}</p>
+                                                        <p>手机号：{item.mobile}</p>
+                                                        <p>身份证号：{item.idNumber}</p>
+                                                        <p><a href="#" onClick={e => handleBj(e)}>编辑</a> ｜ <a href="#" onClick={e => handleDe(e, item)}>删除</a></p>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div> : <Empty />
+                                        ))
+                                    }
+                                    {
+                                        userData?.length ? null : <Empty />
                                     }
 
                                     <div>
@@ -438,29 +454,51 @@ export default (props) => {
 
                             case 2:
                                 return <>
+                                    <>
+                                        {/* {
+                                            contractFileModels.map((con, keys) => {
+
+                                            })
+                                        } */}
+                                    </>
                                     <div className={styles.stepthree}>
                                         <div className={styles.left}>
-                                            <div dangerouslySetInnerHTML={{ __html: fileData }} />
-                                        </div>
-                                        <div className={styles.contain} id='Contain'>
+                                            {/* <div dangerouslySetInnerHTML={{ __html: fileData }} /> */}
+                                            <div className={styles.title}>
+                                                <h3>合同</h3>
+                                            </div>
+                                            {
+                                                contractFileModels.map((con, keys) => (
+                                                    <Radio.Group onChange={(e) => setFeilActive(e.target.value)} defaultValue={0}>
+                                                        <Radio.Button value={keys}>{con.name}</Radio.Button>
+                                                    </Radio.Group>
+                                                ))
+                                            }
 
-                                            <div className={styles.names} id='names' onMouseDown={mouseDown}></div>
-                                            <div dangerouslySetInnerHTML={{ __html: fileData }} ></div>
-                                            {/* <FileViewer
-                                                fileType='http://example.com/image.png'
-                                                filePath='png'
-                                                // errorComponent={CustomErrorComponent}
-                                                onError={e => console.error(e)} /> */}
                                         </div>
+                                        {
+                                            contractFileModels.map((con, keys) => (
+                                                <div className={styles.contain} id={`Contain${feilActive}`} style={{ display: keys === feilActive ? 'block' : 'none' }}>
+                                                    <div className={styles.names} id={`names${feilActive}`} onMouseDown={mouseDown}></div>
+                                                    <div dangerouslySetInnerHTML={{ __html: fileData[feilActive] }} ></div>
+                                                </div>
+                                            ))
+                                        }
+
                                         <div className={styles.right}>
                                             <div className={styles.title}>
                                                 <h3>主体</h3>
                                             </div>
-                                            <div className={styles.contain}>
-                                                <div draggable className='txt'>{userData.name}</div>
+                                            {
+                                                userData?.map(item => (
+                                                    <div className={styles.contain}>
+                                                        <div draggable className='txt'>{item.name}</div>
 
-                                                <div>签署</div>
-                                            </div>
+                                                        <div>签署</div>
+                                                    </div>
+                                                ))
+                                            }
+
                                         </div>
 
                                     </div>
@@ -476,15 +514,15 @@ export default (props) => {
                                     <h4>基本信息</h4>
                                     <div>
                                         <p> <span>案件名称：</span>{ajData.caseName} </p>
-                                        <p> <span>上传人：</span>{userData.name} </p>
+                                        {/* <p> <span>上传人：</span>{userData.name} </p> */}
                                         <p> <span>文书数量：</span>{ajData.docCount}</p>
                                     </div>
                                     <h4>签约</h4>
                                     <div>
-                                        <p> <span>签约方：{userData.name}({userData.name})</span> </p>
+                                        {/* <p> <span>签约方：{userData.name}({userData.name})</span> </p> */}
                                     </div>
                                     <h4>业务合同书</h4>
-                                    <div dangerouslySetInnerHTML={{ __html: fileData }} className={styles.contain} ></div>
+                                    {/* <div dangerouslySetInnerHTML={{ __html: fileData }} className={styles.contain} ></div> */}
                                     <div>
                                         <Button type='primary' style={{ marginRight: '8px' }} onClick={() => setActive(() => active - 1)}>上一步</Button>
                                         <Button type='primary' onClick={() => handeleTs()} loading={loadingNext}>确认推送</Button>
