@@ -50,7 +50,7 @@
         border: 1px solid #eee;
         padding: 10px;
         display: flex;
-        width: 300px;
+        // width: 300px;
         padding: 10px;
         margin: 20px;
         p{
@@ -79,7 +79,8 @@
             font-size: 14px;
         }
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        // justify-content: center;
         >div{
             width: 100%;
             padding: 10px;
@@ -88,6 +89,19 @@
             // border: 1px solid #1677FF;
             overflow: scroll;
             font-size: 10px;
+        }
+        .ht{
+            width: 90%;
+            cursor: pointer;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+        }
+        .htActive{
+            border: 1px solid #1677FF;
+            color: #1677FF;
         }
         :global{
             .ant-radio-group{
@@ -107,7 +121,7 @@
     border-right: 1px solid #eee;
     border-left: 1px solid #eee;
     .names{
-        display: none;
+        // display: none;
         cursor: pointer;
         position: absolute;
         font-size: 15px;
@@ -118,7 +132,7 @@
         color: #F76260;
         top: 50px;
         padding: 1px;
-        border: 2px solid #F76260;
+        border: none;
     }
     }
     .right{

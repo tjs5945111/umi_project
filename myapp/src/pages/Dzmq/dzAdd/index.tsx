@@ -26,6 +26,7 @@ export default (props) => {
     const [userData, setUserData] = useState([]);
     const [contractFileModels, setContractFileModels] = useState([]);
     const [feilActive, setFeilActive] = useState(0);
+    const [userActive, setUserActive] = useState(0);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [loadingNext, setLoadingNext] = useState(false);
     const qyEl = useRef(null);
@@ -78,13 +79,7 @@ export default (props) => {
     const handeleNext = async () => {
         if (active === 2) {
             // 签署
-            if (!isqs) {
-                message.error('请先将签约主体，拖拽至合同右下方位置')
-                return
-            } else {
-                setIsModalVisible(true)
-            }
-
+            setIsModalVisible(true)
         } else {
             setActive(() => active + 1)
         }
@@ -99,13 +94,12 @@ export default (props) => {
                 txtObj[i].ondragend = handle_end
             }
             let leftTarget = document.getElementById(`Contain${feilActive}`) || {}
-
             leftTarget.ondragenter = handle_enter
             leftTarget.ondragover = handle_over
             leftTarget.ondragleave = handle_leave
             leftTarget.ondrop = handle_drop
         }
-    }, [active])
+    }, [active,userActive,feilActive])
 
 
     function handle_start(e) {
@@ -138,14 +132,13 @@ export default (props) => {
     function handle_drop(e) {
         e.stopPropagation();// 不再派发事件。解决Firefox浏览器，打开新窗口的问题。
         e.preventDefault()
-        let namesEle = document.getElementById(`names${feilActive}`)
-        // debugger
+        let namesEle = document.getElementById(`names${userActive}`)
         setIsqs(true);
         if (!namesEle) return;
         let returnObj = e.dataTransfer.getData('Text')
         // let element = document.createElement("div");
         namesEle.innerHTML = returnObj;
-        namesEle.style.cssText = 'display:block'
+        namesEle.style.cssText = 'display:block; border: 2px solid #F76260;'
         // if (returnObj) {
         //     e.target.appendChild(namesEle)
         // }
@@ -155,7 +148,7 @@ export default (props) => {
 
 
     const mouseDown = evt => {
-        let child = document.querySelector(`#names${feilActive}`)
+        let child = document.querySelector(`#names${userActive}`)
         let mBounds = mouseBounds(
             evt.nativeEvent,
             child.getBoundingClientRect(),
@@ -364,7 +357,6 @@ export default (props) => {
         <>
             <BreadcrumbList urls={urlArray} />
             <Card bordered={false} className={styles.contain}>
-
                 <h3>自定义合同新建</h3>
                 <div className={styles.contan}>
                     {
@@ -426,9 +418,10 @@ export default (props) => {
                             case 1:
                                 return <div className={styles.steptwo}>
                                     <Button type='primary' onClick={() => setVisible(true)} >添加签约主体</Button>
-                                    {
-                                        userData?.map(item => (
-                                            <div>
+                                    <div style={{ display: 'flex' }}>
+                                        {
+                                            userData?.map(item => (
+
                                                 <div className={styles.stept}>
                                                     <img src="https://gw.alipayobjects.com/mdn/rms_3015bf/afts/img/A*kIaURpYqqekAAAAAAAAAAAAAARQnAQ" alt="" />
                                                     <div>
@@ -439,9 +432,10 @@ export default (props) => {
                                                         <p><a href="#" onClick={e => handleBj(e)}>编辑</a> ｜ <a href="#" onClick={e => handleDe(e, item)}>删除</a></p>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        ))
-                                    }
+
+                                            ))
+                                        }
+                                    </div>
                                     {
                                         userData?.length ? null : <Empty />
                                     }
@@ -454,13 +448,6 @@ export default (props) => {
 
                             case 2:
                                 return <>
-                                    <>
-                                        {/* {
-                                            contractFileModels.map((con, keys) => {
-
-                                            })
-                                        } */}
-                                    </>
                                     <div className={styles.stepthree}>
                                         <div className={styles.left}>
                                             {/* <div dangerouslySetInnerHTML={{ __html: fileData }} /> */}
@@ -468,20 +455,23 @@ export default (props) => {
                                                 <h3>合同</h3>
                                             </div>
                                             {
-                                                contractFileModels.map((con, keys) => (
-                                                    <Radio.Group onChange={(e) => setFeilActive(e.target.value)} defaultValue={0}>
-                                                        <Radio.Button value={keys}>{con.name}</Radio.Button>
-                                                    </Radio.Group>
+                                                contractFileModels?.map((con, k) => (
+                                                    <div onClick={()=>setFeilActive(k)} className={`${styles.ht} ${k === feilActive ? styles.htActive : ''}`}>
+                                                        {con.name}
+                                                    </div>
                                                 ))
                                             }
 
                                         </div>
                                         {
-                                            contractFileModels.map((con, keys) => (
-                                                <div className={styles.contain} id={`Contain${feilActive}`} style={{ display: keys === feilActive ? 'block' : 'none' }}>
-                                                    <div className={styles.names} id={`names${feilActive}`} onMouseDown={mouseDown}></div>
+                                            contractFileModels?.map((con, keys) => (
+                                                keys === feilActive?<div className={styles.contain} id={`Contain${feilActive}`} >
+                                                    {
+                                                        userData?.map((e, ke) => (<div className={styles.names} id={`names${ke}`} onMouseDown={mouseDown}></div>))
+                                                    }
+
                                                     <div dangerouslySetInnerHTML={{ __html: fileData[feilActive] }} ></div>
-                                                </div>
+                                                </div>:null
                                             ))
                                         }
 
@@ -490,9 +480,9 @@ export default (props) => {
                                                 <h3>主体</h3>
                                             </div>
                                             {
-                                                userData?.map(item => (
+                                                userData?.map((item,k) => (
                                                     <div className={styles.contain}>
-                                                        <div draggable className='txt'>{item.name}</div>
+                                                        <div draggable className='txt' onMouseOver={()=>{setUserActive(k)}}>{item.name}</div>
 
                                                         <div>签署</div>
                                                     </div>
@@ -608,7 +598,7 @@ export default (props) => {
                     </Form.Item>
                 </Form>
             </Drawer>
-            <Modal width={300} title="温馨提示" visible={isModalVisible} onOk={() => { setIsModalVisible(false); }} onCancel={() => setIsModalVisible(false)}>
+            <Modal width={300} title="温馨提示" visible={isModalVisible} onOk={() => { setIsModalVisible(false); setActive(() => active + 1) }} onCancel={() => setIsModalVisible(false)}>
                 <p>为了避免签约失败，请确认相关企业章和法人章都指定到合同中！</p>
             </Modal>
         </>
