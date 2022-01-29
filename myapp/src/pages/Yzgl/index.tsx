@@ -1,7 +1,8 @@
 // 印章管理
-import React, { useState, useEffect,useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import BaseTable from '@/components/BaseTable';
-import { message, Divider, Radio, Button, Table,Drawer,Space,Form,Input,Select } from 'antd';
+import { message, Divider, Radio, Button, Table, Drawer, Space, Form, Input, Select, Upload } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
 import { yzList, rysc } from '@/services/ant-design-pro/api';
 import moment from 'moment';
 import styles from './index.less';
@@ -17,6 +18,8 @@ export default () => {
     const [typeList, setTypeList] = useState([]);
     const [baseStatues, setBaseStatues] = useState({});
     const [visible, setVisible] = useState(false);
+    const [yzid, setYzid] = useState('');
+    const [imgData, setImgData] = useState('');
     const qyEl = useRef(null);
 
     const columns = [
@@ -62,7 +65,7 @@ export default () => {
                     </a>
                     <a
                         style={{ marginRight: 30 }}
-                        onClick={()=>setVisible(true)}
+                        onClick={() => { setVisible(true); setYzid(data.userAcc) }}
                     >
                         添加印章
                     </a>
@@ -131,6 +134,8 @@ export default () => {
         // 添加印章
         if (!qyEl || !qyEl?.current) return;
         qyEl.current.validateFields().then(async (values) => {
+            values.userAcc = yzid;
+            values.sealData = imgData;
             console.log(values);
 
             // const res = await ztAdd(params);
@@ -154,18 +159,43 @@ export default () => {
     //         添加印章
     //     </Button>,
     // ];
+    const propsU = {
+        name: 'file',
+        action: '',
+        headers: {
+            authorization: 'authorization-text',
+        },
+        onChange: async (info) => {
+            if (info.file.status !== 'uploading') {
+                console.log(info.file, info.fileList);
+            }
+            if (info.file.status === 'done') {
+                var reader = new FileReader();
+                reader.onloadend = function (event) {
+                    setImgData(reader.result || '')
+                };
+                reader.readAsDataURL(info.file?.originFileObj);
+                // message.success(`${info.file.name} file uploaded successfully`);
+            } else if (info.file.status === 'error') {
+                message.error(`${info.file.name} 文件上传失败.`);
+            }
+        },
+        onRemove(data) {
+            setImgData('')
+        }
+    };
 
     const expandedRowRender = (e) => {
         // debugger
         const columns = [
-          { title: '印章名称', dataIndex: 'alias', key: 'date' },
-          { title: '印章高度', dataIndex: 'height', key: 'namde' },
-          { title: '印章宽度', dataIndex: 'height', key: 'name' },
-          { title: '印章id', dataIndex: 'fileKey', key: 'name' },
+            { title: '印章名称', dataIndex: 'alias', key: 'date' },
+            { title: '印章高度', dataIndex: 'height', key: 'namde' },
+            { title: '印章宽度', dataIndex: 'height', key: 'name' },
+            { title: '印章id', dataIndex: 'fileKey', key: 'name' },
         ];
-        
-        return <Table columns={columns} dataSource={e.contractSealVO||[]} pagination={false} />;
-      };
+
+        return <Table columns={columns} dataSource={e.contractSealVO || []} pagination={false} />;
+    };
     // const searchArray = [
     //     { name: '印章名称', value: 'access' },
     //     { name: '公司名称', value: 'role', type: 'select', data: typeList },
@@ -181,17 +211,17 @@ export default () => {
                 hideState={true}
                 loading={loading}
                 columns={columns as any}
-                expandable={{expandedRowRender}}
-                tableName="用户——印章管理"
+                expandable={{ expandedRowRender }}
+                tableName="用户_印章管理"
                 handleSearch={(e: any) => handleSearch(e)}
                 handlePaging={(e: any, v) => handlePaging(e, v)}
                 pagingSizeChange={(e: any, v) => pagingSizeChange(e, v)}
                 totalSize={totalSize}
             />
-             <Drawer title="签约主体" placement="right" onClose={()=>setVisible(false)} visible={visible} footer={true} width={500} footer={
+            <Drawer title="签约主体" placement="right" onClose={() => setVisible(false)} visible={visible} footer={true} width={500} footer={
                 <Space>
 
-                    <Button onClick={()=>setVisible(false)}>取消</Button>
+                    <Button onClick={() => setVisible(false)}>取消</Button>
                     <Button type="primary" onClick={ztSubmit}>
                         提交
                     </Button>
@@ -204,58 +234,38 @@ export default () => {
                     ref={qyEl}
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 14 }}
-                    initialValues={{ userType: 'PERSON', platform: true }}
+                    initialValues={{ width: 100, height: 100 }}
                     autoComplete="off"
                 >
                     <Form.Item
-                        label="签约主体类型"
-                        name="idType"
+                        label="印章名称"
+                        name="alias"
                         rules={[{ required: false, message: '请输入' }]}
                     >
                         <Input placeholder='请输入' />
                     </Form.Item>
                     <Form.Item
-                        label="签约主体姓名"
-                        name="name"
+                        label="印章宽度"
+                        name="width"
                         rules={[{ required: false, message: '请输入' }]}
                     >
                         <Input />
                     </Form.Item>
                     <Form.Item
-                        label="签约主体手机号"
-                        name="mobile"
+                        label="印章高度"
+                        name="height"
                         rules={[{ required: false, message: '请输入' }]}
                     >
                         <Input placeholder='请输入' />
                     </Form.Item>
                     <Form.Item
-                        label="证件类型"
-                        name="userType"
+                        label="印章图片"
+                        name="sealData"
                         rules={[{ required: false, message: '请输入' }]}
                     >
-                        <Select
-                            placeholder="请选择"
-                            allowClear
-                        >
-                            <Option value='PERSON'>身份证</Option>
-                        </Select>
-                    </Form.Item>
-                    <Form.Item
-                        label="证件号码"
-                        name="idNumber"
-                        rules={[{ required: false, message: '请输入' }]}
-                    >
-                        <Input placeholder='请输入' />
-                    </Form.Item>
-                    <Form.Item
-                        label="是否需要活体检验"
-                        name="platform"
-                        rules={[{ required: false, message: '请输入' }]}
-                    >
-                        <Radio.Group>
-                            <Radio value={true}>是</Radio>
-                            <Radio value={false}>否</Radio>
-                        </Radio.Group>
+                        <Upload {...propsU}>
+                            <Button icon={<UploadOutlined />} disabled={!!imgData}>上传文件</Button>
+                        </Upload>
                     </Form.Item>
                 </Form>
             </Drawer>
