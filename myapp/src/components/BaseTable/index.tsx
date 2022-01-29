@@ -38,6 +38,7 @@ export interface BaseTablehProps {
     pagingSizeChange?: on; // 每页条数变化事件
     totalSize?: number; // 总数
     searchWord?: {}, // 搜索的值
+    expandable?:any
 }
 
 const checkBoxOptions = [
@@ -82,6 +83,7 @@ export default function BaseTable({
     totalSize,
     searchWord,
     hideState = false,
+    expandable,
 }: BaseTablehProps) {
     const [selectedRowKeys, SetSelectedRowKeys] = useState([]);
     const [expand, SetExpand] = useState(false);
@@ -298,6 +300,7 @@ export default function BaseTable({
                     rowKey={(_, index) => `${index}`}
                     columns={columns}
                     dataSource={dataSource}
+                    expandable={expandable}
                     pagination={{
                         showSizeChanger: true,
                         showQuickJumper: true,
