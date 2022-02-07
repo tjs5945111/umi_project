@@ -410,6 +410,28 @@ export async function yzList(params: any) {
     body: JSON.stringify(params)
   });
 }
+/** 印章添加 */
+export async function yzAdd(params: any) {
+
+  return request<API.LoginResult>('/manager/seal/create.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(params)
+  });
+}
+/** 印章添加 */
+export async function yzDeatil(params: any) {
+
+  return request<API.LoginResult>('/manager/user/query.json?', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    params
+  });
+}
 
 
 /** 电签第一步 */

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import BreadcrumbList from '@/components/BreadcrumbList';
-import { getJsbc, getJslb, getJsxg, ryxq } from '@/services/ant-design-pro/api';
+import { yzDeatil } from '@/services/ant-design-pro/api';
 import imgs from '@/image/banner.png'
 
 import { Card, Form, Input, Button, Select, message,Radio } from 'antd';
@@ -17,30 +17,15 @@ export default (props) => {
     const formE = useRef(null);
     useEffect(() => {
         getList();
-        async function getmenu() {
-            const [statusData] = await Promise.all([
-                getJslb(),
-            ])
-            console.log(changType(statusData));
-            setTypeList(changType(statusData))
-        }
-        getmenu();
     }, []);
 
-    function changType(value) {
-        if (!Array.isArray(value)) return [];
-        const tempData = [];
-        value.map(ele => {
-            tempData.push({ name: ele, value: ele });
-        })
-        return tempData;
-    };
+
     const getList = async () => {
         // id && setDetailData(data)
         if (id) {
-            const res = await ryxq({ id });
+            const res = await yzDeatil({ id });
             console.log(res);
-            setDetailData(res)
+            setDetailData(res.data)
             if (!formE || !formE?.current) return;
             const { setFieldsValue } = formE.current;
             setFieldsValue(res)
@@ -85,7 +70,7 @@ export default (props) => {
             <Card bordered={false} className={styles.contain}>
 
                 <h3>{id ? '修改印章' : '添加印章'}</h3>
-                <div className={styles.form}>
+                {/* <div className={styles.form}>
                     <Form
                         ref={formE}
                         name="basic"
@@ -198,7 +183,7 @@ export default (props) => {
                             </Button>
                         </Form.Item>
                     </Form>
-                </div>
+                </div> */}
 
             </Card>
         </>

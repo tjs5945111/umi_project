@@ -8,6 +8,7 @@ import moment from 'moment';
 // import FileViewer from 'react-file-viewer';
 
 import styles from './index.less'
+const ContractCaseEnum = { INIT: '初始状态', FLOW_CREATED: '流程已创建', SIGNING: '待他人签约', SIGNED: '已签约' }
 
 export default (props) => {
     const type = props.location?.query?.type || '';
@@ -44,7 +45,7 @@ export default (props) => {
                         <p> <span>案件名称：</span>{detailData.name || ''}</p>
                         {/* <p> <span>上传人：</span>{detailData?.contractCaseSignerResponseVOS[0]?.name || ''}</p> */}
                         <p> <span>文书数量：</span>{detailData.docCount || ''}</p>
-                        <p> <span>案件状态：</span>{detailData.status || ''}</p>
+                        <p> <span>案件状态：</span>{ContractCaseEnum[detailData.status] || ''}</p>
                         <p> <span>发起方：</span>{detailData.initiator || ''} </p>
                     </div>
                     <h4>签约信息</h4>
@@ -57,7 +58,8 @@ export default (props) => {
                                 <p> <span>身份证：</span>{item.contractUser?.idNumber || ''} </p>
                                 <p> <span>签约主体类型：</span>{item.contractUser?.idType || ''} </p>
                                 <p> <span>是否需要活体检验：</span>{item.contractUser?.contractUser?.platform ? "需要" : '不需要'} </p>
-                                <p> <span>签署状态：</span>{item.contractUser?.contractUser?.status === 'Y' ? '已签署' : '未签署'} </p>
+                                <p> <span>签署状态：</span>{item.contractUser?.contractUser?.signStatus === 'SIGNED' ? '已签署' : '未签署'} </p>
+                                <p> <span>是否有效：</span>{item.contractUser?.contractUser?.status === 'Y' ? '有效' : '无效'} </p>
                             </div>
                         ))
                     }

@@ -14,6 +14,22 @@ import styles from './index.less'
 const { Option } = Select;
 // const { Step } = Steps;
 
+const UserTypeEnum = [{ name: '个人', value: 'PERSON' }, { name: 'jigou', value: 'ORGANIZATION' }]
+const TypeEnum = [{ name: '统一社会信用代码', value: 'CRED_ORG_USCC' },
+{ name: '组织机构代码证', value: 'CRED_ORG_CODE' },
+{ name: '工商注册号', value: 'CRED_ORG_REGCODE' },
+{ name: '工商登记证', value: 'CRED_ORG_BUSINESS_REGISTTATION_CODE' },
+{ name: '税务登记证', value: 'CRED_ORG_TAX_REGISTTATION_CODE' },
+{ name: '法人代码证', value: 'CRED_ORG_LEGAL_PERSON_CODE' },
+{ name: '事业单位法人证书', value: 'CRED_ORG_ENT_LEGAL_PERSON_CODE' },
+{ name: '社会团体登记证书', value: 'CRED_ORG_SOCIAL_REG_CODE' },
+{ name: '民办非机构登记证书', value: 'CRED_ORG_PRIVATE_NON_ENT_REG_CODE' },
+{ name: '外国机构常驻代表机构登记证', value: 'CRED_ORG_FOREIGN_ENT_REG_CODE' },
+{ name: '政府批文', value: 'CRED_ORG_GOV_APPROVAL' },
+{ name: '自定义', value: 'CODE_ORG_CUSTOM' },
+{ name: '未知证件类型', value: 'CRED_ORG_UNKNOWN' },
+]
+
 export default (props) => {
     const type = props.location?.query?.type || '';
     const [detailData, setDetailData] = useState({});
@@ -29,6 +45,7 @@ export default (props) => {
     const [userActive, setUserActive] = useState(0);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [loadingNext, setLoadingNext] = useState(false);
+    const [userType, setUserType] = useState('');
     const qyEl = useRef(null);
     useEffect(() => {
         console.log(props, '1231323');
@@ -99,7 +116,7 @@ export default (props) => {
             leftTarget.ondragleave = handle_leave
             leftTarget.ondrop = handle_drop
         }
-    }, [active,userActive,feilActive])
+    }, [active, userActive, feilActive])
 
 
     function handle_start(e) {
@@ -456,7 +473,7 @@ export default (props) => {
                                             </div>
                                             {
                                                 contractFileModels?.map((con, k) => (
-                                                    <div onClick={()=>setFeilActive(k)} className={`${styles.ht} ${k === feilActive ? styles.htActive : ''}`}>
+                                                    <div onClick={() => setFeilActive(k)} className={`${styles.ht} ${k === feilActive ? styles.htActive : ''}`}>
                                                         {con.name}
                                                     </div>
                                                 ))
@@ -465,13 +482,13 @@ export default (props) => {
                                         </div>
                                         {
                                             contractFileModels?.map((con, keys) => (
-                                                keys === feilActive?<div className={styles.contain} id={`Contain${feilActive}`} >
+                                                keys === feilActive ? <div className={styles.contain} id={`Contain${feilActive}`} >
                                                     {
                                                         userData?.map((e, ke) => (<div className={styles.names} id={`names${ke}`} onMouseDown={mouseDown}></div>))
                                                     }
 
                                                     <div dangerouslySetInnerHTML={{ __html: fileData[feilActive] }} ></div>
-                                                </div>:null
+                                                </div> : null
                                             ))
                                         }
 
@@ -480,9 +497,9 @@ export default (props) => {
                                                 <h3>主体</h3>
                                             </div>
                                             {
-                                                userData?.map((item,k) => (
+                                                userData?.map((item, k) => (
                                                     <div className={styles.contain}>
-                                                        <div draggable className='txt' onMouseOver={()=>{setUserActive(k)}}>{item.name}</div>
+                                                        <div draggable className='txt' onMouseOver={() => { setUserActive(k) }}>{item.name}</div>
 
                                                         <div>签署</div>
                                                     </div>
@@ -512,6 +529,12 @@ export default (props) => {
                                         {/* <p> <span>签约方：{userData.name}({userData.name})</span> </p> */}
                                     </div>
                                     <h4>业务合同书</h4>
+                                    {fileData?.map((item, index) => (
+                                        <>
+                                            <h4>合同{index + 1}</h4>
+                                            <div dangerouslySetInnerHTML={{ __html: item }} className={styles.contain} ></div>
+                                        </>
+                                    ))}
                                     {/* <div dangerouslySetInnerHTML={{ __html: fileData }} className={styles.contain} ></div> */}
                                     <div>
                                         <Button type='primary' style={{ marginRight: '8px' }} onClick={() => setActive(() => active - 1)}>上一步</Button>
@@ -546,13 +569,7 @@ export default (props) => {
                     initialValues={{ userType: 'PERSON', platform: true }}
                     autoComplete="off"
                 >
-                    <Form.Item
-                        label="签约主体类型"
-                        name="idType"
-                        rules={[{ required: false, message: '请输入' }]}
-                    >
-                        <Input placeholder='请输入' />
-                    </Form.Item>
+
                     <Form.Item
                         label="签约主体姓名"
                         name="name"
@@ -575,8 +592,25 @@ export default (props) => {
                         <Select
                             placeholder="请选择"
                             allowClear
+                            onSearch={e => setUserType(e)}
                         >
-                            <Option value='PERSON'>身份证</Option>
+                            {
+                                UserTypeEnum.map(item => {
+                                    <Option value={item.value}>{item.name}</Option>
+                                })
+                            }
+
+                        </Select>
+                    </Form.Item>
+                    <Form.Item
+                        label="签约主体类型"
+                        name="idType"
+                        rules={[{ required: false, message: '请输入' }]}
+                    >
+                        <Select placeholder='请选择' >
+                            {
+                                userType === 'PERSON' ? <Option value="CRED_PSN_CH_IDCARD">身份证号码</Option> : TypeEnum.map(ele => (<Option value={ele.value}>{ele.name}</Option>))
+                            }
                         </Select>
                     </Form.Item>
                     <Form.Item

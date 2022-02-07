@@ -8,6 +8,7 @@ import { sizeChange } from '@/util/util';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
+const ContractCaseEnum = { INIT: '初始状态', FLOW_CREATED: '流程已创建', SIGNING: '待他人签约', SIGNED: '已签约' }
 export default () => {
     const [tenantList, setTenantList] = useState([]);
     const [tenantListC, setTenantListC] = useState([]);
@@ -37,7 +38,7 @@ export default () => {
             title: '合同状态',
             render: ({ status }) => (
                 <div style={{ maxWidth: 200 }}>
-                    {status}
+                    {ContractCaseEnum[status] || ''}
                 </div>
             ),
         },
@@ -147,7 +148,7 @@ export default () => {
                 </div>
             </div>
             <Tabs defaultActiveKey="1" onChange={callback}>
-                <TabPane tab={`待签署(${totalSize||0})`} key="1">
+                <TabPane tab={`待签署(${totalSize || 0})`} key="1">
                     <BaseTable
                         dataSource={tenantList || []}
                         hideState={true}
@@ -158,7 +159,7 @@ export default () => {
                         totalSize={totalSize}
                     />
                 </TabPane>
-                <TabPane tab={`已完成(${totalSizeC ||0})`} key="2">
+                <TabPane tab={`已完成(${totalSizeC || 0})`} key="2">
                     <BaseTable
                         dataSource={tenantListC || []}
                         hideState={true}

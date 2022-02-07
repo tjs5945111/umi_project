@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import BaseTable from '@/components/BaseTable';
 import { message, Divider, Radio, Button, Table, Drawer, Space, Form, Input, Select, Upload } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { yzList, rysc } from '@/services/ant-design-pro/api';
+import { yzList, rysc, yzAdd } from '@/services/ant-design-pro/api';
 import moment from 'moment';
 import styles from './index.less';
 
@@ -19,6 +19,7 @@ export default () => {
     const [baseStatues, setBaseStatues] = useState({});
     const [visible, setVisible] = useState(false);
     const [yzid, setYzid] = useState('');
+    const [ids, setIds] = useState('');
     const [imgData, setImgData] = useState('');
     const qyEl = useRef(null);
 
@@ -55,17 +56,17 @@ export default () => {
                         lineHeight: '0px',
                     }}
                 >
-                    <a
+                    {/* <a
                         style={{ marginRight: 30 }}
                         onClick={() => {
                             window.open(`/yzgl/detail?id=${data.id}`);
                         }}
                     >
                         查看详情
-                    </a>
+                    </a> */}
                     <a
                         style={{ marginRight: 30 }}
-                        onClick={() => { setVisible(true); setYzid(data.userAcc) }}
+                        onClick={() => { setVisible(true); setYzid(data.userAcc);setIds(data.id) }}
                     >
                         添加印章
                     </a>
@@ -136,16 +137,17 @@ export default () => {
         qyEl.current.validateFields().then(async (values) => {
             values.userAcc = yzid;
             values.sealData = imgData;
+            values.accountId = ids;
             console.log(values);
 
-            // const res = await ztAdd(params);
-            // console.log('res', res);
-            // if (res.code === 'ok') {
-            //     setUserData([...userData, values])
-            //     setVisible(false);
-            // } else {
-            //     message.error(res.msg || '失败')
-            // }
+            const res = await yzAdd(values);
+            console.log('res', res);
+            if (res.code === 'ok') {
+                setVisible(false);
+                message.success('添加成功')
+            } else {
+                message.error(res.msg || '添加失败')
+            }
         })
     }
 
@@ -172,7 +174,7 @@ export default () => {
             if (info.file.status === 'done') {
                 var reader = new FileReader();
                 reader.onloadend = function (event) {
-                    setImgData(reader.result || '')
+                    setImgData((reader.result||'').split(',')[1] || '')
                 };
                 reader.readAsDataURL(info.file?.originFileObj);
                 // message.success(`${info.file.name} file uploaded successfully`);
