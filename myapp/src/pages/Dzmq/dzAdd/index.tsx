@@ -331,6 +331,7 @@ export default (props) => {
             const res = await ztAdd(params);
             console.log('res', res);
             if (res.code === 'ok') {
+                values.id = res.data?.contractUser?.id;
                 setUserData([...userData, values])
                 setVisible(false);
             } else {
@@ -339,11 +340,16 @@ export default (props) => {
         })
     }
 
-    const handleDe = async (e, item) => {
+    const handleDe = async (e, item, inx) => {
         e.preventDefault();
         const res = ztDelect({ id: item.id || '' })
         console.log(res, 'res');
-
+        if (res.code === 'ok') {
+            const temp = userData.filter(e => e.id !== item.id) || [];
+            setUserData(temp)
+        } else {
+            message.error('删除失败')
+        }
     }
     //编辑
     const handleBj = async e => {
@@ -407,14 +413,14 @@ export default (props) => {
                                         <Form.Item
                                             label="新增案件名称"
                                             name="caseName"
-                                            rules={[{ required: false, message: '请输入' }]}
+                                            rules={[{ required: true, message: '请输入' }]}
                                         >
                                             <Input />
                                         </Form.Item>
                                         <Form.Item
                                             label="上传文件合同"
                                             name="date"
-                                            rules={[{ required: false, message: '请输入' }]}
+                                            rules={[{ required: true, message: '请输入' }]}
                                         >
                                             <Upload {...propsU}>
                                                 <Button icon={<UploadOutlined />}>上传文件</Button>
@@ -437,7 +443,7 @@ export default (props) => {
                                     <Button type='primary' onClick={() => setVisible(true)} >添加签约主体</Button>
                                     <div style={{ display: 'flex' }}>
                                         {
-                                            userData?.map(item => (
+                                            userData?.map((item, inx) => (
 
                                                 <div className={styles.stept}>
                                                     <img src="https://gw.alipayobjects.com/mdn/rms_3015bf/afts/img/A*kIaURpYqqekAAAAAAAAAAAAAARQnAQ" alt="" />
@@ -446,7 +452,8 @@ export default (props) => {
                                                         <p>姓名：{item.name}</p>
                                                         <p>手机号：{item.mobile}</p>
                                                         <p>身份证号：{item.idNumber}</p>
-                                                        <p><a href="#" onClick={e => handleBj(e)}>编辑</a> ｜ <a href="#" onClick={e => handleDe(e, item)}>删除</a></p>
+                                                        <p><a href="#" onClick={e => handleDe(e, item, inx)}>删除</a></p>
+                                                        {/* <p><a href="#" onClick={e => handleBj(e)}>编辑</a> ｜ <a href="#" onClick={e => handleDe(e, item)}>删除</a></p> */}
                                                     </div>
                                                 </div>
 
