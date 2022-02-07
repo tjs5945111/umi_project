@@ -38,7 +38,7 @@ export default () => {
             title: '合同状态',
             render: ({ status }) => (
                 <div style={{ maxWidth: 200 }}>
-                    {ContractCaseEnum[status] || ''}
+                    {ContractCaseEnum[status] || status}
                 </div>
             ),
         },
@@ -91,12 +91,14 @@ export default () => {
             let res = {}
             let ress = {}
             if (i === 1) {
-                // params.status = ['INIT','FLOW_CREATED','SIGNING'];
-                params.status = 'INIT';
                 res = await getDqlb(params)
-                const { data = {}, total, size } = res as any;
-                setTenantList(data.data);
-                setTotalSize(data.total);
+                const { data = {}, total = 0, size } = res as any;
+                const temp = (data.data || []).filter(item => item.status !== 'SIGNED')
+                // data.data.filter(item => item.status !== 'SIGNED')
+                setTenantList(temp);
+                params.status = 'SIGNED';
+                ress = await getDqlb(params)
+                setTotalSize((res.data?.total || 0) - (ress.data?.total || 0));
             } else {
                 // params.status = '';
                 params.status = 'SIGNED';
@@ -115,9 +117,9 @@ export default () => {
     const handlePaging = (num: any, size: any) => {
         setLoading(true);
         if (keys === 1) {
-            getList(num, { status: '待签署' }, size);
+            getList(num, { status: '' }, size, [1]);
         } else {
-            getList(num, { status: '已完成' }, size);
+            getList(num, { status: 'SIGNED' }, size, [2]);
         }
         setLoading(false);
 

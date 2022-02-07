@@ -50,7 +50,7 @@ export default (props) => {
                         <p> <span>案件名称：</span>{detailData?.name || ''}</p>
                         {/* <p> <span>上传人：</span>{detailData?.contractCaseSignerResponseVOS[0]?.name || ''}</p> */}
                         <p> <span>文书数量：</span>{detailData?.docCount || ''}</p>
-                        <p> <span>案件状态：</span>{ContractCaseEnum[detailData?.status] || ''}</p>
+                        <p> <span>案件状态：</span>{ContractCaseEnum[detailData?.status] || detailData?.status}</p>
                         <p> <span>发起方：</span>{detailData?.initiator || ''} </p>
                     </div>
                     <h4>签约信息</h4>
