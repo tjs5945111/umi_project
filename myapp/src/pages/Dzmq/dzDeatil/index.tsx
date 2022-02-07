@@ -22,7 +22,12 @@ export default (props) => {
     const getList = async (detailId) => {
         const res = await getDqDeatil({ id: detailId })
         console.log(res);
-        setDetailData(res.data)
+        if(res.code === 'ok'){
+            setDetailData(res.data)
+        }else{
+            message.error('详情获取失败！')
+        }
+        
     }
 
     const urlArray = [
@@ -41,29 +46,31 @@ export default (props) => {
             <Card bordered={false} className={styles.contain}>
                 <div className={styles.stepfore}>
                     <h4>基本信息</h4>
-                    <div>
-                        <p> <span>案件名称：</span>{detailData.name || ''}</p>
+                    <div style={{ marginLeft: 25,display:'flex',flexWrap:'wrap' }}>
+                        <p> <span>案件名称：</span>{detailData?.name || ''}</p>
                         {/* <p> <span>上传人：</span>{detailData?.contractCaseSignerResponseVOS[0]?.name || ''}</p> */}
-                        <p> <span>文书数量：</span>{detailData.docCount || ''}</p>
-                        <p> <span>案件状态：</span>{ContractCaseEnum[detailData.status] || ''}</p>
-                        <p> <span>发起方：</span>{detailData.initiator || ''} </p>
+                        <p> <span>文书数量：</span>{detailData?.docCount || ''}</p>
+                        <p> <span>案件状态：</span>{ContractCaseEnum[detailData?.status] || ''}</p>
+                        <p> <span>发起方：</span>{detailData?.initiator || ''} </p>
                     </div>
                     <h4>签约信息</h4>
 
                     {
-                        detailData?.contractCaseSignerResponseVOS?.map((item,index) => (
-                            <div>
-                                <h5>合同{index+1}_用户信息</h5>
+                        detailData?.contractCaseSignerResponseVOS?.map((item, index) => (
+                            <div style={{ padding: 20,border:'1px solid #eee',marginBottom:15 }}>
+                                <h5>合同{index + 1}_用户信息</h5>
+                                <div style={{ marginLeft: 20,display:'flex',flexWrap:'wrap' }}>
                                 <p> <span>签约方：</span>{item.contractUser?.name || ''}({item.contractUser?.mobile || ''}) </p>
                                 <p> <span>身份证：</span>{item.contractUser?.idNumber || ''} </p>
                                 <p> <span>签约主体类型：</span>{item.contractUser?.idType || ''} </p>
-                                <p> <span>是否需要活体检验：</span>{item.contractUser?.contractUser?.platform ? "需要" : '不需要'} </p>
-                                <p> <span>签署状态：</span>{item.contractUser?.contractUser?.signStatus === 'SIGNED' ? '已签署' : '未签署'} </p>
-                                <p> <span>是否有效：</span>{item.contractUser?.contractUser?.status === 'Y' ? '有效' : '无效'} </p>
+                                <p> <span>是否需要活体检验：</span>{item.contractUser.platform ? "需要" : '不需要'} </p>
+                                <p> <span>签署状态：</span>{item.signStatus === 'Y' ? '已签署' : '未签署'} </p>
+                                <p> <span>是否有效：</span>{item.status === 'Y' ? '有效' : '无效'} </p>
+                                </div>
                             </div>
                         ))
                     }
-    
+
                     {/* <h4>业务合同书</h4>
                     <div className={styles.contain} >
                         <FileViewer

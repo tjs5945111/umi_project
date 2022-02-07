@@ -14,7 +14,7 @@ import styles from './index.less'
 const { Option } = Select;
 // const { Step } = Steps;
 
-const UserTypeEnum = [{ name: '个人', value: 'PERSON' }, { name: 'jigou', value: 'ORGANIZATION' }]
+const UserTypeEnum = [{ name: '个人', value: 'PERSON' }, { name: '机构', value: 'ORGANIZATION' }]
 const TypeEnum = [{ name: '统一社会信用代码', value: 'CRED_ORG_USCC' },
 { name: '组织机构代码证', value: 'CRED_ORG_CODE' },
 { name: '工商注册号', value: 'CRED_ORG_REGCODE' },
@@ -45,7 +45,7 @@ export default (props) => {
     const [userActive, setUserActive] = useState(0);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [loadingNext, setLoadingNext] = useState(false);
-    const [userType, setUserType] = useState('');
+    const [userType, setUserType] = useState('PERSON');
     const qyEl = useRef(null);
     useEffect(() => {
         console.log(props, '1231323');
@@ -522,12 +522,12 @@ export default (props) => {
                                     <div>
                                         <p> <span>案件名称：</span>{ajData.caseName} </p>
                                         {/* <p> <span>上传人：</span>{userData.name} </p> */}
-                                        <p> <span>文书数量：</span>{ajData.docCount}</p>
+                                        <p> <span>文书数量：</span>{fileData.length}</p>
                                     </div>
-                                    <h4>签约</h4>
+                                    {/* <h4>签约</h4>
                                     <div>
-                                        {/* <p> <span>签约方：{userData.name}({userData.name})</span> </p> */}
-                                    </div>
+                                        <p> <span>签约方：{userData.name}({userData.name})</span> </p>
+                                    </div> */}
                                     <h4>业务合同书</h4>
                                     {fileData?.map((item, index) => (
                                         <>
@@ -592,12 +592,10 @@ export default (props) => {
                         <Select
                             placeholder="请选择"
                             allowClear
-                            onSearch={e => setUserType(e)}
+                            onSelect={e => setUserType(e)}
                         >
                             {
-                                UserTypeEnum.map(item => {
-                                    <Option value={item.value}>{item.name}</Option>
-                                })
+                                UserTypeEnum.map(item => <Option value={item.value}>{item.name}</Option>)
                             }
 
                         </Select>

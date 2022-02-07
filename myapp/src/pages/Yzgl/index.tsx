@@ -164,6 +164,7 @@ export default () => {
     const propsU = {
         name: 'file',
         action: '',
+        accept:'image/*',
         headers: {
             authorization: 'authorization-text',
         },
@@ -242,31 +243,31 @@ export default () => {
                     <Form.Item
                         label="印章名称"
                         name="alias"
-                        rules={[{ required: false, message: '请输入' }]}
+                        rules={[{ required: true, message: '请输入' }]}
                     >
                         <Input placeholder='请输入' />
                     </Form.Item>
                     <Form.Item
                         label="印章宽度"
                         name="width"
-                        rules={[{ required: false, message: '请输入' }]}
+                        rules={[{ required: true, message: '请输入' }]}
                     >
                         <Input />
                     </Form.Item>
                     <Form.Item
                         label="印章高度"
                         name="height"
-                        rules={[{ required: false, message: '请输入' }]}
+                        rules={[{ required: true, message: '请输入' }]}
                     >
                         <Input placeholder='请输入' />
                     </Form.Item>
                     <Form.Item
                         label="印章图片"
                         name="sealData"
-                        rules={[{ required: false, message: '请输入' }]}
+                        rules={[{ required: true, message: '请上传' }]}
                     >
                         <Upload {...propsU}>
-                            <Button icon={<UploadOutlined />} disabled={!!imgData}>上传文件</Button>
+                            <Button icon={<UploadOutlined />} disabled={!!imgData}>上传图片</Button>
                         </Upload>
                     </Form.Item>
                 </Form>
