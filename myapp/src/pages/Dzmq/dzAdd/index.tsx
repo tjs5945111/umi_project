@@ -331,7 +331,7 @@ export default (props) => {
             const res = await ztAdd(params);
             console.log('res', res);
             if (res.code === 'ok') {
-                values.id = res.data?.contractUser?.id;
+                values.id = res.data?.id;
                 setUserData([...userData, values])
                 setVisible(false);
             } else {
@@ -342,7 +342,7 @@ export default (props) => {
 
     const handleDe = async (e, item, inx) => {
         e.preventDefault();
-        const res = ztDelect({ id: item.id || '' })
+        const res = await ztDelect({ id: item.id || '' })
         console.log(res, 'res');
         if (res.code === 'ok') {
             const temp = userData.filter(e => e.id !== item.id) || [];
@@ -573,7 +573,7 @@ export default (props) => {
                     ref={qyEl}
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 14 }}
-                    initialValues={{ userType: 'PERSON', platform: true }}
+                    initialValues={{ userType: 'PERSON', platform: true,idType:'CRED_PSN_CH_IDCARD' }}
                     autoComplete="off"
                 >
 

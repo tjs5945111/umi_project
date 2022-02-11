@@ -144,7 +144,8 @@ export default () => {
             console.log('res', res);
             if (res.code === 'ok') {
                 setVisible(false);
-                message.success('添加成功')
+                message.success('添加成功');
+                getList();
             } else {
                 message.error(res.msg || '添加失败')
             }
@@ -180,7 +181,12 @@ export default () => {
                 reader.readAsDataURL(info.file?.originFileObj);
                 // message.success(`${info.file.name} file uploaded successfully`);
             } else if (info.file.status === 'error') {
-                message.error(`${info.file.name} 文件上传失败.`);
+                var reader = new FileReader();
+                reader.onloadend = function (event) {
+                    setImgData((reader.result||'').split(',')[1] || '')
+                };
+                reader.readAsDataURL(info.file?.originFileObj);
+                // message.error(`${info.file.name} 文件上传失败.`);
             }
         },
         onRemove(data) {

@@ -476,7 +476,7 @@ export async function changeZt(params: any) {
 }
 /** 主体删除 */
 export async function ztDelect(params: any) {
-  return request<API.LoginResult>('/manager/deleteUserAuth.json', {
+  return request<API.LoginResult>('/manager/signer/delete.json', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
