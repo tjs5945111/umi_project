@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import BaseTable from '@/components/BaseTable';
 import { message, Divider, Radio, Button, Table, Drawer, Space, Form, Input, Select, Upload } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { yzList, rysc, yzAdd, ztAdd,getDqlb } from '@/services/ant-design-pro/api';
+import { yzList, rysc, yzAdd, ztCreate, getDqlb, getSeals } from '@/services/ant-design-pro/api';
 import moment from 'moment';
 import styles from './index.less';
 
@@ -43,6 +43,7 @@ export default () => {
     const qyEls = useRef(null);
     const [visibles, setVisibles] = useState(false);
     const [caseIdList, setCaseIdList] = useState([]);
+    const [yzData, setYzData] = useState([]);
 
     const columns = [
         {
@@ -87,7 +88,7 @@ export default () => {
                     </a> */}
                     <a
                         style={{ marginRight: 30 }}
-                        onClick={() => { setVisible(true); setYzid(data.userAcc); setIds(data.id) }}
+                        onClick={() => { debugger; setVisible(true); setYzid(data.userAcc); setIds(data.id) }}
                     >
                         添加印章
                     </a>
@@ -114,7 +115,7 @@ export default () => {
     };
     useEffect(() => {
         getList();
-        getCase()
+        // getCase()
     }, []);
 
     const getList = async (
@@ -136,7 +137,7 @@ export default () => {
         setLoading(false);
     };
 
-    const getCase = async ()=>{
+    const getCase = async () => {
         const res = await getDqlb({})
         const { data = {}, total = 0, size } = res as any;
         setCaseIdList(data.data);
@@ -186,11 +187,11 @@ export default () => {
             let params = {}
             if (userType === 'PERSON') {
                 values.userId = new Date().getTime();
-                params = { caseId: values.caseId, userType: values.userType, contractUser: values }
+                params = { userType: values.userType, contractUser: values }
             } else {
-                params = { caseId: values.caseId, userType: values.userType, contractOrganization: { ...values, name: values.jgname, idNumber: values.jgidNumber, idType: values.jgidType }, contractUser: values }
+                params = { userType: values.userType, contractOrganization: { ...values, name: values.jgname, idNumber: values.jgidNumber, idType: values.jgidType }, contractUser: values }
             }
-            const res = await ztAdd(params);
+            const res = await ztCreate(params);
             console.log('res', res);
             if (res.code === 'ok') {
                 values.id = res.data?.id;
@@ -205,7 +206,7 @@ export default () => {
 
     const actionList: any = [
         <></>
-       , <Button
+        , <Button
             type="primary"
             onClick={() => setVisibles(true)}
         >
@@ -255,6 +256,24 @@ export default () => {
 
         return <Table columns={columns} dataSource={e.contractSealVO || []} pagination={false} />;
     };
+    const handonExpand = async (e, data) => {
+        if (e) {
+            const res = await getSeals({ userId: data.id })
+            if (res?.code === 'ok') {
+                tenantList.map(item => {
+                    if (item.id === data.id) {
+                        item.contractSealVO = res.data
+
+                    }
+                    return item;
+                })
+                setYzData(res.data)
+            } else {
+                message.error('获取印章数据失败')
+            }
+            // debugger
+        }
+    }
     // const searchArray = [
     //     { name: '印章名称', value: 'access' },
     //     { name: '公司名称', value: 'role', type: 'select', data: typeList },
@@ -271,6 +290,7 @@ export default () => {
                 loading={loading}
                 columns={columns as any}
                 expandable={{ expandedRowRender }}
+                onExpand={handonExpand}
                 tableName="用户_印章管理"
                 handleSearch={(e: any) => handleSearch(e)}
                 handlePaging={(e: any, v) => handlePaging(e, v)}
@@ -347,7 +367,7 @@ export default () => {
                     initialValues={{ userType: 'PERSON', platform: false, }}
                     autoComplete="off"
                 >
-                    <Form.Item
+                    {/* <Form.Item
                         label="案件"
                         name="caseId"
                         rules={[{ required: true, message: '请选择' }]}
@@ -361,9 +381,9 @@ export default () => {
                             }
 
                         </Select>
-                    </Form.Item>
+                    </Form.Item> */}
                     <Form.Item
-                        label="证件类型"
+                        label="签约主体类型"
                         name="userType"
                         rules={[{ required: true, message: '请输入' }]}
                     >
@@ -378,55 +398,6 @@ export default () => {
 
                         </Select>
                     </Form.Item>
-                    <Form.Item
-                        label="签约主体姓名"
-                        name="name"
-                        rules={[{ required: true, message: '请输入' }]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="签约主体手机号"
-                        name="mobile"
-                        rules={[{ required: true, message: '请输入' }]}
-                    >
-                        <Input placeholder='请输入' />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="签约主体类型"
-                        name="idType"
-                        rules={[{ required: true, message: '请输入' }]}
-                    >
-                        <Select placeholder='请选择' >
-                            <Option value="CRED_PSN_CH_IDCARD">身份证号码</Option>
-                        </Select>
-                    </Form.Item>
-                    <Form.Item
-                        label="证件号码"
-                        name="idNumber"
-                        rules={[{ required: true, message: '请输入' }]}
-                    >
-                        <Input placeholder='请输入' />
-                    </Form.Item>
-                    <Form.Item
-                        label="密钥"
-                        name="secret"
-                        rules={[{ required: false, message: '请输入' }]}
-                    >
-                        <Input placeholder='请输入' />
-                    </Form.Item>
-                    <Form.Item
-                        label="是否需要活体检验"
-                        name="platform"
-                        rules={[{ required: false, message: '请输入' }]}
-                    >
-                        <Radio.Group>
-                            <Radio value={true}>是</Radio>
-                            <Radio value={false}>否</Radio>
-                        </Radio.Group>
-                    </Form.Item>
-
                     {
                         userType === 'PERSON' ? <>
                         </> : <>
@@ -490,6 +461,56 @@ export default () => {
                             </Form.Item>
                         </>
                     }
+                    <Form.Item
+                        label="签约主体姓名"
+                        name="name"
+                        rules={[{ required: true, message: '请输入' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        label="签约主体手机号"
+                        name="mobile"
+                        rules={[{ required: true, message: '请输入' }]}
+                    >
+                        <Input placeholder='请输入' />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="证件类型"
+                        name="idType"
+                        rules={[{ required: true, message: '请输入' }]}
+                    >
+                        <Select placeholder='请选择' >
+                            <Option value="CRED_PSN_CH_IDCARD">身份证号码</Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item
+                        label="证件号码"
+                        name="idNumber"
+                        rules={[{ required: true, message: '请输入' }]}
+                    >
+                        <Input placeholder='请输入' />
+                    </Form.Item>
+                    <Form.Item
+                        label="密钥"
+                        name="secret"
+                        rules={[{ required: false, message: '请输入' }]}
+                    >
+                        <Input placeholder='请输入' />
+                    </Form.Item>
+                    <Form.Item
+                        label="是否需要活体检验"
+                        name="platform"
+                        rules={[{ required: false, message: '请输入' }]}
+                    >
+                        <Radio.Group>
+                            <Radio value={true}>是</Radio>
+                            <Radio value={false}>否</Radio>
+                        </Radio.Group>
+                    </Form.Item>
+
+
                 </Form>
             </Drawer>
         </>

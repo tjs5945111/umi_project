@@ -39,6 +39,7 @@ export interface BaseTablehProps {
     totalSize?: number; // 总数
     searchWord?: {}, // 搜索的值
     expandable?:any
+    onExpand?:any
 }
 
 const checkBoxOptions = [
@@ -84,6 +85,7 @@ export default function BaseTable({
     searchWord,
     hideState = false,
     expandable,
+    onExpand,
 }: BaseTablehProps) {
     const [selectedRowKeys, SetSelectedRowKeys] = useState([]);
     const [expand, SetExpand] = useState(false);
@@ -301,6 +303,7 @@ export default function BaseTable({
                     columns={columns}
                     dataSource={dataSource}
                     expandable={expandable}
+                    onExpand={onExpand}
                     pagination={{
                         showSizeChanger: true,
                         showQuickJumper: true,

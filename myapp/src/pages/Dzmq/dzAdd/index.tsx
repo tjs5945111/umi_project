@@ -98,6 +98,12 @@ export default (props) => {
         if (active === 2) {
             // 签署
             setIsModalVisible(true)
+            // } else if (active === 1) {
+            //     if (!userData.length) {
+            //         message.error('请先添加签约主体');
+            //         return;
+            //     };
+            //     setActive(() => active + 1)
         } else {
             setActive(() => active + 1)
         }
@@ -294,6 +300,7 @@ export default (props) => {
                     mammoth.convertToHtml({ arrayBuffer: arrayBuffer }).then(function (resultObject) {
                         // result1.innerHTML = resultObject.value
                         setFileData([...fileData, resultObject.value])
+
                         // console.log(resultObject.value)
                     })
 
@@ -583,7 +590,7 @@ export default (props) => {
                     autoComplete="off"
                 >
                     <Form.Item
-                        label="证件类型"
+                        label="签约主体类型"
                         name="userType"
                         rules={[{ required: true, message: '请输入' }]}
                     >
@@ -598,55 +605,6 @@ export default (props) => {
 
                         </Select>
                     </Form.Item>
-                    <Form.Item
-                        label="签约主体姓名"
-                        name="name"
-                        rules={[{ required: true, message: '请输入' }]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="签约主体手机号"
-                        name="mobile"
-                        rules={[{ required: true, message: '请输入' }]}
-                    >
-                        <Input placeholder='请输入' />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="签约主体类型"
-                        name="idType"
-                        rules={[{ required: true, message: '请输入' }]}
-                    >
-                        <Select placeholder='请选择' >
-                            <Option value="CRED_PSN_CH_IDCARD">身份证号码</Option>
-                        </Select>
-                    </Form.Item>
-                    <Form.Item
-                        label="证件号码"
-                        name="idNumber"
-                        rules={[{ required: true, message: '请输入' }]}
-                    >
-                        <Input placeholder='请输入' />
-                    </Form.Item>
-                    <Form.Item
-                        label="密钥"
-                        name="secret"
-                        rules={[{ required: false, message: '请输入' }]}
-                    >
-                        <Input placeholder='请输入' />
-                    </Form.Item>
-                    <Form.Item
-                        label="是否需要活体检验"
-                        name="platform"
-                        rules={[{ required: false, message: '请输入' }]}
-                    >
-                        <Radio.Group>
-                            <Radio value={true}>是</Radio>
-                            <Radio value={false}>否</Radio>
-                        </Radio.Group>
-                    </Form.Item>
-
                     {
                         userType === 'PERSON' ? <>
                         </> : <>
@@ -710,6 +668,54 @@ export default (props) => {
                             </Form.Item>
                         </>
                     }
+                    <Form.Item
+                        label="签约主体姓名"
+                        name="name"
+                        rules={[{ required: true, message: '请输入' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        label="签约主体手机号"
+                        name="mobile"
+                        rules={[{ required: true, message: '请输入' }]}
+                    >
+                        <Input placeholder='请输入' />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="证件类型"
+                        name="idType"
+                        rules={[{ required: true, message: '请输入' }]}
+                    >
+                        <Select placeholder='请选择' >
+                            <Option value="CRED_PSN_CH_IDCARD">身份证号码</Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item
+                        label="证件号码"
+                        name="idNumber"
+                        rules={[{ required: true, message: '请输入' }]}
+                    >
+                        <Input placeholder='请输入' />
+                    </Form.Item>
+                    <Form.Item
+                        label="密钥"
+                        name="secret"
+                        rules={[{ required: false, message: '请输入' }]}
+                    >
+                        <Input placeholder='请输入' />
+                    </Form.Item>
+                    <Form.Item
+                        label="是否需要活体检验"
+                        name="platform"
+                        rules={[{ required: false, message: '请输入' }]}
+                    >
+                        <Radio.Group>
+                            <Radio value={true}>是</Radio>
+                            <Radio value={false}>否</Radio>
+                        </Radio.Group>
+                    </Form.Item>
                 </Form>
             </Drawer>
             <Modal width={300} title="温馨提示" visible={isModalVisible} onOk={() => { setIsModalVisible(false); setActive(() => active + 1) }} onCancel={() => setIsModalVisible(false)}>

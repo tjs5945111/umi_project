@@ -373,6 +373,16 @@ export async function getDqDeatil(params: any) {
     params,
   });
 }
+/** 电签下载 */
+export async function dqDrown(params: any) {
+  return request<API.LoginResult>('/manager/flow/download.json', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    params,
+  });
+}
 /** 电签文件上传 */
 export async function wjsc(params: any) {
   return request<API.LoginResult>('/manager/signdoc/upload.json', {
@@ -399,7 +409,7 @@ export async function ztList(params: any) {
   });
 }
 
-/** 印章列表 */
+/** 合约人列表 */
 export async function yzList(params: any) {
 
   return request<API.LoginResult>('/manager/user/search.json', {
@@ -410,10 +420,32 @@ export async function yzList(params: any) {
     body: JSON.stringify(params)
   });
 }
+/** 合约人列表 */
+export async function getSeals(params: any) {
+
+  return request<API.LoginResult>('/manager/seal/getSeals.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    params,
+  });
+}
 /** 印章添加 */
 export async function yzAdd(params: any) {
 
   return request<API.LoginResult>('/manager/seal/create.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(params)
+  });
+}
+/** 添加主体 */
+export async function ztCreate(params: any) {
+
+  return request<API.LoginResult>('/manager/user/create.json', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

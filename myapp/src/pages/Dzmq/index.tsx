@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import BaseTable from '@/components/BaseTable';
 import { message, Tabs } from 'antd';
-import { getDqlb } from '@/services/ant-design-pro/api';
+import { getDqlb,dqDrown } from '@/services/ant-design-pro/api';
 import moment from 'moment';
 import { sizeChange } from '@/util/util';
 import styles from './index.less';
@@ -47,7 +47,7 @@ export default () => {
             key: 'actionList',
             fixed: 'right',
             width: 200,
-            render: ({ id }) => (
+            render: ({ id,status,flowId }) => (
                 <div
 
                     style={{
@@ -66,6 +66,22 @@ export default () => {
                     >
                         查看详情
                     </a>
+                    {
+                        status ==='SIGNED'? <a
+                        style={{ marginRight: 30 }}
+                        onClick={async e => {
+                            e.defaultPrevented;
+                            const res =await dqDrown({flowId})
+                            res.data.map(item=>{
+                                window.location.assign(item.fileUrl)
+                            })
+                            // debugger
+                        }}
+                    >
+                        下载
+                    </a>:null
+                    }
+                   
 
                 </div>
             ),
