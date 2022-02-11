@@ -99,12 +99,12 @@ export default (props) => {
         if (active === 2) {
             // 签署
             setIsModalVisible(true)
-            // } else if (active === 1) {
-            //     if (!userData.length) {
-            //         message.error('请先添加签约主体');
-            //         return;
-            //     };
-            //     setActive(() => active + 1)
+            } else if (active === 1) {
+                if (!userData.length) {
+                    message.error('请先添加签约主体');
+                    return;
+                };
+                setActive(() => active + 1)
         } else {
             setActive(() => active + 1)
         }
