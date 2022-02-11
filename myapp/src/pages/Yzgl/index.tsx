@@ -9,7 +9,8 @@ import styles from './index.less';
 
 const { Option } = Select;
 
-const UserTypeEnum = [{ name: '个人', value: 'PERSON' }, { name: '机构', value: 'ORGANIZATION' }]
+const UserTypeEnum = [{ name: '个人', value: 'PERSON' }]
+// const UserTypeEnum = [{ name: '个人', value: 'PERSON' }, { name: '机构', value: 'ORGANIZATION' }]
 const TypeEnum = [{ name: '统一社会信用代码', value: 'CRED_ORG_USCC' },
 { name: '组织机构代码证', value: 'CRED_ORG_CODE' },
 { name: '工商注册号', value: 'CRED_ORG_REGCODE' },
@@ -417,7 +418,7 @@ export default () => {
                             </Form.Item>
 
                             <Form.Item
-                                label="签约主体类型"
+                                label="企业证件类型"
                                 name="jgidType"
                                 rules={[{ required: true, message: '请输入' }]}
                             >
@@ -466,7 +467,7 @@ export default () => {
                         name="name"
                         rules={[{ required: true, message: '请输入' }]}
                     >
-                        <Input />
+                        <Input placeholder='请输入' />
                     </Form.Item>
                     <Form.Item
                         label="签约主体手机号"
