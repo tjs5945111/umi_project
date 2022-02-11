@@ -29,6 +29,7 @@ const TypeEnum = [{ name: '统一社会信用代码', value: 'CRED_ORG_USCC' },
 { name: '自定义', value: 'CODE_ORG_CUSTOM' },
 { name: '未知证件类型', value: 'CRED_ORG_UNKNOWN' },
 ]
+const orgTypeEnum = [{ name: '企业', value: 'ENTERPRISE' }, { name: '个体工商户', value: 'SELF-EMPLOYED' }, { name: '分公司', value: 'SUBSIDIARY' }, { name: '其他机构', value: 'OTHERORG' }]
 
 export default (props) => {
     const type = props.location?.query?.type || '';
@@ -326,8 +327,13 @@ export default (props) => {
         if (!qyEl || !qyEl?.current) return;
         qyEl.current.validateFields().then(async (values) => {
             console.log(values);
-            values.userId = new Date().getTime();
-            const params = { caseId: caseId, userType: values.userType, contractUser: values }
+            let params = {}
+            if (userType === 'PERSON') {
+                values.userId = new Date().getTime();
+                params = { caseId: caseId, userType: values.userType, contractUser: values }
+            } else {
+                params = { caseId: caseId, userType: values.userType, contractOrganization: { ...values, name: values.jgname, idNumber: values.jgidNumber, idType: values.jgidType }, contractUser: values }
+            }
             const res = await ztAdd(params);
             console.log('res', res);
             if (res.code === 'ok') {
@@ -448,7 +454,7 @@ export default (props) => {
                                                 <div className={styles.stept}>
                                                     <img src="https://gw.alipayobjects.com/mdn/rms_3015bf/afts/img/A*kIaURpYqqekAAAAAAAAAAAAAARQnAQ" alt="" />
                                                     <div>
-                                                        <h4>个人主体</h4>
+                                                        <h4>{item.userType === 'PERSON' ? '个人' : '机构'}主体</h4>
                                                         <p>姓名：{item.name}</p>
                                                         <p>手机号：{item.mobile}</p>
                                                         <p>身份证号：{item.idNumber}</p>
@@ -573,28 +579,13 @@ export default (props) => {
                     ref={qyEl}
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 14 }}
-                    initialValues={{ userType: 'PERSON', platform: true,idType:'CRED_PSN_CH_IDCARD' }}
+                    initialValues={{ userType: 'PERSON', platform: false, }}
                     autoComplete="off"
                 >
-
-                    <Form.Item
-                        label="签约主体姓名"
-                        name="name"
-                        rules={[{ required: false, message: '请输入' }]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="签约主体手机号"
-                        name="mobile"
-                        rules={[{ required: false, message: '请输入' }]}
-                    >
-                        <Input placeholder='请输入' />
-                    </Form.Item>
                     <Form.Item
                         label="证件类型"
                         name="userType"
-                        rules={[{ required: false, message: '请输入' }]}
+                        rules={[{ required: true, message: '请输入' }]}
                     >
                         <Select
                             placeholder="请选择"
@@ -608,19 +599,39 @@ export default (props) => {
                         </Select>
                     </Form.Item>
                     <Form.Item
+                        label="签约主体姓名"
+                        name="name"
+                        rules={[{ required: true, message: '请输入' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        label="签约主体手机号"
+                        name="mobile"
+                        rules={[{ required: true, message: '请输入' }]}
+                    >
+                        <Input placeholder='请输入' />
+                    </Form.Item>
+
+                    <Form.Item
                         label="签约主体类型"
                         name="idType"
-                        rules={[{ required: false, message: '请输入' }]}
+                        rules={[{ required: true, message: '请输入' }]}
                     >
                         <Select placeholder='请选择' >
-                            {
-                                userType === 'PERSON' ? <Option value="CRED_PSN_CH_IDCARD">身份证号码</Option> : TypeEnum.map(ele => (<Option value={ele.value}>{ele.name}</Option>))
-                            }
+                            <Option value="CRED_PSN_CH_IDCARD">身份证号码</Option>
                         </Select>
                     </Form.Item>
                     <Form.Item
                         label="证件号码"
                         name="idNumber"
+                        rules={[{ required: true, message: '请输入' }]}
+                    >
+                        <Input placeholder='请输入' />
+                    </Form.Item>
+                    <Form.Item
+                        label="密钥"
+                        name="secret"
                         rules={[{ required: false, message: '请输入' }]}
                     >
                         <Input placeholder='请输入' />
@@ -635,6 +646,70 @@ export default (props) => {
                             <Radio value={false}>否</Radio>
                         </Radio.Group>
                     </Form.Item>
+
+                    {
+                        userType === 'PERSON' ? <>
+                        </> : <>
+                            <Form.Item
+                                label="企业法人名称"
+                                name="legalPerson"
+                                rules={[{ required: true, message: '请输入' }]}
+                            >
+                                <Input placeholder='请输入' />
+                            </Form.Item>
+                            <Form.Item
+                                label="企业法人证件号码"
+                                name="legalPersonId"
+                                rules={[{ required: true, message: '请输入' }]}
+                            >
+                                <Input placeholder='请输入' />
+                            </Form.Item>
+
+                            <Form.Item
+                                label="签约主体类型"
+                                name="jgidType"
+                                rules={[{ required: true, message: '请输入' }]}
+                            >
+                                <Select placeholder='请选择' >
+                                    {
+                                        TypeEnum.map(ele => (<Option value={ele.value}>{ele.name}</Option>))
+                                    }
+                                </Select>
+                            </Form.Item>
+                            <Form.Item
+                                label="证件号码"
+                                name="jgidNumber"
+                                rules={[{ required: true, message: '请输入' }]}
+                            >
+                                <Input placeholder='请输入' />
+                            </Form.Item>
+                            <Form.Item
+                                label="机构名称"
+                                name="jgname"
+                                rules={[{ required: true, message: '请输入' }]}
+                            >
+                                <Input placeholder='请输入' />
+                            </Form.Item>
+                            <Form.Item
+                                label="机构标识"
+                                name="organizationId"
+                                rules={[{ required: false, message: '请输入' }]}
+                            >
+                                <Input placeholder='请输入' />
+                            </Form.Item>
+                            <Form.Item
+                                label="机构子类型"
+                                name="orgType"
+                                rules={[{ required: false, message: '请输入' }]}
+                            >
+                                <Select placeholder='请选择' >
+                                    {
+                                        orgTypeEnum.map(ele => (<Option value={ele.value}>{ele.name}</Option>))
+                                    }
+                                </Select>
+                            </Form.Item>
+                        </>
+                    }
                 </Form>
             </Drawer>
             <Modal width={300} title="温馨提示" visible={isModalVisible} onOk={() => { setIsModalVisible(false); setActive(() => active + 1) }} onCancel={() => setIsModalVisible(false)}>
