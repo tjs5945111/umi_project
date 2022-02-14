@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import BaseTable from '@/components/BaseTable';
 import { message, Divider, Radio, Button, Table, Drawer, Space, Form, Input, Select, Upload } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { yzList, rysc, yzAdd, ztCreate, getDqlb, getSeals } from '@/services/ant-design-pro/api';
+import { yzList, rysc, yzAdd, ztCreate, getDqlb, getSeals, getNameData } from '@/services/ant-design-pro/api';
 import moment from 'moment';
 import styles from './index.less';
 
@@ -246,6 +246,12 @@ export default () => {
         }
     };
 
+    const handleBlue = async e => {
+        const res = await getNameData({ name: e.target.value })
+        if (!qyEls || !qyEls?.current) return;
+        qyEls.current.setFieldsValue(res.data && res.data[0])
+    }
+
     const expandedRowRender = (e) => {
         // debugger
         const columns = [
@@ -257,6 +263,7 @@ export default () => {
 
         return <Table columns={columns} dataSource={e.contractSealVO || []} pagination={false} />;
     };
+
     const handonExpand = async (e, data) => {
         if (e) {
             const res = await getSeals({ userId: data.id })
@@ -467,7 +474,7 @@ export default () => {
                         name="name"
                         rules={[{ required: true, message: '请输入' }]}
                     >
-                        <Input placeholder='请输入' />
+                        <Input placeholder='请输入' onBlur={e => handleBlue(e)} />
                     </Form.Item>
                     <Form.Item
                         label="签约主体手机号"
@@ -493,13 +500,13 @@ export default () => {
                     >
                         <Input placeholder='请输入' />
                     </Form.Item>
-                    <Form.Item
+                    {/* <Form.Item
                         label="密钥"
                         name="secret"
                         rules={[{ required: false, message: '请输入' }]}
                     >
                         <Input placeholder='请输入' />
-                    </Form.Item>
+                    </Form.Item> */}
                     <Form.Item
                         label="是否需要活体检验"
                         name="platform"

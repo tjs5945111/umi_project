@@ -107,17 +107,17 @@ export default () => {
             let res = {}
             let ress = {}
             if (i === 1) {
+                params.status = ['INIT','FLOW_CREATED','SIGNING'];
                 res = await getDqlb(params)
                 const { data = {}, total = 0, size } = res as any;
-                const temp = (data.data || []).filter(item => item.status !== 'SIGNED')
+                // const temp = (data.data || []).filter(item => item.status !== 'SIGNED')
                 // data.data.filter(item => item.status !== 'SIGNED')
-                setTenantList(temp);
-                params.status = 'SIGNED';
-                ress = await getDqlb(params)
-                setTotalSize((res.data?.total || 0) - (ress.data?.total || 0));
+                setTenantList(res.data.data);
+                // ress = await getDqlb(res.data)
+                setTotalSize(res.data.total);
             } else {
                 // params.status = '';
-                params.status = 'SIGNED';
+                params.status = ['SIGNED'];
                 ress = await getDqlb(params)
                 const { data = {}, total, size } = ress as any;
                 setTenantListC(data.data);
@@ -133,9 +133,9 @@ export default () => {
     const handlePaging = (num: any, size: any) => {
         setLoading(true);
         if (keys === 1) {
-            getList(num, { status: '' }, size, [1]);
+            getList(num, { status: [] }, size, [1]);
         } else {
-            getList(num, { status: 'SIGNED' }, size, [2]);
+            getList(num, { status: ['SIGNED'] }, size, [2]);
         }
         setLoading(false);
 
@@ -148,7 +148,7 @@ export default () => {
     };
 
     function callback(key) {
-        setKeys(key)
+        setKeys(parseInt(key))
     }
 
     return (

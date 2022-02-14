@@ -373,6 +373,16 @@ export async function getDqDeatil(params: any) {
     params,
   });
 }
+/** 通过名字查用户信息 */
+export async function getNameData(params: any) {
+  return request<API.LoginResult>('/manager/user/like.json', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    params,
+  });
+}
 /** 电签下载 */
 export async function dqDrown(params: any) {
   return request<API.LoginResult>('/manager/flow/download.json', {

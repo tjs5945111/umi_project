@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import BreadcrumbList from '@/components/BreadcrumbList';
 import imgs from '@/image/banner.png'
 import mammoth from 'mammoth';
-import { addOne, ztAdd, ztDelect, lcFore, lcThree, lcTwo, lcOne, ts } from '@/services/ant-design-pro/api'
+import { addOne, ztAdd, ztDelect, lcFore, lcThree, lcTwo, lcOne, getNameData } from '@/services/ant-design-pro/api'
 // import FileViewer from 'react-file-viewer';
 // import { CustomErrorComponent } from 'custom-error';
 
@@ -382,6 +382,12 @@ export default (props) => {
         setLoadingNext(false)
     }
 
+    const handleBlue = async e => {
+        const res = await getNameData({ name: e.target.value })
+        if (!qyEl || !qyEl?.current) return;
+        qyEl.current.setFieldsValue(res.data && res.data[0])
+    }
+
     const startQs = async () => {
         const a = await lcOne({ caseId, businessScene: `${(fileData[feilActive].fileName || '').split('.')[0]}_${new Date().getTime()}}` });
         const b = await lcTwo({ caseId });
@@ -674,7 +680,7 @@ export default (props) => {
                         name="name"
                         rules={[{ required: true, message: '请输入' }]}
                     >
-                        <Input placeholder='请输入'/>
+                        <Input placeholder='请输入' onBlur={e => handleBlue(e)} />
                     </Form.Item>
                     <Form.Item
                         label="签约主体手机号"
@@ -700,13 +706,13 @@ export default (props) => {
                     >
                         <Input placeholder='请输入' />
                     </Form.Item>
-                    <Form.Item
+                    {/* <Form.Item
                         label="密钥"
                         name="secret"
                         rules={[{ required: false, message: '请输入' }]}
                     >
                         <Input placeholder='请输入' />
-                    </Form.Item>
+                    </Form.Item> */}
                     <Form.Item
                         label="是否需要活体检验"
                         name="platform"
