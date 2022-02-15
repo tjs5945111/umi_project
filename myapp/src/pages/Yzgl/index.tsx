@@ -219,7 +219,10 @@ export default () => {
                 type="primary"
                 style={{ marginRight: 10 }}
                 onClick={() => {
-                    setVisibles(true); setModalType('pt'); notification.open({
+                    qyEls?.current?.setFieldsValue({userType:'ORGANIZATION'})
+                    setVisibles(true); setModalType('pt');
+                    
+                    notification.open({
                         message: '温馨提示',
                         duration: 5,
                         description: '注册信息需谨慎填写、注册成功后不可更改！',
@@ -233,9 +236,9 @@ export default () => {
             </Button>
             <Button
                 type="primary"
-                onClick={() => { setVisibles(true); setModalType('st') }}
+                onClick={() => {  qyEls?.current?.setFieldsValue({userType:'PERSON'});setVisibles(true); setModalType('st') }}
             >
-                添加实体
+                添加主体
             </Button></>
     ];
     const propsU = {
@@ -381,7 +384,7 @@ export default () => {
                     </Form.Item>
                 </Form>
             </Drawer>
-            <Drawer title={modalType === 'st' ? "签约主体" : '平台注册'} placement="right" onClose={() => setVisibles(false)} visible={visibles} footer={true} width={500} footer={
+            <Drawer title={modalType === 'st' ? "添加主体" : '平台注册'} placement="right" onClose={() => setVisibles(false)} visible={visibles} footer={true} width={500} footer={
                 <Space>
 
                     <Button onClick={() => setVisibles(false)}>取消</Button>
@@ -397,7 +400,7 @@ export default () => {
                     ref={qyEls}
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 14 }}
-                    initialValues={{ userType: modalType === 'st' ? 'PERSON' : 'ORGANIZATION', platform: false, }}
+                    initialValues={{ platform: false, }}
                     autoComplete="off"
                 >
                     {/* <Form.Item
