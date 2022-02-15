@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import BreadcrumbList from '@/components/BreadcrumbList';
 import imgs from '@/image/banner.png'
 
-import { Card, Form, Input, Button, Radio, DatePicker, message } from 'antd';
-import { getDqDeatil } from '@/services/ant-design-pro/api';
+import { Card, Form, Input, Button, Radio, DatePicker, message, notification } from 'antd';
+import { getDqDeatil, lj } from '@/services/ant-design-pro/api';
 import moment from 'moment';
 // import FileViewer from 'react-file-viewer';
 
@@ -22,12 +22,12 @@ export default (props) => {
     const getList = async (detailId) => {
         const res = await getDqDeatil({ id: detailId })
         console.log(res);
-        if(res.code === 'ok'){
+        if (res.code === 'ok') {
             setDetailData(res.data)
-        }else{
+        } else {
             message.error('详情获取失败！')
         }
-        
+
     }
 
     const urlArray = [
@@ -46,7 +46,7 @@ export default (props) => {
             <Card bordered={false} className={styles.contain}>
                 <div className={styles.stepfore}>
                     <h4>基本信息</h4>
-                    <div style={{ marginLeft: 25,display:'flex',flexWrap:'wrap' }}>
+                    <div style={{ marginLeft: 25, display: 'flex', flexWrap: 'wrap' }}>
                         <p> <span>案件名称：</span>{detailData?.name || ''}</p>
                         {/* <p> <span>上传人：</span>{detailData?.contractCaseSignerResponseVOS[0]?.name || ''}</p> */}
                         <p> <span>文书数量：</span>{detailData?.docCount || ''}</p>
@@ -57,20 +57,44 @@ export default (props) => {
 
                     {
                         detailData?.contractCaseSignerResponseVOS?.map((item, index) => (
-                            <div style={{ padding: 20,border:'1px solid #eee',marginBottom:15 }}>
+                            <div style={{ padding: 20, border: '1px solid #eee', marginBottom: 15 }}>
+                                {
+                                    item.signStatus !== 'SIGNED' ? <Button
+                                        type="primary"
+                                        style={{ float: 'right' }}
+                                        onClick={async e => {
+                                            const res = await lj({ flowId: detailData?.flowId, accId: item.contractUser?.userAcc })
+                                            if (res.code === 'ok') {
+
+                                                notification.open({
+                                                    message: '签约链接',
+                                                    duration: null,
+                                                    description: res.data,
+                                                    onClick: () => {
+                                                        console.log('Notification Clicked!');
+                                                    },
+                                                });
+                                            } else {
+                                                message.error(res.message || '获取失败')
+                                            }
+                                        }}
+                                    >
+                                        获取签署链接
+                                    </Button> : null
+                                }
                                 <h5>合同{index + 1}_用户信息</h5>
-                                <div style={{ marginLeft: 20,display:'flex',flexWrap:'wrap' }}>
-                                <p> <span>签约方：</span>{item.contractUser?.name || ''} ({item.contractUser?.mobile || ''}) </p>
-                                <p> <span>身份证：</span>{item.contractUser?.idNumber || ''} </p>
-                                <p> <span>签约主体类型：</span>{item.contractUser?.idType || ''} </p>
-                                <p> <span>是否需要活体检验：</span>{item.contractUser.platform ? "需要" : '不需要'} </p>
-                                <p> <span>签署状态：</span>{item.signStatus === 'SIGNED' ? '已签署' : '未签署'} </p>
-                                <p> <span>是否有效：</span>{item.status === 'Y' ? '有效' : '无效'} </p>
+                                <div style={{ marginLeft: 20, display: 'flex', flexWrap: 'wrap' }}>
+                                    <p> <span>签约方：</span>{item.contractUser?.name || ''} ({item.contractUser?.mobile || ''}) </p>
+                                    <p> <span>身份证：</span>{item.contractUser?.idNumber || ''} </p>
+                                    <p> <span>签约主体类型：</span>{item.contractUser?.idType || ''} </p>
+                                    <p> <span>是否需要活体检验：</span>{item.contractUser.platform ? "需要" : '不需要'} </p>
+                                    <p> <span>签署状态：</span>{item.signStatus === 'SIGNED' ? '已签署' : '未签署'} </p>
+                                    <p> <span>是否有效：</span>{item.status === 'Y' ? '有效' : '无效'} </p>
                                 </div>
                             </div>
                         ))
                     }
- 
+
                     {/* <h4>业务合同书</h4>
                     <div className={styles.contain} >
                         <FileViewer

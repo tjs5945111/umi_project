@@ -452,6 +452,17 @@ export async function yzAdd(params: any) {
     body: JSON.stringify(params)
   });
 }
+/** 平台注册 */
+export async function ptCreate(params: any) {
+
+  return request<API.LoginResult>('/manager/platform/register.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(params)
+  });
+}
 /** 添加主体 */
 export async function ztCreate(params: any) {
 
@@ -567,9 +578,9 @@ export async function lcFore(params: any) {
     params
   });
 }
-/** 流程 */
-export async function ts(params: any) {
-  return request<API.LoginResult>('/manager/flow/notify.json', {
+/** 手动获取链接 */
+export async function lj(params: any) {
+  return request<API.LoginResult>('/manager/flow/signurl.json', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import BaseTable from '@/components/BaseTable';
 import { message, Tabs } from 'antd';
-import { getDqlb,dqDrown } from '@/services/ant-design-pro/api';
+import { getDqlb,dqDrown,lj } from '@/services/ant-design-pro/api';
 import moment from 'moment';
 import { sizeChange } from '@/util/util';
 import styles from './index.less';
@@ -59,7 +59,7 @@ export default () => {
                     }}
                 >
                     <a
-                        style={{ marginRight: 30 }}
+                        style={{ marginRight: 10 }}
                         onClick={() => {
                             window.open(`/dzmq/detail?id=${id}`);
                         }}
@@ -68,7 +68,7 @@ export default () => {
                     </a>
                     {
                         status ==='SIGNED'? <a
-                        style={{ marginRight: 30 }}
+                        style={{ marginRight: 10 }}
                         onClick={async e => {
                             e.defaultPrevented;
                             const res =await dqDrown({flowId})
@@ -82,7 +82,6 @@ export default () => {
                     </a>:null
                     }
                    
-
                 </div>
             ),
         },

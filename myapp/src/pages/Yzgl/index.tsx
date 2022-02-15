@@ -1,15 +1,16 @@
 // 印章管理
 import React, { useState, useEffect, useRef } from 'react';
 import BaseTable from '@/components/BaseTable';
-import { message, Divider, Radio, Button, Table, Drawer, Space, Form, Input, Select, Upload } from 'antd';
+import { message, Divider, Radio, Button, Table, Drawer, Space, Form, Input, Select, Upload, notification } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { yzList, rysc, yzAdd, ztCreate, getDqlb, getSeals, getNameData } from '@/services/ant-design-pro/api';
+import { yzList, rysc, yzAdd, ztCreate, getDqlb, getSeals, getNameData, ptCreate } from '@/services/ant-design-pro/api';
 import moment from 'moment';
 import styles from './index.less';
 
 const { Option } = Select;
 
 const UserTypeEnum = [{ name: '个人', value: 'PERSON' }]
+const UserTypeEnums = [{ name: '机构', value: 'ORGANIZATION' }]
 // const UserTypeEnum = [{ name: '个人', value: 'PERSON' }, { name: '机构', value: 'ORGANIZATION' }]
 const TypeEnum = [{ name: '统一社会信用代码', value: 'CRED_ORG_USCC' },
 { name: '组织机构代码证', value: 'CRED_ORG_CODE' },
@@ -45,6 +46,7 @@ export default () => {
     const [visibles, setVisibles] = useState(false);
     const [caseIdList, setCaseIdList] = useState([]);
     const [yzData, setYzData] = useState([]);
+    const [modalType, setModalType] = useState('');
 
     const columns = [
         {
@@ -183,20 +185,25 @@ export default () => {
     const ztSubmits = async () => {
         // 主体添加
         if (!qyEls || !qyEls?.current) return;
+        if (modalType === 'pt') {
+            message.info('')
+        }
         qyEls.current.validateFields().then(async (values) => {
             console.log(values);
             let params = {}
-            if (userType === 'PERSON') {
-                values.userId = new Date().getTime();
+            values.userId = new Date().getTime();
+            if (userType === 'PERSON' && modalType === 'st') {
+
                 params = { userType: values.userType, contractUser: values }
-            } else {
+            } else if (userType !== 'PERSON' || modalType === 'pt') {
                 params = { userType: values.userType, contractOrganization: { ...values, name: values.jgname, idNumber: values.jgidNumber, idType: values.jgidType }, contractUser: values }
             }
-            const res = await ztCreate(params);
+            const res = modalType === 'st' ? await ztCreate(params) : await ptCreate(params);
             console.log('res', res);
             if (res.code === 'ok') {
                 values.id = res.data?.id;
                 // setUserData([...userData, values])
+                message.success('成功')
                 getList();
                 setVisibles(false);
             } else {
@@ -206,13 +213,30 @@ export default () => {
     }
 
     const actionList: any = [
-        <></>
-        , <Button
-            type="primary"
-            onClick={() => setVisibles(true)}
-        >
-            添加实体
-        </Button>,
+        <></>,
+        <>
+            <Button
+                type="primary"
+                style={{ marginRight: 10 }}
+                onClick={() => {
+                    setVisibles(true); setModalType('pt'); notification.open({
+                        message: '温馨提示',
+                        duration: 5,
+                        description: '注册信息需谨慎填写、注册成功后不可更改！',
+                        onClick: () => {
+                            console.log('Notification Clicked!');
+                        },
+                    });
+                }}
+            >
+                平台注册
+            </Button>
+            <Button
+                type="primary"
+                onClick={() => { setVisibles(true); setModalType('st') }}
+            >
+                添加实体
+            </Button></>
     ];
     const propsU = {
         name: 'file',
@@ -247,6 +271,7 @@ export default () => {
     };
 
     const handleBlue = async e => {
+        if (modalType === 'pt') return
         const res = await getNameData({ name: e.target.value })
         if (!qyEls || !qyEls?.current) return;
         qyEls.current.setFieldsValue(res.data && res.data[0])
@@ -305,7 +330,7 @@ export default () => {
                 pagingSizeChange={(e: any, v) => pagingSizeChange(e, v)}
                 totalSize={totalSize}
             />
-            <Drawer title="签约主体" placement="right" onClose={() => setVisible(false)} visible={visible} footer={true} width={500} footer={
+            <Drawer title="添加印章" placement="right" onClose={() => setVisible(false)} visible={visible} footer={true} width={500} footer={
                 <Space>
 
                     <Button onClick={() => setVisible(false)}>取消</Button>
@@ -356,7 +381,7 @@ export default () => {
                     </Form.Item>
                 </Form>
             </Drawer>
-            <Drawer title="签约主体" placement="right" onClose={() => setVisibles(false)} visible={visibles} footer={true} width={500} footer={
+            <Drawer title={modalType === 'st' ? "签约主体" : '平台注册'} placement="right" onClose={() => setVisibles(false)} visible={visibles} footer={true} width={500} footer={
                 <Space>
 
                     <Button onClick={() => setVisibles(false)}>取消</Button>
@@ -372,7 +397,7 @@ export default () => {
                     ref={qyEls}
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 14 }}
-                    initialValues={{ userType: 'PERSON', platform: false, }}
+                    initialValues={{ userType: modalType === 'st' ? 'PERSON' : 'ORGANIZATION', platform: false, }}
                     autoComplete="off"
                 >
                     {/* <Form.Item
@@ -401,13 +426,13 @@ export default () => {
                             onSelect={e => setUserType(e)}
                         >
                             {
-                                UserTypeEnum.map(item => <Option value={item.value}>{item.name}</Option>)
+                                (modalType === 'st' ? UserTypeEnum : UserTypeEnums || []).map(item => <Option value={item.value}>{item.name}</Option>)
                             }
 
                         </Select>
                     </Form.Item>
                     {
-                        userType === 'PERSON' ? <>
+                        modalType === 'st' ? <>
                         </> : <>
                             <Form.Item
                                 label="企业法人名称"
