@@ -3,7 +3,7 @@ import BreadcrumbList from '@/components/BreadcrumbList';
 import imgs from '@/image/banner.png'
 import mammoth from 'mammoth';
 import { addOne, ztAdd, ztDelect, lcFore, lcThree, lcTwo, lcOne, getNameData } from '@/services/ant-design-pro/api'
-// import FileViewer from 'react-file-viewer';
+import FileViewer from 'react-file-viewer';
 // import { CustomErrorComponent } from 'custom-error';
 
 import { Card, Form, Input, Button, Select, Drawer, Radio, Upload, message, Modal, Space, Empty } from 'antd';
@@ -48,6 +48,7 @@ export default (props) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [loadingNext, setLoadingNext] = useState(false);
     const [userType, setUserType] = useState('PERSON');
+    const [dropData, setDropData] = useState('');
     const qyEl = useRef(null);
     useEffect(() => {
         console.log(props, '1231323');
@@ -99,12 +100,12 @@ export default (props) => {
         if (active === 2) {
             // 签署
             setIsModalVisible(true)
-            } else if (active === 1) {
-                if (!userData.length) {
-                    message.error('请先添加签约主体');
-                    return;
-                };
-                setActive(() => active + 1)
+        } else if (active === 1) {
+            if (!userData.length) {
+                message.error('请先添加签约主体');
+                return;
+            };
+            setActive(() => active + 1)
         } else {
             setActive(() => active + 1)
         }
@@ -150,24 +151,31 @@ export default (props) => {
     }
     function handle_leave(e) {
         e.preventDefault()
-        let returnObj = e.dataTransfer.getData('Text')
-        console.log(returnObj)
+        let namesEle = document.getElementById(`names${userActive}`)
+        setIsqs(true);
+        debugger
+        if (!namesEle) return;
+        // let returnObj = dropData
+        // let element = document.createElement("div");
+        namesEle.innerHTML = dropData;
+        namesEle.style.cssText = 'display:block; border: 2px solid #F76260;'
+
         console.log('handle_leave-没有放下就离开目的地')
     }
     function handle_drop(e) {
         e.stopPropagation();// 不再派发事件。解决Firefox浏览器，打开新窗口的问题。
         e.preventDefault()
-        let namesEle = document.getElementById(`names${userActive}`)
-        setIsqs(true);
-        if (!namesEle) return;
-        let returnObj = e.dataTransfer.getData('Text')
-        // let element = document.createElement("div");
-        namesEle.innerHTML = returnObj;
-        namesEle.style.cssText = 'display:block; border: 2px solid #F76260;'
+        // let namesEle = document.getElementById(`names${userActive}`)
+        // setIsqs(true);
+        // if (!namesEle) return;
+        // let returnObj = e.dataTransfer.getData('Text')
+        // // let element = document.createElement("div");
+        // namesEle.innerHTML = returnObj;
+        // namesEle.style.cssText = 'display:block; border: 2px solid #F76260;'
         // if (returnObj) {
         //     e.target.appendChild(namesEle)
         // }
-        console.log(returnObj + '-handle_drop-在目的地区释放')
+        // console.log(returnObj + '-handle_drop-在目的地区释放')
     }
 
 
@@ -292,32 +300,39 @@ export default (props) => {
                 console.log(info.file, info.fileList);
             }
             if (info.file.status === 'done') {
-                const { fileId = '', fileName = '' } = info.file.response?.data;
+                const { fileId = '', fileName = '', previewUrl } = info.file.response?.data;
+                if (!previewUrl) {
+                    !previewUrl && message.error('上传出错')
+                    return
+                }
+                const tempUrl = previewUrl?.endsWith('.pdf') ? previewUrl : `https://view.officeapps.live.com/op/view.aspx?src=${previewUrl}`
+                setFileData([...fileData, tempUrl])
                 setContractFileModels([...contractFileModels, { fileId, name: fileName }]);
-                var reader = new FileReader();
-                reader.onloadend = function (event) {
-                    var arrayBuffer = reader.result;
-                    // debugger
-                    mammoth.convertToHtml({ arrayBuffer: arrayBuffer }).then(function (resultObject) {
-                        // result1.innerHTML = resultObject.value
-                        setFileData([...fileData, resultObject.value])
+                // var reader = new FileReader();
+                // reader.onloadend = function (event) {
+                //     var arrayBuffer = reader.result;
+                //     setFileData([...fileData, arrayBuffer])
+                //     mammoth.convertToHtml({ arrayBuffer: arrayBuffer }).then(function (resultObject) {
+                //         // result1.innerHTML = resultObject.value
+                //         setFileData([...fileData, resultObject.value])
 
-                        // console.log(resultObject.value)
-                    })
+                //         // console.log(resultObject.value)
+                //     })
 
-                    // mammoth.extractRawText({ arrayBuffer: arrayBuffer }).then(function (resultObject) {
-                    //     // result2.innerHTML = resultObject.value
-                    //     console.log(resultObject.value)
-                    // })
+                //     // mammoth.extractRawText({ arrayBuffer: arrayBuffer }).then(function (resultObject) {
+                //     //     // result2.innerHTML = resultObject.value
+                //     //     console.log(resultObject.value)
+                //     // })
 
-                    // mammoth.convertToMarkdown({ arrayBuffer: arrayBuffer }).then(function (resultObject) {
-                    //     // result3.innerHTML = resultObject.value
-                    //     console.log(resultObject.value)
-                    // })
-                };
-                reader.readAsArrayBuffer(info.file?.originFileObj);
-                setFeilSuccess(true)
-                // message.success(`${info.file.name} file uploaded successfully`);
+                //     // mammoth.convertToMarkdown({ arrayBuffer: arrayBuffer }).then(function (resultObject) {
+                //     //     // result3.innerHTML = resultObject.value
+                //     //     console.log(resultObject.value)
+                //     // })
+                // };
+                // // reader.readAsArrayBuffer(info.file?.originFileObj);
+                // reader.readAsDataURL(info.file?.originFileObj);
+                // setFeilSuccess(true)
+                // // message.success(`${info.file.name} file uploaded successfully`);
             } else if (info.file.status === 'error') {
                 message.error(`${info.file.name} 文件上传失败.`);
             }
@@ -514,7 +529,19 @@ export default (props) => {
                                                         userData?.map((e, ke) => (<div className={styles.names} id={`names${ke}`} onMouseDown={mouseDown}></div>))
                                                     }
 
-                                                    <div dangerouslySetInnerHTML={{ __html: fileData[feilActive] }} ></div>
+                                                    {/* <div dangerouslySetInnerHTML={{ __html: fileData[feilActive] }} ></div> */}
+                                                    <iframe frameborder="0" height='100%' width="100%" src={fileData[feilActive]}></iframe>
+
+                                                    {/* <FileViewer
+                                                        fileType='docx'
+                                                        filePath='https://notarizatry.oss-cn-hzfinance.aliyuncs.com/4eb489b0-4d66-45ea-9626-abe499f123cf.docx'
+                                                        // errorComponent={CustomErrorComponent}
+                                                        onError={e => console.error(e)} /> */}
+                                                    {/* <FileViewer
+                                                        fileType='docx'
+                                                        filePath={fileData[feilActive]}
+                                                        // errorComponent={CustomErrorComponent}
+                                                        onError={e => console.error(e)} /> */}
                                                 </div> : null
                                             ))
                                         }
@@ -526,7 +553,7 @@ export default (props) => {
                                             {
                                                 userData?.map((item, k) => (
                                                     <div className={styles.contain}>
-                                                        <div draggable className='txt' onMouseOver={() => { setUserActive(k) }}>{item.name}</div>
+                                                        <div draggable className='txt' onMouseOver={() => { setUserActive(k); setDropData(item.name); }}>{item.name}</div>
 
                                                         <div>签署</div>
                                                     </div>

@@ -11,7 +11,7 @@ const { Option } = Select;
 
 const UserTypeEnum = [{ name: '个人', value: 'PERSON' }]
 const UserTypeEnums = [{ name: '机构', value: 'ORGANIZATION' }]
-// const UserTypeEnum = [{ name: '个人', value: 'PERSON' }, { name: '机构', value: 'ORGANIZATION' }]
+const UserTypeEnuma = { 'PERSON': { name: '个人', value: 'PERSON' }, 'ORGANIZATION': { name: '机构', value: 'ORGANIZATION' } }
 const TypeEnum = [{ name: '统一社会信用代码', value: 'CRED_ORG_USCC' },
 { name: '组织机构代码证', value: 'CRED_ORG_CODE' },
 { name: '工商注册号', value: 'CRED_ORG_REGCODE' },
@@ -65,6 +65,11 @@ export default () => {
         {
             title: '创建时间',
             dataIndex: 'gmtCreate',
+        },
+        {
+            title: '用户类型',
+            dataIndex: 'userType',
+            render: (userType) => (<>{UserTypeEnuma[userType]?.name}</>)
         },
         {
             title: '操作',
@@ -219,9 +224,9 @@ export default () => {
                 type="primary"
                 style={{ marginRight: 10 }}
                 onClick={() => {
-                    qyEls?.current?.setFieldsValue({userType:'ORGANIZATION'})
+                    qyEls?.current?.setFieldsValue({ userType: 'ORGANIZATION' })
                     setVisibles(true); setModalType('pt');
-                    
+
                     notification.open({
                         message: '温馨提示',
                         duration: 5,
@@ -236,7 +241,7 @@ export default () => {
             </Button>
             <Button
                 type="primary"
-                onClick={() => {  qyEls?.current?.setFieldsValue({userType:'PERSON'});setVisibles(true); setModalType('st') }}
+                onClick={() => { qyEls?.current?.setFieldsValue({ userType: 'PERSON' }); setVisibles(true); setModalType('st') }}
             >
                 添加主体
             </Button></>

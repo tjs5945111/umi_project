@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import BaseTable from '@/components/BaseTable';
 import { message, Tabs } from 'antd';
-import { getDqlb,dqDrown,lj } from '@/services/ant-design-pro/api';
+import { getDqlb, dqDrown, lj } from '@/services/ant-design-pro/api';
 import moment from 'moment';
 import { sizeChange } from '@/util/util';
 import styles from './index.less';
@@ -47,7 +47,7 @@ export default () => {
             key: 'actionList',
             fixed: 'right',
             width: 200,
-            render: ({ id,status,flowId }) => (
+            render: ({ id, status, flowId }) => (
                 <div
 
                     style={{
@@ -67,21 +67,24 @@ export default () => {
                         查看详情
                     </a>
                     {
-                        status ==='SIGNED'? <a
-                        style={{ marginRight: 10 }}
-                        onClick={async e => {
-                            e.defaultPrevented;
-                            const res =await dqDrown({flowId})
-                            res.data.map(item=>{
-                                window.location.assign(item.fileUrl)
-                            })
-                            // debugger
-                        }}
-                    >
-                        下载
-                    </a>:null
+                        status === 'SIGNED' ? <a
+                            style={{ marginRight: 10 }}
+                            onClick={async e => {
+                                e.defaultPrevented;
+                                const res = await dqDrown({ flowId })
+                                res.data?.map(item => {
+                                    window.location.assign(item.fileUrl)
+                                })
+                                if (res.code !== 'ok') {
+                                    message.error(res.msg || '下载失败')
+                                }
+                                // debugger
+                            }}
+                        >
+                            下载
+                        </a> : null
                     }
-                   
+
                 </div>
             ),
         },
@@ -106,7 +109,7 @@ export default () => {
             let res = {}
             let ress = {}
             if (i === 1) {
-                params.status = ['INIT','FLOW_CREATED','SIGNING'];
+                params.status = ['INIT', 'FLOW_CREATED', 'SIGNING'];
                 res = await getDqlb(params)
                 const { data = {}, total = 0, size } = res as any;
                 // const temp = (data.data || []).filter(item => item.status !== 'SIGNED')
