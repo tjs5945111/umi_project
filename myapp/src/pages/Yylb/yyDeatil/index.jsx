@@ -60,8 +60,8 @@ export default (props) => {
                     <div><span>申办人手机号：</span>{detailData.phone}</div>
                     <div><span>申办时间：</span>{detailData.gmtCreate}</div>
                     <div><span>上门地址：</span>{detailData.detailAddress}</div>
-                    <div><span>申办用户：</span>{detailData.reserveSetVO?.operator || ''}</div>
-                    <div><span>用户申办时间：</span>{detailData.reserveSetVO?.registryDate || ''}</div>
+                    <div><span>操作员：</span>{detailData.reserveSetVO?.operator || ''}</div>
+                    <div><span>操作员操作时间：</span>{detailData.reserveSetVO?.registryDate || ''}</div>
                     <div><span>状态：</span>{detailData.status}</div>
                     <div className={styles.bz}><span>备注信息：</span>{detailData.remark}</div>
                 </div>
