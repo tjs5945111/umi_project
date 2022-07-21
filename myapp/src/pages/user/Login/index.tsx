@@ -63,6 +63,8 @@ const Login: React.FC = () => {
         const { redirect } = query as { redirect: string };
         history.push(redirect || '/');
         return;
+      }else{
+        message.error(msg.data);
       }
       console.log(msg);
       // 如果失败去设置用户错误信息
