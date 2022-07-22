@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import BreadcrumbList from '@/components/BreadcrumbList';
 import imgs from '@/image/banner.png'
 
@@ -23,7 +23,7 @@ export default (props) => {
     const getList = async (detailId) => {
         const res = await getYyxq(detailId)
         console.log(res);
-        var moments = moment(res.reserveSetVO?.registryDate,'YYYY-MM-DD HH:mm:ss');
+        var moments = res.reserveSetVO?.registryDate ? moment(res.reserveSetVO?.registryDate, 'YYYY-MM-DD HH:mm:ss') : undefined;
         // debugger
         let temp = {
             status: res.status,
@@ -101,53 +101,55 @@ export default (props) => {
                         onFinishFailed={onFinishFailed}
                         autoComplete="off"
                     >
-                        <Form.Item
-                            label="预约状态"
-                            name="status"
-                            rules={[{ required: true, message: '请选择' }]}
-                            
-                        >
-                            <Radio.Group onChange={(v)=>{
-                                setStatusValue(v.target.value)}}
-                                disabled={detailData.status ==='已完成'}
-                                >
-                                <Radio value="待处理">待处理</Radio>
-                                <Radio value="处理中">处理中</Radio>
-                                <Radio value="已完成">已完成</Radio>
-                            </Radio.Group>
-                        </Form.Item>
+                      
 
                         <Form.Item
-                            label="操作员" 
+                            label="操作员"
                             name="operator"
                             rules={[{ required: true, message: '请输入' }]}
                         >
-                            <Input disabled/>
+                            <Input disabled />
                         </Form.Item>
                         <Form.Item
                             label="登记日期"
                             name="registryDate"
-                            
+
                             rules={[{ required: true, message: '请选择时间' }]}
                         >
-                            <DatePicker disabled = {statusValue ==='处理中' || detailData.status ==='已完成'} showTime style={{ width: '100%' }} />
+                            <DatePicker disabled={statusValue === '处理中' || detailData.status === '已完成' || statusValue === '已完成'} showTime style={{ width: '100%' }} />
                         </Form.Item>
                         <Form.Item
                             label="确认日期"
                             name="confirmDate"
                             rules={[{ required: true, message: '请选择时间' }]}
                         >
-                            <DatePicker disabled={detailData.status ==='已完成'} showTime style={{ width: '100%' }} />
+                            <DatePicker disabled={detailData.status === '已完成' || statusValue === '已完成'} showTime style={{ width: '100%' }} />
                         </Form.Item>
                         <Form.Item
                             label="备注信息"
                             name="remark"
                             rules={[{ required: false, message: '请输入' }]}
                         >
-                            <Input.TextArea disabled={detailData.status ==='已完成'}/>
+                            <Input.TextArea disabled={detailData.status === '已完成' || statusValue === '已完成'} />
+                        </Form.Item>
+                        <Form.Item
+                            label="预约状态"
+                            name="status"
+                            rules={[{ required: true, message: '请选择' }]}
+
+                        >
+                            <Radio.Group onChange={(v) => {
+                                setStatusValue(v.target.value)
+                            }}
+
+                            >
+                                <Radio disabled={detailData.status === '处理中' || detailData.status === '已完成' || statusValue === '处理中' || statusValue === '已完成'} value="待处理">待处理</Radio>
+                                <Radio disabled={detailData.status === '已完成' || statusValue === '已完成'} value="处理中">处理中</Radio>
+                                <Radio value="已完成">已完成</Radio>
+                            </Radio.Group>
                         </Form.Item>
                         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                            <Button type="primary" htmlType="submit"  disabled={detailData.status ==='已完成'}>
+                            <Button type="primary" htmlType="submit" disabled={detailData.status === '已完成'}>
                                 提交
                             </Button>
                         </Form.Item>
