@@ -34,7 +34,7 @@ export default (props) => {
         // res.status='已完成'
         setStatusValue(res.status)
         if (res.status === '待处理') {
-            temp.operator = window.user
+            temp.operator = temp.operator ? temp.operator : window.user;
         }
         if (!formE || !formE?.current) return;
         const { setFieldsValue } = formE.current;
@@ -101,7 +101,7 @@ export default (props) => {
                         onFinishFailed={onFinishFailed}
                         autoComplete="off"
                     >
-                      
+
 
                         <Form.Item
                             label="操作员"
@@ -116,21 +116,21 @@ export default (props) => {
 
                             rules={[{ required: true, message: '请选择时间' }]}
                         >
-                            <DatePicker disabled={statusValue === '处理中' || detailData.status === '已完成' || statusValue === '已完成'} showTime style={{ width: '100%' }} />
+                            <DatePicker disabled={detailData.status === '处理中' || detailData.status === '已完成'} showTime style={{ width: '100%' }} />
                         </Form.Item>
                         <Form.Item
                             label="确认日期"
                             name="confirmDate"
                             rules={[{ required: true, message: '请选择时间' }]}
                         >
-                            <DatePicker disabled={detailData.status === '已完成' || statusValue === '已完成'} showTime style={{ width: '100%' }} />
+                            <DatePicker disabled={detailData.status === '已完成'} showTime style={{ width: '100%' }} />
                         </Form.Item>
                         <Form.Item
                             label="备注信息"
                             name="remark"
                             rules={[{ required: false, message: '请输入' }]}
                         >
-                            <Input.TextArea disabled={detailData.status === '已完成' || statusValue === '已完成'} />
+                            <Input.TextArea disabled={detailData.status === '已完成'} />
                         </Form.Item>
                         <Form.Item
                             label="预约状态"
@@ -143,8 +143,8 @@ export default (props) => {
                             }}
 
                             >
-                                <Radio disabled={detailData.status === '处理中' || detailData.status === '已完成' || statusValue === '处理中' || statusValue === '已完成'} value="待处理">待处理</Radio>
-                                <Radio disabled={detailData.status === '已完成' || statusValue === '已完成'} value="处理中">处理中</Radio>
+                                <Radio disabled={detailData.status === '处理中' || detailData.status === '已完成' ||( statusValue === '已完成'&&detailData.status === '处理中')} value="待处理">待处理</Radio>
+                                <Radio disabled={detailData.status === '已完成' } value="处理中">处理中</Radio>
                                 <Radio value="已完成">已完成</Radio>
                             </Radio.Group>
                         </Form.Item>
