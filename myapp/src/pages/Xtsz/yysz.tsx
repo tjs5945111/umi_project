@@ -88,7 +88,7 @@ export default () => {
       <EditableProTable<DataSourceType>
         rowKey="id"
         headerTitle="预约事件列表"
-        maxLength={5}
+        // maxLength={5}
         recordCreatorProps={
           position !== 'hidden'
             ? {

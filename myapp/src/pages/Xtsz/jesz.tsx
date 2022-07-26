@@ -119,7 +119,7 @@ export default () => {
       <EditableProTable<DataSourceType>
         rowKey="id"
         headerTitle="金额明细"
-        maxLength={5}
+        // maxLength={5}
         recordCreatorProps={
           position !== 'hidden'
             ? {
