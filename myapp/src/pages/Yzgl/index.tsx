@@ -280,6 +280,7 @@ export default () => {
 
     const handleBlue = async e => {
         if (modalType === 'pt') return
+        debugger
         const res = await getNameData({ name: e.target.value })
         if (!qyEls || !qyEls?.current) return;
         qyEls.current.setFieldsValue(res.data && res.data[0])

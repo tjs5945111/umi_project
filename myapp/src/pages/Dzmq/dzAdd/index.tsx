@@ -338,10 +338,8 @@ export default (props) => {
             }
         },
         onRemove(data) {
-            const { fileId = '' } = data.response?.data;
-            const tempData = contractFileModels.filter(item => item.fileId !== fileId)
+            const tempData = contractFileModels?.filter(item => item?.uid !== data.uid)
             setContractFileModels(tempData);
-
         }
     };
 
@@ -586,7 +584,10 @@ export default (props) => {
                                     {fileData?.map((item, index) => (
                                         <>
                                             <h4>合同{index + 1}</h4>
-                                            <div dangerouslySetInnerHTML={{ __html: item }} className={styles.contain} ></div>
+                                           
+                                            <div className={styles.contain} >
+                                            <iframe frameborder="0" height='100%' width="100%" src={item}></iframe>
+                                            </div>
                                         </>
                                     ))}
                                     {/* <div dangerouslySetInnerHTML={{ __html: fileData }} className={styles.contain} ></div> */}
